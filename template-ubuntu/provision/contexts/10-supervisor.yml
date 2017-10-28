@@ -1,0 +1,15 @@
+---
+
+SUPERVISOR_USE_AUTHORIZATION: {{ true if SUPERVISOR_USER is defined and SUPERVISOR_USER != "" and SUPERVISOR_PW is defined and SUPERVISOR_PW != "" else false }}
+
+defaults:
+  - SUPERVISOR_LOGLEVEL:
+    - "debug"
+    - "critical"
+    - "error"
+    - "warn"
+    - "info"
+    - "trace"
+    - "blather"
+  - SUPERVISOR_USER: ""
+  - SUPERVISOR_PW: ""
