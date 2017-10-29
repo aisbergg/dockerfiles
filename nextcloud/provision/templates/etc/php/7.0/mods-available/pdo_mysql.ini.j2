@@ -1,0 +1,11 @@
+# configuration for PHP MySQL module
+extension=pdo_mysql.so
+
+[mysql]
+mysql.allow_local_infile=On
+mysql.allow_persistent=On
+mysql.cache_size=2000
+mysql.max_persistent=-1
+mysql.max_links=-1
+mysql.connect_timeout={{ NEXTCLOUD_DATABASE_MYSQL_CONNECT_TIMEOUT }}
+mysql.trace_mode=Off

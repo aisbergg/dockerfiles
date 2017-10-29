@@ -1,0 +1,146 @@
+# autogen true
+
+# cache_purge
+fastcgi_cache_path /var/cache/nginx levels=1:2 keys_zone=NEXTCLOUD:100m inactive=60m;
+map $request_uri $skip_cache {
+     default 1;
+     ~*/thumbnail.php 0;
+     ~*/apps/galleryplus/ 0;
+     ~*/apps/gallery/ 0;
+}
+
+{% if NGINX_REDIRECT_TO_FIRST_DOMAIN and DOMAINNAMES is defined and DOMAINNAMES|length > 1 -%}
+server {
+    listen                 80;
+    listen                 [::]:80;
+    listen                 443 ssl {{ 'http2' if NGINX_HTTP_VERSION == "2.0" }};
+    listen                 [::]:443 ssl {{ 'http2' if NGINX_HTTP_VERSION == "2.0" }};
+    {% if DOMAINNAMES is defined -%}
+    server_name            {% for domain in DOMAINNAMES %}{% if not loop.first %}{{ domain }} {% endif %}{% endfor %};
+    {%- endif %}
+
+    location / {
+        return 301         $real_scheme://{{ DOMAINNAMES[0] }}$request_uri;
+    }
+
+    # Let's Encrypt challenge response uri
+    location ^~ /.well-known/acme-challenge {
+        default_type "text/plain";
+        root /var/www/letsencrypt-challenge-response;
+    }
+}
+
+{% endif -%}
+server {
+    listen                 80;
+    listen                 [::]:80;
+    listen                 443 ssl {{ 'http2' if NGINX_HTTP_VERSION == "2.0" }} default_server;
+    listen                 [::]:443 ssl {{ 'http2' if NGINX_HTTP_VERSION == "2.0" }};
+    {% if DOMAINNAMES is defined -%}
+    server_name            {% if NGINX_REDIRECT_TO_FIRST_DOMAIN %}{{ DOMAINNAMES[0] }}{% else %}{% for domain in DOMAINNAMES %}{{ domain }} {% endfor %}{% endif %};
+    {%- endif %}
+
+    root                   /var/www/nextcloud;
+    index                  index.php;
+
+    error_page 403         /core/templates/403.php;
+    error_page 404         /core/templates/404.php;
+
+    {% if NGINX_TLS_ONLY -%}
+    rewrite_by_lua_block {
+        -- apply rules to all requests, but not to challenge responses
+        if not string.match(ngx.var.request_uri, "^/%.well%-known/acme%-challenge") and
+                ngx.var.real_scheme ~= "https" then
+            -- redirect scheme to https
+            return ngx.redirect("https://" .. ngx.var.host .. ngx.var.request_uri, 301)
+        end
+    }
+    {%- endif %}
+
+    # Let's Encrypt challenge response uri
+    location ^~ /.well-known/acme-challenge {
+        default_type "text/plain";
+        root /var/www/letsencrypt-challenge-response;
+    }
+
+    # add security headers
+    more_set_headers "X-Frame-Options: SAMEORIGIN";
+    more_set_headers "X-XSS-Protection: 1; mode=block";
+    more_set_headers "X-Robots-Tag: none";
+    more_set_headers "X-Download-Options: noopen";
+    more_set_headers "X-Permitted-Cross-Domain-Policies: none";
+
+    location = /.well-known/carddav {
+        return 301 $scheme://$host/remote.php/dav;
+    }
+    location = /.well-known/caldav {
+        return 301 $scheme://$host/remote.php/dav;
+    }
+
+    # disable logging
+    location = /robots.txt  { access_log off; log_not_found off; allow all; }
+    location = /favicon.ico { access_log off; log_not_found off; }
+
+    location / {
+        # prevent SYN-flood
+        # limit concurrent connections per ip
+        #limit_conn conn_limit_per_ip {{ NGINX_CONN_LIMIT_PER_IP }};
+        # limit requests per second per ip
+        #limit_req zone=req_limit_per_ip burst={{ NGINX_REQ_LIMIT_PER_IP_BURST }};
+
+        rewrite ^ /index.php$uri;
+    }
+
+    # deny access
+    location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
+        deny all;
+    }
+    location ~ ^/(?:\.autotest|occ|issue|indie|db_|console|README) {
+        deny all;
+    }
+
+    # cache_purge (with $http_cookies we have unique keys for the user)
+    fastcgi_cache_key $http_cookie$request_method$host$request_uri;
+    fastcgi_cache_use_stale error timeout invalid_header http_500;
+    fastcgi_ignore_headers Cache-Control Expires Set-Cookie;
+
+    # pass PHP to FastCGI
+    location ~ ^/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+|core/templates/40[34])\.php(?:$|/) {
+        fastcgi_split_path_info  ^(.+\.php)(/.+)$;
+        fastcgi_read_timeout     {{ NGINX_FASTCGI_READ_TIMEOUT }};
+        include                  /etc/nginx/fastcgi_params;
+        #Avoid sending the security headers twice
+        fastcgi_param            modHeadersAvailable true;
+        fastcgi_param            front_controller_active true;
+        fastcgi_param            SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param            PATH_INFO $fastcgi_path_info;
+        fastcgi_pass             unix:/var/run/php7-fpm.sock;
+        fastcgi_intercept_errors on;
+        fastcgi_request_buffering off;
+
+        # cache_purge
+        fastcgi_cache_bypass $skip_cache;
+        fastcgi_no_cache $skip_cache;
+        fastcgi_cache NEXTCLOUD;
+        fastcgi_cache_valid  60m;
+        fastcgi_cache_methods GET HEAD;
+    }
+
+    location ~ ^/(?:updater|ocs-provider)(?:$|/) {
+        try_files $uri/ =404;
+        index index.php;
+    }
+
+    # adding the cache control header for js and css files
+    location ~* \.(?:css|js)$ {
+        try_files $uri /index.php$uri$is_args$args;
+        more_set_headers         "Cache-Control: public, max-age=7200";
+        access_log               off;
+    }
+
+    # disable logging for other assets
+    location ~* \.(?:svg|gif|png|html|ttf|woff|ico|jpg|jpeg)$ {
+        try_files $uri /index.php$uri$is_args$args;
+        access_log               off;
+    }
+}
