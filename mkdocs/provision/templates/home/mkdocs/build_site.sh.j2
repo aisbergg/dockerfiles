@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# exit on errors
+set -e
+
+ssh-add "{{ GIT_SSH_KEY }}" >/dev/null
+if [[ -d $HOME/git-repo ]]; then
+    pushd $HOME/git-repo >/dev/null
+    # Checking for changes in the Git repo
+    if ! git diff --quiet ; then
+        # pulling changes
+        git pull origin {{ GIT_BRANCH }}
+        # Generating the HTML files with MkDocs
+        /usr/local/bin/mkdocs build -d /var/www/docs
+    fi
+    popd >/dev/null
+else
+    # Cloning git repo and checking out the specified branch
+    git clone "{{ GIT_REPO_URI }}" $HOME/git-repo
+    pushd $HOME/git-repo >/dev/null
+    git checkout {{ GIT_BRANCH }}
+    # Generating the HTML files with MkDocs
+    /usr/local/bin/mkdocs build -d /var/www/docs
+    popd >/dev/null
+fi
