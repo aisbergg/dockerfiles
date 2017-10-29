@@ -1,0 +1,88 @@
+# autogen true
+
+#######################################
+#             Upstream                #
+#######################################
+
+upstream etherpad {
+    server 127.0.0.1:8001;
+}
+
+#######################################
+#            HTTP & HTTPS             #
+#######################################
+
+{% if NGINX_REDIRECT_TO_FIRST_DOMAIN and DOMAINNAMES is defined and DOMAINNAMES|length > 1 -%}
+server {
+    listen                 80;
+    listen                 443 ssl {{ 'http2' if NGINX_HTTP_VERSION == "2.0" }};
+    {% if DOMAINNAMES is defined -%}
+    server_name            {% for domain in DOMAINNAMES %}{% if not loop.first %}{{ domain }} {% endif %}{% endfor %};
+    {%- endif %}
+
+    location / {
+        return 301         $real_scheme://{{ DOMAINNAMES[0] }}$request_uri;
+    }
+
+    # Let's Encrypt challenge response uri
+    location ^~ /.well-known/acme-challenge {
+        default_type "text/plain";
+        root /var/www/letsencrypt-challenge-response;
+    }
+}
+
+{% endif -%}
+server {
+    listen                 80;
+    listen                 443 ssl {{ 'http2' if NGINX_HTTP_VERSION == "2.0" }} default_server;
+    {% if DOMAINNAMES is defined -%}
+    server_name            {% if NGINX_REDIRECT_TO_FIRST_DOMAIN %}{{ DOMAINNAMES[0] }}{% else %}{% for domain in DOMAINNAMES %}{{ domain }} {% endfor %}{% endif %};
+    {%- endif %}
+
+    # Let's Encrypt challenge response uri
+    location ^~ /.well-known/acme-challenge {
+        default_type "text/plain";
+        root /var/www/letsencrypt-challenge-response;
+    }
+
+    location / {
+        # block crawler ( see ../nginx.conf )
+        if ($limit_bots = 1) {
+            return 403;
+        }
+        {% if NGINX_TLS_ONLY -%}
+        if ($real_scheme != "https") {
+            return 301 https://$host$request_uri;
+        }
+        {%- endif %}
+
+        # prevent SYN-flood
+        # limit concurrent connections per ip
+        limit_conn conn_limit_per_ip {{ NGINX_CONN_LIMIT_PER_IP }};
+        # limit requests per second per ip
+        limit_req zone=req_limit_per_ip burst={{ NGINX_REQ_LIMIT_PER_IP_BURST }};
+
+        # pass request to etherpad server
+        proxy_set_header     X-Forwarded-Proto   $real_scheme;
+        #proxy_redirect       off;
+        proxy_read_timeout   {{ NGINX_PROXY_READ_TIMEOUT }};
+        proxy_pass           http://etherpad;
+        proxy_set_header     Host                $http_host;
+        proxy_set_header     X-Real-IP           $proxy_add_x_forwarded_for;
+        proxy_set_header     X-Forwarded-For     $proxy_add_x_forwarded_for;
+        # strip 'Proxy' header (see httpoxy vulnerability)
+        proxy_set_header     Proxy               "";
+        proxy_pass_header    Server;
+        proxy_buffering      off;
+        proxy_http_version   1.1;  # recommended with keepalive connections
+        # WebSocket proxying - from http://nginx.org/en/docs/http/websocket.html
+        proxy_set_header     Upgrade             $http_upgrade;
+        proxy_set_header     Connection          $connection_upgrade;
+    }
+}
+
+# we're in the http context here
+map $http_upgrade $connection_upgrade {
+    default   upgrade;
+    ''        close;
+}
