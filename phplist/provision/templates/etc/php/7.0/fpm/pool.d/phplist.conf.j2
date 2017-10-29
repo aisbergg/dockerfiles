@@ -1,0 +1,13 @@
+[phplist]
+user = www-data
+group = www-data
+listen = /var/run/php7-fpm.sock
+listen.owner = www-data
+listen.group = www-data
+pm = ondemand
+
+; max children to be spawned
+pm.max_children = 10
+
+; idle time after which the children will be killed
+pm.process_idle_timeout = 10s;

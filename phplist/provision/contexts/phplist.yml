@@ -1,0 +1,227 @@
+---
+
+# Load Dynamic Nginx Modules
+NGINX_LOAD_NDK_HTTP_MODULE: True
+NGINX_LOAD_NGX_HTTP_LUA_MODULE: True
+NGINX_LOAD_NGX_HTTP_HEADERS_MORE_FILTER_MODULE: True
+
+# Handling bounces
+PHPLIST_BOUNCE_MAILBOX_HOST: "{{ PHPLIST_BOUNCE_MAILBOX_HOST | required('You need to specify the host for bounce mailbox!') }}"
+PHPLIST_BOUNCE_MAILBOX_USER: "{{ PHPLIST_BOUNCE_MAILBOX_USER | required('You need to specify the user for bounce mailbox!') }}"
+
+# Message sending options
+PHPLIST_SMTP_HOST: "{{ PHPLIST_SMTP_HOST | required('You need to specify the SMTP host!') }}"
+PHPLIST_SMTP_USER: "{{ PHPLIST_SMTP_USER | required('You need to specify the SMTP user!') }}"
+
+defaults:
+  ######################################
+  ## Nginx
+  ######################################
+  - NGINX_REDIRECT_TO_FIRST_DOMAIN: False
+  - NGINX_CONN_LIMIT_PER_IP: 10
+  - NGINX_REQ_LIMIT_PER_IP_RATE: 15
+  - NGINX_REQ_LIMIT_PER_IP_BURST: 25
+  - NGINX_FASTCGI_READ_TIMEOUT: 70
+  - NGINX_CLIENT_MAX_BODY_SIZE: "50M"
+  - NGINX_TLS_ONLY: True
+
+  ######################################
+  ## PHP
+  ######################################
+  - PHP_MAX_EXECUTION_TIME: 70
+  - PHP_MAX_INPUT_TIME: 30
+  - PHP_MEMORY_LIMIT: "80M"
+  - PHP_POST_MAX_SIZE: "50M"
+  - PHP_MAX_FILE_UPLOADS: 10
+
+  ######################################
+  ## phpList
+  ######################################
+  - PHPLIST_INSTALLATION_NAME: ""
+
+  # Language
+  - PHPLIST_LANGUAGE:
+    - "english"
+    - "afrikaans"
+    - "danish"
+    - "french"
+    - "italian"
+    - "portuguese_pt"
+    - "swedish"
+    - "arabic"
+    - "dutch"
+    - "german"
+    - "japanese"
+    - "swissgerman"
+    - "belgianflemish"
+    - "english-gaelic"
+    - "latinamerican"
+    - "romanian"
+    - "tchinese"
+    - "bulgarian"
+    - "greek"
+    - "norwegian"
+    - "russian"
+    - "turkish"
+    - "catalan"
+    - "english-usa"
+    - "hebrew"
+    - "persian"
+    - "serbian"
+    - "ukrainian"
+    - "croatian"
+    - "estonian"
+    - "hungarian"
+    - "polish"
+    - "slovenian"
+    - "usa"
+    - "czech"
+    - "finnish"
+    - "indonesian"
+    - "portuguese"
+    - "spanish"
+    - "vietnamese"
+  - PHPLIST_DEFAULT_SYSTEM_LANGUAGE:
+    - "en"
+    - "sq"
+    - "ar"
+    - "bg"
+    - "ca"
+    - "zh_CN"
+    - "zh_TW"
+    - "hr"
+    - "cs"
+    - "da"
+    - "nl"
+    - "nl_BE"
+    - "fr"
+    - "gl"
+    - "de"
+    - "el"
+    - "he"
+    - "hu"
+    - "is"
+    - "it"
+    - "ja"
+    - "lv"
+    - "lt"
+    - "nb"
+    - "fa"
+    - "pl"
+    - "pt"
+    - "pt_BR"
+    - "ro"
+    - "ro"
+    - "ru"
+    - "sr"
+    - "sk"
+    - "sl"
+    - "es"
+    - "es_AR"
+    - "sv"
+    - "tr"
+    - "vi"
+
+  # Database
+  - PHPLIST_DATABASE_HOST: "mysql"
+  - PHPLIST_DATABASE_NAME: "phplist"
+  - PHPLIST_DATABASE_USER: "phplist"
+  - PHPLIST_DATABASE_PASSWORD: ""
+  - PHPLIST_DATABASE_PORT: 3306
+  - PHPLIST_DATABASE_CONNECTION_COMPRESSION: False
+  - PHPLIST_DATABASE_CONNECTION_TLS:
+    - "false"
+    - "true"
+    - "skip-verify"
+  - PHPLIST_DATABASE_TABLE_PREFIX: ""
+  - PHPLIST_USERTABLE_PREFIX: "user_"
+
+  # Handling bounces
+  - PHPLIST_MESSAGE_ENVELOPE: ""
+  - PHPLIST_BOUNCE_PROTOCOL:
+    - "pop"
+    - "mbox"
+  - PHPLIST_BOUNCE_MAILBOX_PASSWORD: ""
+  - PHPLIST_BOUNCE_POP3_PORT: 587
+  - PHPLIST_BOUNCE_POP3_ENCRYPTION:
+    - "tls"
+    - "ssl"
+    - "false"
+  - PHPLIST_BOUNCE_POP3_CERT_VALIDATION:
+    - "validate-cert"
+    - "novalidate-cert"
+  - PHPLIST_BOUNCE_MAILBOX: "/var/spool/mail/listbounces"
+  - PHPLIST_BOUNCE_PURGE: True
+  - PHPLIST_BOUNCE_MAILBOX_PURGE_UNPROCESSED: False
+  - PHPLIST_BOUNCE_UNSUBSCRIBE_THRESHOLD: 5
+  - PHPLIST_BOUNCE_PROCESS_MANUALLY: False
+
+  # Security
+  - PHPLIST_REQUIRE_LOGIN: True
+  - PHPLIST_MAXLIST: 1
+  - PHPLIST_SILENT_RESUBSCRIBE: False
+  - PHPLIST_ASKFORPASSWORD: False
+  - PHPLIST_UNSUBSCRIBE_REQUIRES_PASSWORD: False
+  - PHPLIST_UNSUBSCRIBE_JUMPOFF: False
+
+  # Debugging
+  - PHPLIST_TEST: False
+  - PHPLIST_USE_SPAM_BLOCK: True
+  - PHPLIST_NOTIFY_SPAM: True
+
+  # Queue and Load management
+  - PHPLIST_MANUALLY_PROCESS_QUEUE: False
+  - PHPLIST_MAX_PROCESS_MESSAGE: 999
+  - PHPLIST_MAILQUEUE_BATCH_SIZE: 150
+  - PHPLIST_MAILQUEUE_BATCH_PERIOD: 3600
+  - PHPLIST_MAILQUEUE_THROTTLE: 1
+  - PHPLIST_MAILQUEUE_AUTOTHROTTLE: True
+  - PHPLIST_USE_DOMAIN_THROTTLE: True
+  - PHPLIST_DOMAIN_BATCH_SIZE: 1
+  - PHPLIST_DOMAIN_BATCH_PERIOD: 120
+  - PHPLIST_DOMAIN_AUTO_THROTTLE: False
+  - PHPLIST_MAX_PROCESSQUEUE_TIME: 0
+
+  # Miscellaneous
+  - PHPLIST_USE_PRECEDENCE_HEADER: True
+  - PHPLIST_ALLOW_NON_LIST_SUBSCRIBE: False
+  - PHPLIST_PREFERENCEPAGE_SHOW_PRIVATE_LISTS: False
+  - PHPLIST_WORDWRAP_HTML: False
+  - PHPLIST_USE_ADMIN_DETAILS_FOR_MESSAGES: False
+  - PHPLIST_USE_REPETITION: False
+  - PHPLIST_ERROR404PAGE: "404.html"
+
+  # Message sending options
+  - PHPLIST_SMTP_PORT: 587
+  - PHPLIST_SMTP_PASSWORT: ""
+  - PHPLIST_SMTP_ENCRYPTION:
+    - "tls"
+    - "ssl"
+    - "false"
+  - PHPLIST_SMTP_DEBUG: False
+  - PHPLIST_SMTP_TIMEOUT: 5
+
+  # Advanced Features, HTML editor, RSS, Attachments, Plugins. PDF creation
+  - PHPLIST_ALWAYS_ADD_USERTRACK: False
+  - PHPLIST_CLICKTRACK: False
+  - PHPLIST_CLICKTRACK_SHOWDETAIL: False
+  - PHPLIST_USE_MANUAL_TEXT_PART: True
+  - PHPLIST_ALLOW_ATTACHMENTS: False
+  - PHPLIST_FILESYSTEM_ATTACHMENTS: False
+  - PHPLIST_EXPORT_EXCEL: False
+
+  # Experimental Features
+  - PHPLIST_EMAIL_ADDRESS_VALIDATION_LEVEL:
+    - "2"
+    - "0"
+    - "1"
+    - "3"
+  - PHPLIST_SYSTEM_TIMEZONE: ""
+  - PHPLIST_HTTP_HOST: ""
+  - PHPLIST_USE_LIST_EXCLUDE: False
+  - PHPLIST_MESSAGEQUEUE_PREPARE: False
+  - PHPLIST_USE_ADVANCED_BOUNCEHANDLING: False
+  - PHPLIST_KEEPFORWARDERATTRIBUTES: False
+  - PHPLIST_FORWARD_EMAIL_COUNT: True
+  - PHPLIST_FORWARD_PERSONAL_NOTE_SIZE: False
+  - PHPLIST_FORWARD_ALTERNATIVE_CONTENT: False

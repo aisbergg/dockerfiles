@@ -1,0 +1,54 @@
+diff -rupN ui/dressprow/footer.inc ui_no-newsfeed/dressprow/footer.inc
+--- ui/dressprow/footer.inc	2017-02-13 13:38:12.000000000 +0100
++++ ui_no-newsfeed/dressprow/footer.inc	2017-05-07 17:18:44.361359177 +0200
+@@ -14,10 +14,6 @@
+             <?php print $languageswitcher; ?>
+         </div>
+ 	<div class="clear"></div>
+-        <div id="newsfeed" class="menutableright block">
+-            <h3><?php echo s('phpList community news'); ?></h3>
+-            <?php include 'communityfeed.php'; ?>
+-        </div>
+ 	</div><!-- end #right-bar -->
+ 	
+ 	<div class="clear"></div>
+diff -rupN ui/dressprow/footer_minified.inc ui_no-newsfeed/dressprow/footer_minified.inc
+--- ui/dressprow/footer_minified.inc	2017-02-13 13:38:12.000000000 +0100
++++ ui_no-newsfeed/dressprow/footer_minified.inc	2017-05-07 17:18:51.784671997 +0200
+@@ -14,10 +14,6 @@
+             <?php print $languageswitcher; ?>
+         </div>
+ 	<div class="clear"></div>
+-        <div id="newsfeed" class="menutableright block">
+-            <h3><?php echo s('phpList community news'); ?></h3>
+-            <?php include 'communityfeed.php'; ?>
+-        </div>
+ 	</div><!-- end #right-bar -->
+ </div> <!-- end #container -->
+ 	
+diff -rupN ui/phplist-ui-bootlist/footer.inc ui_no-newsfeed/phplist-ui-bootlist/footer.inc
+--- ui/phplist-ui-bootlist/footer.inc	2017-02-13 13:38:20.000000000 +0100
++++ ui_no-newsfeed/phplist-ui-bootlist/footer.inc	2017-05-07 17:10:09.356107628 +0200
+@@ -7,10 +7,6 @@
+ 
+ 
+ 	            <div class="clear"></div>
+-	            <div id="newsfeed" class="menutableright block">
+-	       			<h3><span class="glyphicon glyphicon-bullhorn text-danger"></span> <?php print s('phpList community news');?></h3>
+-					<?php include 'communityfeed.php'; ?>
+-				</div>
+ 		    </div>
+ 
+     	    <div id="footer">
+diff -rupN ui/phplist-ui-bootlist/footer_minified.inc ui_no-newsfeed/phplist-ui-bootlist/footer_minified.inc
+--- ui/phplist-ui-bootlist/footer_minified.inc	2017-02-13 13:38:20.000000000 +0100
++++ ui_no-newsfeed/phplist-ui-bootlist/footer_minified.inc	2017-05-07 17:24:20.377125245 +0200
+@@ -1,8 +1,4 @@
+ 	            <div class="clear"></div>
+-	            <div id="newsfeed" class="menutableright block">
+-	       			<h3><span class="glyphicon glyphicon-bullhorn text-danger"></span> <?php print s('phpList community news');?></h3>
+-					<?php include 'communityfeed.php'; ?>
+-				</div>
+ 		    </div>
+ 
+ 	        <div id="footer">

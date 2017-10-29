@@ -1,0 +1,110 @@
+# autogen true
+
+{% if NGINX_REDIRECT_TO_FIRST_DOMAIN and DOMAINNAMES is defined and DOMAINNAMES|length > 1 -%}
+server {
+    listen                 80;
+    listen                 [::]:80;
+    listen                 443 ssl {{ 'http2' if NGINX_HTTP_VERSION == "2.0" }};
+    listen                 [::]:443 ssl {{ 'http2' if NGINX_HTTP_VERSION == "2.0" }};
+    {% if DOMAINNAMES is defined -%}
+    server_name            {% for domain in DOMAINNAMES %}{% if not loop.first %}{{ domain }} {% endif %}{% endfor %};
+    {%- endif %}
+
+    location / {
+        return 301         $real_scheme://{{ DOMAINNAMES[0] }}$request_uri;
+    }
+
+    # Let's Encrypt challenge response uri
+    location ^~ /.well-known/acme-challenge {
+        default_type "text/plain";
+        root /var/www/letsencrypt-challenge-response;
+    }
+}
+
+{% endif -%}
+server {
+    listen                 80;
+    listen                 [::]:80;
+    listen                 443 ssl {{ 'http2' if NGINX_HTTP_VERSION == "2.0" }} default_server;
+    listen                 [::]:443 ssl {{ 'http2' if NGINX_HTTP_VERSION == "2.0" }};
+    {% if DOMAINNAMES is defined -%}
+    server_name            {% if NGINX_REDIRECT_TO_FIRST_DOMAIN %}{{ DOMAINNAMES[0] }}{% else %}{% for domain in DOMAINNAMES %}{{ domain }} {% endfor %}{% endif %};
+    {%- endif %}
+
+    root                   /var/www/phplist;
+    index                  index.php;
+
+    rewrite_by_lua_block {
+        -- apply rules to all requests, but not to challenge responses
+        if not string.match(ngx.var.request_uri, "^/%.well%-known/acme%-challenge") and
+                ngx.var.real_scheme ~= "https" then
+            {% if NGINX_TLS_ONLY -%}
+            -- redirect scheme to https
+            return ngx.redirect("https://" .. ngx.var.host .. ngx.var.request_uri, 301)
+            {% else -%}
+            -- rewrite scheme to https to enable encryption when accessing admin area
+            if string.match(ngx.var.request_uri, "^/admin") then
+                return ngx.redirect("https://" .. ngx.var.host .. ngx.var.request_uri, 301)
+            end
+            {%- endif %}
+        end
+    }
+
+    # Let's Encrypt challenge response uri
+    location ^~ /.well-known/acme-challenge {
+        default_type "text/plain";
+        root /var/www/letsencrypt-challenge-response;
+    }
+
+    # url with trailing slash
+    location ~ ^([^.\?]*[^/])$ {
+        return             301 $scheme://$host$request_uri/;
+    }
+
+    location / {
+        # prevent SYN-flood
+        # limit concurrent connections per ip
+        limit_conn conn_limit_per_ip {{ NGINX_CONN_LIMIT_PER_IP }};
+        # limit requests per second per ip
+        limit_req zone=req_limit_per_ip burst={{ NGINX_REQ_LIMIT_PER_IP_BURST }};
+
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    # disable logging and/or deny access
+    location = /robots.txt  { log_not_found off; }
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location ~ /\.          { access_log off; log_not_found off; deny all; }
+    location ~* \.(txt|log|inc)$ { allow 127.0.0.1; deny all; }
+
+    # client caching
+    location ~* \.(?:css|js|jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)$ {
+        expires                  1M;
+        more_set_headers         "Pragma: public";
+        more_set_headers         "Cache-Control: public, must-revalidate, proxy-revalidate";
+        access_log               off;
+    }
+
+    # block phplist config directory
+    location /config {
+        deny                     all;
+        return                   403;
+    }
+
+    # pass PHP to FastCGI
+    location ~* (index\.php|upload\.php|connector\.php|dl\.php|ut\.php|lt\.php|download\.php)$ {
+        try_files                $fastcgi_script_name =404;
+        fastcgi_split_path_info  ^(.|\.php)(/.+)$;
+        fastcgi_read_timeout     {{ NGINX_FASTCGI_READ_TIMEOUT }};
+        include                  /etc/nginx/fastcgi_params;
+        fastcgi_param            SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        fastcgi_intercept_errors on;
+        fastcgi_pass             unix:/var/run/php7-fpm.sock;
+    }
+
+    # block access to all other php files
+    location ~ \.php$ {
+        deny                     all;
+        return                   403;
+    }
+}
