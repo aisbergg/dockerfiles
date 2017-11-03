@@ -23,6 +23,7 @@ RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends &&\
         bzip2 \
         iputils-ping &&\
     `#----- install templating engine -----#` &&\
+    unset http_proxy https_proxy &&\
     pip install /tmp/Templer.tar.gz &&\
     chmod +x /entrypoint.sh &&\
     rm -rf /tmp/*
