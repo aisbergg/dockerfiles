@@ -102,7 +102,7 @@ server {
     fastcgi_cache_use_stale error timeout invalid_header http_500;
     fastcgi_ignore_headers Cache-Control Expires Set-Cookie;
 
-    # pass PHP to FastCGI
+    # pass PHP scripts to PHP-FPM
     location ~ ^/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+|core/templates/40[34])\.php(?:$|/) {
         fastcgi_split_path_info  ^(.+\.php)(/.+)$;
         fastcgi_read_timeout     {{ NGINX_FASTCGI_READ_TIMEOUT }};

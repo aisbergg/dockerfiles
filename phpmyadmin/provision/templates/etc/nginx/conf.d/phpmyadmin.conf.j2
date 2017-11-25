@@ -67,7 +67,7 @@ server {
     location = /favicon.ico { access_log off; log_not_found off; }
     location ~ /\.          { access_log off; log_not_found off; deny all; }
 
-    # pass PHP to FastCGI
+    # pass PHP scripts to PHP-FPM
     location ~ ^(.+\.php)(.*)$ {
         try_files                $fastcgi_script_name =404;
         fastcgi_split_path_info  ^(.+\.php)(.*)$;

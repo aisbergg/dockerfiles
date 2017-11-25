@@ -89,7 +89,7 @@ server {
         return                   403;
     }
 
-    # pass PHP to FastCGI
+    # pass PHP scripts to PHP-FPM
     location ~* (index\.php|upload\.php|connector\.php|dl\.php|ut\.php|lt\.php|download\.php)$ {
         try_files                $fastcgi_script_name =404;
         fastcgi_split_path_info  ^(.|\.php)(/.+)$;
