@@ -1,5 +1,4 @@
 #!/bin/bash
-# configure nginx webserver
 
 # exit on errors
 set -e
@@ -15,8 +14,8 @@ if [[ `standardise_bool "$NGINX_TLS_TERMINATED" True` == False ]]; then
     fi
 
     # if NGINX_TLS_CERT and NGINX_TLS_KEY are not specified set default value
-    if [ -z "$NGINX_TLS_CERT" ]; then export NGINX_TLS_CERT="/etc/ssl/private/cert.pem"; fi
-    if [ -z "$NGINX_TLS_KEY" ]; then export NGINX_TLS_KEY="/etc/ssl/private/key.pem"; fi
+    export NGINX_TLS_CERT=${NGINX_TLS_CERT:-"/etc/ssl/private/cert.pem"}
+    export NGINX_TLS_KEY=${NGINX_TLS_KEY:-"/etc/ssl/private/key.pem"}
 
     # TLS certificate and key
     if [[ ! -f "$NGINX_TLS_CERT" && ! -f "$NGINX_TLS_KEY" ]]; then
