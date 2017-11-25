@@ -4,9 +4,7 @@ server {
     listen                 [::]:80;
     listen                 443 ssl {{ 'http2' if NGINX_HTTP_VERSION == "2.0" }};
     listen                 [::]:443 ssl {{ 'http2' if NGINX_HTTP_VERSION == "2.0" }};
-    {% if DOMAINNAMES is defined -%}
     server_name            {% for domain in DOMAINNAMES %}{% if not loop.first %}{{ domain }} {% endif %}{% endfor %};
-    {%- endif %}
 
     location / {
         return 301         $real_scheme://{{ DOMAINNAMES[0] }}$request_uri;
