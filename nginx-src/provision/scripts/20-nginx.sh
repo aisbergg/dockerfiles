@@ -9,9 +9,7 @@ print_info "Configuring Nginx"
 if [[ `standardise_bool "$NGINX_TLS_TERMINATED" True` == False ]]; then
     if [[ ! -f "/etc/ssl/private/dhparam.pem" ]]; then
         # create Diffie-Hellman parameter for forward secrecy
-        if [ -z "${NGINX_DH_SIZE}" ]; then
-            NGINX_DH_SIZE="2048"
-        fi
+        NGINX_DH_SIZE=${NGINX_DH_SIZE:-512}
         print_info "Generating ${NGINX_DH_SIZE}bit Diffie-Hellman-Parameter (May take a long time)..."
         openssl dhparam -out /etc/ssl/private/dhparam.pem "$NGINX_DH_SIZE" > /dev/null
     fi
