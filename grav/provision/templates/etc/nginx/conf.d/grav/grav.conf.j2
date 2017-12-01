@@ -94,9 +94,6 @@ server {
         fastcgi_index            index.php;
         fastcgi_read_timeout     {{ NGINX_FASTCGI_READ_TIMEOUT }};
         include                  /etc/nginx/fastcgi_params;
-        #Avoid sending the security headers twice
-        fastcgi_param            modHeadersAvailable true;
-        fastcgi_param            front_controller_active true;
         fastcgi_param            SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_param            PATH_INFO $fastcgi_path_info;
         fastcgi_pass             unix:/var/run/php7-fpm.sock;
