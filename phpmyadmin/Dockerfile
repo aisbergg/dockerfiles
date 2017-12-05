@@ -1,11 +1,11 @@
-# aisberg/phpmyadmin aisberg/phpmyadmin:4.7.5
+# aisberg/phpmyadmin aisberg/phpmyadmin:4.7.6
 FROM aisberg/nginx-php7
 
 LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
-    Version=2.9 \
+    Version=2.10 \
     Comment="PhpMyAdmin is an open-source web frontend for MySQL and MariaDB databases. (https://www.phpmyadmin.net/)"
 
-ENV PHPMYADMIN_VERSION=4.7.5 \
+ENV PHPMYADMIN_VERSION=4.7.6 \
     PGP_KEY_ID=3D06A59ECE730EB71B511C17CE752F178259BD92
 
 RUN wget -q "https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz" -O /usr/local/src/phpmyadmin.tar.gz &&\
