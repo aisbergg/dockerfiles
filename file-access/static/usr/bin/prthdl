@@ -1,0 +1,42 @@
+#!/bin/bash
+
+#################################
+# main
+#################################
+
+USAGE="Usage: $0 [OPTIONS] TYPE MESSAGE
+
+Print a colorful headline
+
+  -h, --help           Prints this help
+
+TYPE can be one of: ERROR, WARN, INFO, SUCCESS (default INFO)"
+
+if [[ $# < 2 ]]; then
+    echo "$USAGE"
+    exit 1
+elif [[ "$1" == -h || "$1" == --help ]]; then
+    echo "$USAGE"
+    exit 0
+fi
+
+log_level="$1"
+shift
+
+# format string
+input_str="$@"
+term_cols=$(tput cols)
+let spaces_count=$term_cols-${#input_str}
+str="$(eval "printf '#'%.0s {1..$term_cols}")
+#>>>"
+let leading_spaces_count=($spaces_count/2-4)
+let trailing_spaces_count=$spaces_count-$leading_spaces_count-8
+str+="$(eval "printf ' '%.0s {1..$leading_spaces_count}")"
+str+="$input_str"
+str+="$(eval "printf ' '%.0s {1..$trailing_spaces_count}")"
+str+="<<<#
+"
+str+="$(eval "printf '#'%.0s {1..$term_cols}")"
+
+# printing the formatted message
+prtmsg $log_level "$str"

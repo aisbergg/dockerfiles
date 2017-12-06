@@ -1,0 +1,367 @@
+#!/bin/bash
+
+# console output colors
+C_INFO=`tput setaf 4`
+C_OK=`tput setaf 2`
+C_WARN=`tput setaf 3`
+C_ERROR=`tput setaf 1`
+C_RESET=`tput sgr0`
+
+function get_containers() {
+    # $1 boolean: true for full container name
+    IFS=', ' read -ra ret <<< "$CONTAINERS_IN_SAME_COMPOSITION"
+    if [[ "$1" == "true" ]]; then
+        for (( i = 0; i < ${#ret[@]}; i++ )); do
+            ret[$i]="${COMPOSITION_NAME}_${ret[$i]}"
+        done
+    fi
+}
+
+function function_container_list() {
+    local USAGE="Usage: container list [OPTIONS]
+
+Lists all connected containers.
+
+  -h, --help           Prints this help
+  -f, --full-name      Prints the full name of the container"
+
+    local fullname
+    while [[ $# > 0 ]] ; do
+        key="$1"
+        case $key in
+            -h|--help)
+                echo "$USAGE"
+                return 0
+                ;;
+            -f|--full-name)
+                fullname=true
+                shift 1
+                ;;
+            *) # unknown flag
+                prtmsg ERROR "Unknown flag: $1"
+                return 1
+                ;;
+        esac
+    done
+
+    if [ "$fullname" == true ]; then
+        get_containers true
+    else
+        get_containers
+    fi
+    for c in "${ret[@]}"; do
+        echo "$c"
+    done
+}
+
+function function_container_exists() {
+    # $1 == container to check
+    local available_containers="$(container list)"
+    while read line
+    do
+    if [ "$line" == "$1" ]; then
+        return 0
+    fi
+    done <<< "$available_containers"
+    return 1
+}
+
+function function_supervisor_call() {
+    # $1 == container name (short form)
+    # $@ == supervisorctl command
+
+    local host="$(echo ${COMPOSITION_NAME}_$1 | tr '[:upper:]' '[:lower:]')"
+    shift 1
+    supervisorctl -s http://${host}:9001 -u "$SUPERVISOR_USER" -p "$SUPERVISOR_PW" $@
+}
+
+function function_container_logs() {
+    local USAGE="Usage: container logs [OPTIONS] CONTAINER APPLICATION [stdout|stderr] (default stdout)
+
+Returns the stdout or stderr from a specific application running inside a container. Use 'container status CONTAINER' to get a list of the available applications.
+
+  -f, --follow         Continuous tail of named application
+  -h, --help           Prints this help"
+
+    local container_name
+    local application
+    local stream
+    local follow
+    while [[ $# > 0 ]] ; do
+        case "$1" in
+            -f|--follow)
+                follow="-f"
+                shift 1
+                ;;
+            -h|--help)
+                echo "$USAGE"
+                return 0
+                ;;
+            *)
+                break
+                ;;
+        esac
+    done
+    container_name="$1"
+    shift 1
+    application="$1"
+    shift 1
+    stream="$1"
+    if [[ "$stream" != "stdout" && "$stream" != "stderr" ]]; then
+        stream="stdout"
+    fi
+
+    if [[ -n "$container_name"  || -n "$application" ]]; then
+        # check if given container exists
+        if function_container_exists "$container_name"; then
+            function_supervisor_call $container_name tail $follow "$application" $stream
+            if [[ $? != 0 ]]; then
+                prtmsg ERROR "Failed to get logs for programs in container '$container_name'"
+                return 1
+            fi
+            return 0;
+        else
+            prtmsg ERROR "Container '${container_name}' does not exist!"
+            return 1
+        fi
+    fi
+
+    echo "$USAGE"
+    return 0
+}
+
+function function_container_restart() {
+    local USAGE="Usage: container restart [OPTIONS] CONTAINER
+
+Restarts the applications inside a container.
+
+  -h, --help           Prints this help"
+
+    local container_name
+    while [[ $# > 0 ]] ; do
+        case "$1" in
+            -h|--help)
+                echo "$USAGE"
+                return 0
+                ;;
+            *)
+                container_name="$1"
+                break;
+                ;;
+        esac
+    done
+
+    if [ -n "$container_name" ]; then
+        # check if given container exists
+        if function_container_exists "$container_name"; then
+            if function_supervisor_call $container_name restart all; then
+                prtmsg SUCCESS "Successfully restarted programs in container '$container_name'"
+                return 0
+            else
+                prtmsg ERROR "Failed to restart programs in container '$container_name'"
+                return 1
+            fi
+        else
+            prtmsg ERROR "Container '${container_name}' does not exist!"
+            return 1
+        fi
+    fi
+
+    echo "$USAGE"
+    return 0
+}
+
+function function_container_start() {
+    local USAGE="Usage: container start [OPTIONS] CONTAINER
+
+Starts the applications inside a container.
+
+  -h, --help           Prints this help"
+
+    local container_name
+    while [[ $# > 0 ]] ; do
+        case "$1" in
+            -h|--help)
+                echo "$USAGE"
+                return 0
+                ;;
+            *)
+                container_name="$1"
+                break;
+                ;;
+        esac
+    done
+
+    if [ -n "$container_name" ]; then
+        # check if given container exists
+        if function_container_exists "$container_name"; then
+            if function_supervisor_call $container_name start all; then
+                prtmsg SUCCESS "Successfully started programs in container '$container_name'"
+                return 0
+            else
+                prtmsg ERROR "Failed to start programs in container '$container_name'"
+                return 1
+            fi
+        else
+            prtmsg ERROR "Container '${container_name}' does not exist!"
+            return 1
+        fi
+    fi
+
+    echo "$USAGE"
+    return 0
+}
+
+function function_container_status() {
+    local USAGE="Usage: container status [OPTIONS] CONTAINER
+
+Prints information about the applications running in a container.
+
+  -h, --help           Prints this help"
+
+    local container_name
+    while [[ $# > 0 ]] ; do
+        case "$1" in
+            -h|--help)
+                echo "$USAGE"
+                return 0
+                ;;
+            *)
+                container_name="$1"
+                break;
+                ;;
+        esac
+    done
+
+    if [ -n "$container_name" ]; then
+        # check if given container exists
+        if function_container_exists "$container_name"; then
+            if function_supervisor_call $container_name status; then
+                return 0
+            else
+                prtmsg ERROR "Failed to query status information of container '$container_name'"
+                return 1
+            fi
+        else
+            prtmsg ERROR "Container '${container_name}' does not exist!"
+            return 1
+        fi
+    fi
+
+    echo "$USAGE"
+    return 0
+}
+
+function function_container_stop() {
+    local USAGE="Usage: container stop [OPTIONS] CONTAINER
+
+Stops the applications inside a container.
+
+  -h, --help           Prints this help"
+
+    local container_name
+    while [[ $# > 0 ]] ; do
+        case "$1" in
+            -h|--help)
+                echo "$USAGE"
+                return 0
+                ;;
+            *)
+                container_name="$1"
+                break;
+                ;;
+        esac
+    done
+
+    if [ -n "$container_name" ]; then
+        # check if given container exists
+        if function_container_exists "$container_name"; then
+            if function_supervisor_call $container_name stop all; then
+                prtmsg SUCCESS "Successfully stopped programs in container '$container_name'"
+                return 0
+            else
+                prtmsg ERROR "Failed to stop programs in container '$container_name'"
+                return 1
+            fi
+        else
+            prtmsg ERROR "Container '${container_name}' does not exist!"
+            return 1
+        fi
+    fi
+
+    echo "$USAGE"
+    return 0
+}
+
+#################################
+# main
+#################################
+USAGE="Usage: container [OPTIONS] COMMAND
+Prints help screen for '$CONTAINER_TYPE' container
+
+Options
+
+  -h, --help           Prints this help
+
+Commands:
+
+    list       Lists all connected containers.
+    logs       Returns the stdout or stderr from a specific application running inside a container.
+    restart    Restarts the applications inside a container.
+    start      Starts the applications inside a container.
+    status     Prints information about the applications running in a container.
+    stop       Stops the applications inside a container."
+
+while [[ $# > 0 ]] ; do
+    case "$1" in
+        -h|--help)
+            echo "$USAGE"
+            exit 0
+            ;;
+        list)
+            command=list
+            shift 1
+            break;
+            ;;
+        logs)
+            command=logs
+            shift 1
+            break;
+            ;;
+        restart)
+            command=restart
+            shift 1
+            break;
+            ;;
+        start)
+            command=start
+            shift 1
+            break;
+            ;;
+        status)
+            command=status
+            shift 1
+            break;
+            ;;
+        stop)
+            command=stop
+            shift 1
+            break;
+            ;;
+        *) # unknown flag
+            echo "Unknown flag: $1"
+            exit 1
+            ;;
+    esac
+done
+
+if [ -n "$command" ]; then
+    if eval "function_container_${command}" "$@"; then
+        exit 0
+    else
+        exit 1
+    fi
+fi
+
+echo "$USAGE"
+exit 0

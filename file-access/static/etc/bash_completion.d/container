@@ -1,0 +1,127 @@
+#!/bin/bash
+# bash completion file for container commands
+
+
+# Transforms a multiline list of options into an extglob pattern
+# suitable for use in case statements.
+_container_list() {
+	local var=($(container list))
+    echo "${var[@]}"
+}
+
+# global options
+_container_container() {
+	local boolean_options="--help -h"
+	case "$cur" in
+		-*)
+			COMPREPLY=( $( compgen -W "$boolean_options" -- "$cur" ) )
+			;;
+		*)
+			COMPREPLY=( $( compgen -W "${commands[*]}" -- "$cur" ) )
+			;;
+	esac
+}
+
+_container_logs() {
+    local boolean_options="--follow -f --help -h"
+	case "$cur" in
+		-*)
+			COMPREPLY=( $( compgen -W "$boolean_options" -- "$cur" ) )
+			;;
+		*)
+			COMPREPLY=( $(compgen -W "$(_container_list)" -- "$cur") )
+			;;
+	esac
+}
+
+_container_start() {
+    local boolean_options="--help -h"
+	case "$cur" in
+		-*)
+			COMPREPLY=( $( compgen -W "$boolean_options" -- "$cur" ) )
+			;;
+		*)
+			COMPREPLY=( $(compgen -W "$(_container_list)" -- "$cur") )
+			;;
+	esac
+}
+
+_container_restart() {
+    local boolean_options="--help -h"
+	case "$cur" in
+		-*)
+			COMPREPLY=( $( compgen -W "$boolean_options" -- "$cur" ) )
+			;;
+		*)
+			COMPREPLY=( $(compgen -W "$(_container_list)" -- "$cur") )
+			;;
+	esac
+}
+
+_container_stop() {
+	local boolean_options="--help -h"
+	case "$cur" in
+		-*)
+			COMPREPLY=( $( compgen -W "$boolean_options" -- "$cur" ) )
+			;;
+		*)
+			COMPREPLY=( $(compgen -W "$(_container_list)" -- "$cur") )
+			;;
+	esac
+}
+
+_container_status() {
+    local boolean_options="--help -h"
+	case "$cur" in
+		-*)
+			COMPREPLY=( $( compgen -W "$boolean_options" -- "$cur" ) )
+			;;
+		*)
+			COMPREPLY=( $(compgen -W "$(_container_list)" -- "$cur") )
+			;;
+	esac
+}
+
+_container() {
+	local previous_extglob_setting=$(shopt -p extglob)
+	shopt -s extglob
+
+	local commands=(
+		"list"
+        "logs"
+        "restart"
+        "start"
+        "status"
+		"stop"
+	)
+
+	COMPREPLY=()
+	local cur prev words cword
+	_get_comp_words_by_ref -n : cur prev words cword
+
+	local command='container' command_pos=0
+	local counter=1
+	while [ $counter -lt $cword ]; do
+		case "${words[$counter]}" in
+			-*)
+				;;
+			=)
+				(( counter++ ))
+				;;
+			*)
+				command="${words[$counter]}"
+				command_pos=$counter
+				break
+				;;
+		esac
+		(( counter++ ))
+	done
+
+	local completions_func=_container_${command}
+	declare -F $completions_func >/dev/null && $completions_func
+
+	eval "$previous_extglob_setting"
+	return 0
+}
+
+complete -F _container container
