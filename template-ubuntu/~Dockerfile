@@ -1,4 +1,7 @@
-ENV TERM=xterm \
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8 \
+    TERM=xterm \
     DEBIAN_FRONTEND=noninteractive
 
 COPY Templer.tar.gz /tmp/Templer.tar.gz
@@ -7,21 +10,25 @@ COPY entrypoint.sh /entrypoint.sh
 RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends &&\
     echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends &&\
     apt-get update &&\
+    `#----- generate locales -----#` &&\
+    apt-get install -y locales &&\
+    locale-gen en_US.UTF-8 &&\
+    `#----- install essential packages -----#` &&\
     apt-get install -y \
-        python2.7 \
-        python-setuptools \
-        python-pip \
-        python-yaml \
-        supervisor \
-        dirmngr \
-        vim.tiny \
-        nano \
-        ca-certificates \
-        wget \
-        unzip \
-        xz-utils \
         bzip2 \
-        iputils-ping &&\
+        ca-certificates \
+        dirmngr \
+        iputils-ping \
+        nano \
+        python-pip \
+        python-setuptools \
+        python-yaml \
+        python2.7 \
+        supervisor \
+        unzip \
+        vim.tiny \
+        wget \
+        xz-utils &&\
     `#----- install templating engine -----#` &&\
     unset http_proxy https_proxy &&\
     pip install /tmp/Templer.tar.gz &&\
