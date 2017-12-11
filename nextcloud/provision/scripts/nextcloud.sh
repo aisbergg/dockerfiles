@@ -62,6 +62,9 @@ elif [[ `standardise_bool "$AUTO_UPDATE"` == "True" ]]; then
         if [ -f /var/www/nextcloud/favicon.ico ]; then
             cp /var/www/nextcloud/favicon.ico ./favicon.ico
         fi
+        if [ -f /var/www/nextcloud/.user.ini ]; then
+            cp /var/www/nextcloud/.user.ini ./.user.ini
+        fi
 
         # place everything back into /var/www/nextcloud
         shopt -s dotglob
