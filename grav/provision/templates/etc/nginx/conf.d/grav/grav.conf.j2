@@ -107,5 +107,6 @@ server {
         more_set_headers         "Pragma: public";
         more_set_headers         "Cache-Control: public, must-revalidate, proxy-revalidate";
         access_log               off;
+        try_files $uri /index.php?$query_string;
     }
 }
