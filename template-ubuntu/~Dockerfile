@@ -1,18 +1,20 @@
-ENV LANG=en_US.UTF-8 \
-    LANGUAGE=en_US:en \
-    LC_ALL=en_US.UTF-8 \
-    TERM=xterm \
+ARG language=en_US.UTF-8
+
+ENV TERM=xterm \
     DEBIAN_FRONTEND=noninteractive
 
 COPY Templer.tar.gz /tmp/Templer.tar.gz
 COPY entrypoint.sh /entrypoint.sh
 
-RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends &&\
+RUN chmod +x /entrypoint.sh &&\
+    echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends &&\
     echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends &&\
     apt-get update &&\
     `#----- generate locales -----#` &&\
     apt-get install -y locales &&\
-    locale-gen en_US.UTF-8 &&\
+    sed -i -e "s/# $language/$language/" /etc/locale.gen &&\
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale language=$language &&\
     `#----- install essential packages -----#` &&\
     apt-get install -y \
         bzip2 \
@@ -32,7 +34,10 @@ RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends &&\
     `#----- install templating engine -----#` &&\
     unset http_proxy https_proxy &&\
     pip install /tmp/Templer.tar.gz &&\
-    chmod +x /entrypoint.sh &&\
+    `#----- cleanup -----#` &&\
     rm -rf /tmp/*
+
+ENV LANG=$language \
+    LC_ALL=$language
 
 ENTRYPOINT ["/entrypoint.sh", "container_start"]
