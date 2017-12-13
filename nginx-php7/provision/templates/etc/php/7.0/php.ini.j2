@@ -172,7 +172,7 @@
 ; php.ini Options  ;
 ;;;;;;;;;;;;;;;;;;;;
 ; Name for user-defined php.ini (.htaccess) files. Default is ".user.ini"
-user_ini.filename = ".user.ini"
+{{ '' if PHP_USER_INI_ENABLED else ';' }}user_ini.filename = ".user.ini"
 
 ; To disable this feature set this option to empty value
 ;user_ini.filename =
@@ -662,7 +662,14 @@ auto_globals_jit = On
 ; Its value may be 0 to disable the limit. It is ignored if POST data reading
 ; is disabled through enable_post_data_reading.
 ; http://php.net/post-max-size
-post_max_size = {{ PHP_POST_MAX_SIZE }}
+{% macro add_16mb(value) -%}
+  {% if value.endswith('G') -%}
+    {{ value[:-1]|int * 1024 + 16 }}M
+  {%- else -%}
+    {{ value[:-1]|int  + 16 }}M
+  {%- endif %}
+{%- endmacro %}
+post_max_size = {{ add_16mb(PHP_POST_MAX_SIZE | default(MAX_UPLOAD_FILESIZE) | upper) }}
 
 ; Automatically add files before PHP document.
 ; http://php.net/auto-prepend-file
@@ -815,7 +822,7 @@ upload_tmp_dir = /var/cache/php/tmp
 
 ; Maximum allowed size for uploaded files.
 ; http://php.net/upload-max-filesize
-upload_max_filesize = {{ PHP_POST_MAX_SIZE }}
+upload_max_filesize = {{ PHP_UPLOAD_MAX_FILESIZE | default(MAX_UPLOAD_FILESIZE) | upper }}
 
 ; Maximum number of files that can be uploaded via a single request
 max_file_uploads = {{ PHP_MAX_FILE_UPLOADS }}

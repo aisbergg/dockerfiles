@@ -17,9 +17,10 @@ defaults:
   - NGINX_CONN_LIMIT_PER_IP: 15
   - NGINX_REQ_LIMIT_PER_IP_RATE: 20
   - NGINX_REQ_LIMIT_PER_IP_BURST: 40
-  - NGINX_FASTCGI_READ_TIMEOUT: 1200
-  - NGINX_CLIENT_MAX_BODY_SIZE: "5120M"
-  - NGINX_CLIENT_BODY_BUFFER_SIZE: 16384
+  - NGINX_FASTCGI_READ_TIMEOUT: 3600
+  # infos on uploading big files: https://github.com/owncloud/core/issues/14166#issuecomment-74427889
+  - MAX_UPLOAD_FILESIZE: 5120M
+  - NGINX_CLIENT_BODY_BUFFER_SIZE: 16384k
   - NGINX_TLS_ONLY: true
 
   ######################################
@@ -28,11 +29,12 @@ defaults:
   - PHP_MAX_CHILDREN: 50
   - PHP_MIN_SPARE_SERVERS: 1
   - PHP_MAX_SPARE_SERVERS: 5
-  - PHP_MAX_EXECUTION_TIME: 720
-  - PHP_MAX_INPUT_TIME: 720
-  - PHP_MEMORY_LIMIT: "180M"
-  - PHP_POST_MAX_SIZE: "5120M"
+  - PHP_MAX_EXECUTION_TIME: 1800
+  - PHP_MAX_INPUT_TIME: 3600
+  - PHP_MEMORY_LIMIT: "300M"
   - PHP_OUTPUT_BUFFERING: 0
+  # ignore `.user.ini` created by Nextcloud
+  - PHP_USER_INI_ENABLED: false
 
   # defaults for OPCache
   - OPCACHE_ENABLE: 1

@@ -22,7 +22,7 @@ defaults:
   - NGINX_REQ_LIMIT_PER_IP_RATE: 15
   - NGINX_REQ_LIMIT_PER_IP_BURST: 25
   - NGINX_FASTCGI_READ_TIMEOUT: 70
-  - NGINX_CLIENT_MAX_BODY_SIZE: "50M"
+  - MAX_UPLOAD_FILESIZE: 50M
   - NGINX_TLS_ONLY: True
 
   ######################################
@@ -31,7 +31,6 @@ defaults:
   - PHP_MAX_EXECUTION_TIME: 70
   - PHP_MAX_INPUT_TIME: 30
   - PHP_MEMORY_LIMIT: "80M"
-  - PHP_POST_MAX_SIZE: "50M"
   - PHP_MAX_FILE_UPLOADS: 10
 
   ######################################

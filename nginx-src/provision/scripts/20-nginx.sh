@@ -35,3 +35,8 @@ if [[ `standardise_bool "$NGINX_TLS_TERMINATED" True` == False ]]; then
         print_info "Using existing TLS key and certificate"
     fi
 fi
+
+# temporary path to store large client bodies
+mkdir -p /var/nginx/client_body_temp
+chown www-data:www-data /var/nginx/client_body_temp
+chmod 0750 /var/nginx/client_body_temp

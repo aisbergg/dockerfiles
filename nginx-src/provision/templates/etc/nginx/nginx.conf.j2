@@ -66,7 +66,7 @@ http {
     default_type             application/octet-stream;
 
     # maximal allowed size of the client request body
-    client_max_body_size     {{ NGINX_CLIENT_MAX_BODY_SIZE }};
+    client_max_body_size     {{ NGINX_CLIENT_MAX_BODY_SIZE | default(MAX_UPLOAD_FILESIZE) }};
 
     ignore_invalid_headers   on;
     types_hash_max_size      2048;
@@ -102,13 +102,14 @@ http {
     send_timeout             {{ NGINX_SEND_TIMEOUT }};
 
     # buffer for reading a client request header
-    client_header_buffer_size {{ NGINX_CLIENT_HEADER_BUFFER_SIZE }}k;
+    client_header_buffer_size {{ NGINX_CLIENT_HEADER_BUFFER_SIZE }};
 
-    large_client_header_buffers  {{ NGINX_LARGE_CLIENT_HEADER_BUFFERS_NUMBER }} {{ NGINX_LARGE_CLIENT_HEADER_BUFFERS_SIZE }}k;
+    large_client_header_buffers  {{ NGINX_LARGE_CLIENT_HEADER_BUFFERS_NUMBER }} {{ NGINX_LARGE_CLIENT_HEADER_BUFFERS_SIZE }};
     # when a request body is larger than the buffer size, it is written to a temporary file
-    client_body_buffer_size  {{ NGINX_CLIENT_BODY_BUFFER_SIZE }}k;
+    client_body_buffer_size  {{ NGINX_CLIENT_BODY_BUFFER_SIZE }};
+    client_body_temp_path    /var/nginx/client_body_temp;
     # buffers used for reading a response from a disk.
-    output_buffers           {{ NGINX_OUTPUT_BUFFERS_NUMBER }} {{ NGINX_OUTPUT_BUFFERS_SIZE }}k;
+    output_buffers           {{ NGINX_OUTPUT_BUFFERS_NUMBER }} {{ NGINX_OUTPUT_BUFFERS_SIZE }};
     # transmission of client data will be postponed until nginx has at least size bytes of data to send
     postpone_output          {{ NGINX_POSTPONE_OUTPUT }};
 

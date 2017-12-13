@@ -172,7 +172,7 @@
 ; php.ini Options  ;
 ;;;;;;;;;;;;;;;;;;;;
 ; Name for user-defined php.ini (.htaccess) files. Default is ".user.ini"
-user_ini.filename = ".user.ini"
+{{ '' if PHP_USER_INI_ENABLED else ';' }}user_ini.filename = ".user.ini"
 
 ; To disable this feature set this option to empty value
 ;user_ini.filename =
@@ -826,7 +826,7 @@ upload_tmp_dir = /var/cache/php/tmp
 
 ; Maximum allowed size for uploaded files.
 ; http://php.net/upload-max-filesize
-upload_max_filesize = {{ PHP_POST_MAX_SIZE }}
+upload_max_filesize = {{ PHP_UPLOAD_MAX_FILESIZE }}
 
 ; Maximum number of files that can be uploaded via a single request
 max_file_uploads = {{ PHP_MAX_FILE_UPLOADS }}
