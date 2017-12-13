@@ -30,10 +30,15 @@ EOF
     chmod 0400 /etc/supervisor/conf.d/webdav-sync-parameter/${number}.env
 }
 
-mkdir -p /etc/supervisor/conf.d/webdav-sync-parameter
-chown www-data:www-data /etc/supervisor/conf.d/webdav-sync-parameter
-c=1
-while [[ -n "`val WEBDAV_REMOTE_URL $c`" ]]; do
-    add_parameters_file $c "`val WEBDAV_LOCAL_PATH $c`" "`val WEBDAV_REMOTE_URL $c`" "`val WEBDAV_USER $c`" "`val WEBDAV_PASSWORD $c`" "`val WEBDAV_EXCLUDES $c`" "`val WEBDAV_UNSYNCED_FOLDERS $c`" "`val WEBDAV_SYNC_INTERVAL $c $WEBDAV_SYNC_INTERVAL`" $WEBDAV_PRINT_LOG
-    let "c++"
-done
+if [[ -n "`val WEBDAV_REMOTE_URL 1`" ]]; then
+    mkdir -p /etc/supervisor/conf.d/webdav-sync-parameter
+    chown www-data:www-data /etc/supervisor/conf.d/webdav-sync-parameter
+    c=1
+    while [[ -n "`val WEBDAV_REMOTE_URL $c`" ]]; do
+        add_parameters_file $c "`val WEBDAV_LOCAL_PATH $c`" "`val WEBDAV_REMOTE_URL $c`" "`val WEBDAV_USER $c`" "`val WEBDAV_PASSWORD $c`" "`val WEBDAV_EXCLUDES $c`" "`val WEBDAV_UNSYNCED_FOLDERS $c`" "`val WEBDAV_SYNC_INTERVAL $c $WEBDAV_SYNC_INTERVAL`" $WEBDAV_PRINT_LOG
+        let "c++"
+    done
+else
+    # disable webdav-sync process
+    mv /provision/templates/etc/supervisor/conf.d/webdav-sync.conf /provision/templates/etc/supervisor/conf.d/webdav-sync.conf.disabled
+fi
