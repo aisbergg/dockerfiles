@@ -38,13 +38,13 @@ function print_error() {
 }
 
 function convert_to_upper_case() {
-    # Converts a string to uppercase.
+    # Converts a string to upper case.
     # Usage: string=`convert_to_upper_case "$string"`
     echo "$1" | tr '[:lower:]' '[:upper:]'
 }
 
 function convert_to_lower_case() {
-    # Converts a string to lowercase.
+    # Converts a string to lower case.
     # Usage: string=`convert_to_lower_case "$string"`
     echo "$1" | tr '[:upper:]' '[:lower:]'
 }
@@ -257,7 +257,7 @@ if [[ ! "$debug_mode" == True || "$provision" == True ]]; then
     if [ -d /provision ]; then
         # fix permissions
         find /provision -type f -exec chmod 0664 {} +
-        find /provision -type d -exec chmod 0775 {} + 
+        find /provision -type d -exec chmod 0775 {} +
 
         # execute individual provision scripts (bash or python);
         # files ending with *.post.{sh,py} will be executed later on
