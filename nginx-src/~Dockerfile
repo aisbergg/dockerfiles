@@ -1,10 +1,13 @@
 # aisberg/nginx
 FROM ubuntu:17.04
-MAINTAINER Andre Lehmann <aisberg@posteo.de>
 
 # included from template-ubuntu ------------------------------------------------
 INCLUDE ../template-ubuntu
 #-------------------------------------------------------------------------------
+
+LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
+    Version=3.0 \
+    Description="Nginx is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server (http://nginx.org)"
 
 RUN echo "deb http://archive.ubuntu.com/ubuntu/ zesty main universe\ndeb http://archive.ubuntu.com/ubuntu/ zesty-updates main universe\ndeb http://archive.ubuntu.com/ubuntu/ zesty-backports main universe\ndeb http://security.ubuntu.com/ubuntu/ zesty-security main universe\ndeb http://ppa.launchpad.net/nginx/development/ubuntu zesty main" > /etc/apt/sources.list &&\
     apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 8B3981E7A6852F782CC4951600A6F0A3C300EE8C &&\

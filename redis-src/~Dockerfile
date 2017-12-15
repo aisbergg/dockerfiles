@@ -1,13 +1,13 @@
 # aisberg/redis
 FROM ubuntu:17.10
 
-LABEL maintainer="Andre Lehmann <aisberg@posteo.de>" \
-    version=1.0 \
-    description="Redis is an open source, in-memory data structure store, used as a database, cache and message broker. (https://redis.io)"
-
 # included from template-ubuntu ------------------------------------------------
 INCLUDE ../template-ubuntu
 #-------------------------------------------------------------------------------
+
+LABEL maintainer="Andre Lehmann <aisberg@posteo.de>" \
+    version=1.0 \
+    description="Redis is an open source, in-memory data structure store, used as a database, cache and message broker. (https://redis.io)"
 
 RUN apt-get update &&\
     apt-get install -y redis-server &&\

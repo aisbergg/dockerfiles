@@ -1,13 +1,13 @@
 # aisberg/mariadb aisberg/mariadb:10.3.2
 FROM mariadb:10.3.2
 
-LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
-    Version=2.8 \
-    Comment="MariaDB is a community-developed fork of the MySQL relational database management system. (https://mariadb.org/)"
-
 # included from template-ubuntu ------------------------------------------------
 INCLUDE ../template-ubuntu
 #-------------------------------------------------------------------------------
+
+LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
+    Version=2.8 \
+    Comment="MariaDB is a community-developed fork of the MySQL relational database management system. (https://mariadb.org/)"
 
 RUN rm /docker-entrypoint.sh
 

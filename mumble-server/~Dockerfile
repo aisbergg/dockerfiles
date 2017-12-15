@@ -1,13 +1,13 @@
 # aisberg/mumble-server
 FROM ubuntu:17.04
 
-LABEL maintainer="Andre Lehmann <aisberg@posteo.de>" \
-    version=1.1 \
-    description="Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming. (https://wiki.mumble.info/wiki/Main_Page)"
-
 # included from template-ubuntu ------------------------------------------------
 INCLUDE ../template-ubuntu
 #-------------------------------------------------------------------------------
+
+LABEL maintainer="Andre Lehmann <aisberg@posteo.de>" \
+    version=1.1 \
+    description="Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming. (https://wiki.mumble.info/wiki/Main_Page)"
 
 RUN echo "deb http://ppa.launchpad.net/mumble/release/ubuntu zesty main" >> /etc/apt/sources.list &&\
     apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 85DECED27F05CF9E &&\
