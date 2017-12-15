@@ -1,0 +1,26 @@
+# aisberg/haproxy
+FROM ubuntu:17.10
+
+# included from template-ubuntu ------------------------------------------------
+INCLUDE ../template-ubuntu
+#-------------------------------------------------------------------------------
+
+LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
+    Version=1.0 \
+    Description="HAProxy is a open-source high availability load balancer and proxy server for TCP and HTTP-based applications. (http://www.haproxy.org)"
+
+RUN echo "deb http://archive.ubuntu.com/ubuntu/ artful main universe\ndeb http://archive.ubuntu.com/ubuntu/ artful-updates main universe\ndeb http://archive.ubuntu.com/ubuntu/ artful-backports main universe\ndeb http://security.ubuntu.com/ubuntu/ artful-security main universe" > /etc/apt/sources.list &&\
+    apt-get update &&\
+    apt-get install -y \
+        openssl \
+        ca-certificates \
+        haproxy &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    touch /var/run/haproxy.pid &&\
+    chown haproxy:haproxy /var/run/haproxy.pid
+
+COPY provision/ /provision
+
+VOLUME /etc/haproxy
+
+EXPOSE 8080 8443 1936
