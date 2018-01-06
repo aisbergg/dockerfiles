@@ -1,0 +1,78 @@
+{
+    "ServiceSettings": {
+        "SiteURL": "{% if DOMAINNAMES is defined %}http{{ 's' if NGINX_TLS_ONLY else '' }}://{{ DOMAINNAMES[0] }}{%- endif %}",
+        "ListenAddress": ":8065",
+        "EnableInsecureOutgoingConnections": {{ 'false' if NGINX_TLS_ONLY else 'true' }},
+        "EnableOAuthServiceProvider": {{ MATTERMOST_SERVICESETTINGS_ENABLEOAUTHSERVICEPROVIDER | lower }},
+        "EnableMultifactorAuthentication": {{ MATTERMOST_SERVICESETTINGS_ENABLEMULTIFACTORAUTHENTICATION | lower }},
+        "EnableTesting": {{ MATTERMOST_SERVICESETTINGS_ENABLETESTING | lower }},
+        "EnableDeveloper": {{ MATTERMOST_SERVICESETTINGS_ENABLEDEVELOPER | lower }},
+        "WebsocketSecurePort": 443,
+        "WebsocketPort": 80,
+        "WebserverMode": "regular"
+    },
+    "SqlSettings": {
+        "DriverName": "{{ MATTERMOST_SQLSETTINGS_DRIVERNAME }}",
+        {% if MATTERMOST_SQLSETTINGS_DRIVERNAME == 'mysql' -%}
+        "DataSource": "{{ MATTERMOST_SQLSETTINGS_DATABASEUSER }}:{{ MATTERMOST_SQLSETTINGS_DATABASEPASSWORD }}@tcp({{ MATTERMOST_SQLSETTINGS_DATABASEHOST }}:{{ MATTERMOST_SQLSETTINGS_DATABASEPORT }})/{{ MATTERMOST_SQLSETTINGS_DATABASENAME }}?charset=utf8mb4,utf8&tls={{ MATTERMOST_SQLSETTINGS_DATABASETLS }}",
+        {%- elif MATTERMOST_SQLSETTINGS_DRIVERNAME == 'postgres' %}
+        "DataSource": "postgres://{{ MATTERMOST_SQLSETTINGS_DATABASEUSER }}:{{ MATTERMOST_SQLSETTINGS_DATABASEPASSWORD }}@{{ MATTERMOST_SQLSETTINGS_DATABASEHOST }}:{{ MATTERMOST_SQLSETTINGS_DATABASEPORT }}/{{ MATTERMOST_SQLSETTINGS_DATABASENAME }}?sslmode={{ 'disable' if MATTERMOST_SQLSETTINGS_DATABASETLS == 'false' else 'verify-full' if MATTERMOST_SQLSETTINGS_DATABASETLS == 'true' else 'require' }}&connect_timeout=10",
+        {%- endif %}
+        "DataSourceReplicas": [],
+        "MaxIdleConns": {{ MATTERMOST_SQLSETTINGS_MAXIDLECONNS }},
+        "MaxOpenConns": {{ MATTERMOST_SQLSETTINGS_MAXOPENCONNS }},
+        "Trace": {{ MATTERMOST_SQLSETTINGS_TRACE | lower }}{% if MATTERMOST_IS_FIRST_RUN %},
+        "AtRestEncryptKey": "{{ MATTERMOST_SQLSETTINGS_ATRESTENCRYPTKEY }}"{% endif %}
+    },
+    "LogSettings": {
+        "EnableConsole": {{ MATTERMOST_LOGSETTINGS_ENABLECONSOLE | lower }},
+        "ConsoleLevel": "{{ MATTERMOST_LOGSETTINGS_CONSOLELEVEL }}",
+        "EnableFile": {{ MATTERMOST_LOGSETTINGS_ENABLEFILE | lower }},
+        "FileLevel": "{{ MATTERMOST_LOGSETTINGS_FILELEVEL }}",
+        "FileFormat": "{{ MATTERMOST_LOGSETTINGS_FILEFORMAT }}",
+        "FileLocation": "{{ MATTERMOST_LOGSETTINGS_FILELOCATION }}"
+    },
+    "FileSettings": {
+        "Directory": "/var/lib/mattermost"{% if MATTERMOST_IS_FIRST_RUN %},
+        "PublicLinkSalt": "{{ MATTERMOST_FILESETTINGS_PUBLICLINKSALT }}"{% endif %}
+    },{% if MATTERMOST_IS_FIRST_RUN %}
+    "EmailSettings": {
+        "InviteSalt": "{{ MATTERMOST_EMAILSETTINGS_INVITESALT }}",
+        "PasswordResetSalt": "{{ MATTERMOST_EMAILSETTINGS_PASSWORDRESETSALT }}"
+    },{% endif %}
+    "GoogleSettings": {
+        "Enable": {{ MATTERMOST_GOOGLESETTINGS_ENABLE | lower }},
+        "Secret": "{{ MATTERMOST_GOOGLESETTINGS_SECRET }}",
+        "Id": "{{ MATTERMOST_GOOGLESETTINGS_ID }}",
+        "Scope": "{{ MATTERMOST_GOOGLESETTINGS_SCOPE }}",
+        "AuthEndpoint": "{{ MATTERMOST_GOOGLESETTINGS_AUTHENDPOINT }}",
+        "TokenEndpoint": "{{ MATTERMOST_GOOGLESETTINGS_TOKENENDPOINT }}",
+        "UserApiEndpoint": "{{ MATTERMOST_GOOGLESETTINGS_USERAPIENDPOINT }}"
+    },
+    "LdapSettings": {
+        "Enable": {{ MATTERMOST_LDAPSETTINGS_ENABLE | lower }},
+        "LdapServer": "{{ MATTERMOST_LDAPSETTINGS_LDAPSERVER }}",
+        "LdapPort": {{ MATTERMOST_LDAPSETTINGS_LDAPPORT }},
+        "ConnectionSecurity": "{{ MATTERMOST_LDAPSETTINGS_CONNECTIONSECURITY }}",
+        "BaseDN": "{{ MATTERMOST_LDAPSETTINGS_BASEDN }}",
+        "BindUsername": "{{ MATTERMOST_LDAPSETTINGS_BINDUSERNAME }}",
+        "BindPassword": "{{ MATTERMOST_LDAPSETTINGS_BINDPASSWORD }}",
+        "UserFilter": "{{ MATTERMOST_LDAPSETTINGS_USERFILTER }}",
+        "FirstNameAttribute": "{{ MATTERMOST_LDAPSETTINGS_FIRSTNAMEATTRIBUTE }}",
+        "LastNameAttribute": "{{ MATTERMOST_LDAPSETTINGS_LASTNAMEATTRIBUTE }}",
+        "EmailAttribute": "{{ MATTERMOST_LDAPSETTINGS_EMAILATTRIBUTE }}",
+        "UsernameAttribute": "{{ MATTERMOST_LDAPSETTINGS_USERNAMEATTRIBUTE }}",
+        "NicknameAttribute": "{{ MATTERMOST_LDAPSETTINGS_NICKNAMEATTRIBUTE }}",
+        "IdAttribute": "{{ MATTERMOST_LDAPSETTINGS_IDATTRIBUTE }}",
+        "SyncIntervalMinutes": {{ MATTERMOST_LDAPSETTINGS_SYNCINTERVALMINUTES }},
+        "SkipCertificateVerification": {{ MATTERMOST_LDAPSETTINGS_SKIPCERTIFICATEVERIFICATION | lower }},
+        "QueryTimeout": {{ MATTERMOST_LDAPSETTINGS_QUERYTIMEOUT }},
+        "MaxPageSize": {{ MATTERMOST_LDAPSETTINGS_MAXPAGESIZE }},
+        "LoginFieldName": "{{ MATTERMOST_LDAPSETTINGS_LOGINFIELDNAME }}"
+    },
+    "ClusterSettings": {
+        "Enable": {{ MATTERMOST_CLUSTERSETTINGS_ENABLE | lower }},
+        "InterNodeListenAddress": ":8075",
+        "InterNodeUrls": {{ MATTERMOST_CLUSTERSETTINGS_INTERNODEURLS }}
+    }
+}

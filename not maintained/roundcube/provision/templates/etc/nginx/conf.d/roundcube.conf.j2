@@ -1,0 +1,77 @@
+# autogen true
+
+#######################################
+#            HTTP & HTTPS             #
+#######################################
+
+server {
+    listen                 80;
+    listen                 443 ssl default_server;
+    {% if DOMAINNAMES is defined -%}
+    server_name            {% for domain in DOMAINNAMES %} {{ domain }}{% endfor %};
+    {%- endif %}
+
+    root                   /var/www/roundcube;
+    index                  index.php;
+
+    rewrite_by_lua_block {
+        -- apply rules to all requests, but not to challenge responses
+        if not string.match(ngx.var.request_uri, "^/%.well%-known/acme%-challenge") then
+            -- block crawler ( see ../nginx.conf )
+            if ngx.var.limit_bots == "1" then
+                ngx.exit(ngx.HTTP_FORBIDDEN)
+            end
+            {% if NGINX_TLS_ONLY -%}
+            -- redirect scheme to https
+            if ngx.var.real_scheme ~= "https" then
+                return ngx.redirect("https://" .. ngx.var.host .. ngx.var.request_uri, 301)
+            end
+            {%- endif %}
+        end
+    }
+
+    # Let's Encrypt challenge response uri
+    location ^~ /.well-known/acme-challenge {
+        default_type "text/plain";
+        root /var/www/letsencrypt-challenge-response;
+    }
+
+    location / {
+        # prevent SYN-flood
+        # limit concurrent connections per ip
+        limit_conn conn_limit_per_ip {{ NGINX_CONN_LIMIT_PER_IP }};
+        # limit requests per second per ip
+        limit_req zone=req_limit_per_ip burst={{ NGINX_REQ_LIMIT_PER_IP_BURST }};
+
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    # disable logging and/or deny access
+    location = /robots.txt  { access_log off; log_not_found off; }
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location ~ /\.          { access_log off; log_not_found off; deny all; }
+    location ~ ^/(README|INSTALL|LICENSE|CHANGELOG|UPGRADING)$ { deny all; }
+    location ~ ^/(bin|SQL)/ { deny all; }
+    location ~ ^/?(\.git|\.tx|SQL|bin|config|logs|temp|tests|program\/(include|lib|localization|steps)) { return 403; }
+    location ~ /?(README\.md|composer\.json-dist|composer\.json|package\.xml|Dockerfile)$ { return 403; }
+    location ~ /(libraries|setup/frames|setup/libs) { deny all; return 404; }
+
+    # pass PHP scripts to PHP-FPM
+    location ~ ^(.+\.php)(.*)$ {
+        try_files                $fastcgi_script_name =404;
+        fastcgi_split_path_info  ^(.+\.php)(.*)$;
+        fastcgi_read_timeout     {{ NGINX_FASTCGI_READ_TIMEOUT }};
+        include                  /etc/nginx/fastcgi_params;
+        fastcgi_index            index.php;
+        fastcgi_param            SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        fastcgi_pass             unix:/var/run/php7-fpm.sock;
+    }
+
+    # client caching
+    location ~* \.(?:css|js|jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)$ {
+        expires                  1M;
+        more_set_headers         "Pragma: public";
+        more_set_headers         "Cache-Control: public, must-revalidate, proxy-revalidate";
+        access_log               off;
+    }
+}
