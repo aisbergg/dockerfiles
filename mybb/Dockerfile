@@ -1,15 +1,15 @@
-# aisberg/mybb aisberg/mybb:1812
+# aisberg/mybb aisberg/mybb:1814
 FROM aisberg/nginx-php7
 
 LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
-    Version=2.1 \
+    Version=2.2 \
     Comment="MyBB is an open-source forum software. (http://www.mybb.com/)"
 
-ENV MYBB_VERSION=1812 \
-    SHA256_CHECKSUM=e63bd3ce5b8a7c4166102baa75f0aab1d12fc64379658a027d8bf49a437a469a
+ENV MYBB_VERSION=1814 \
+    MYBB_SHA256_CHECKSUM=db46ad8234ca822ff1168cc5e923c1b26ca611d0d1a5406c25db01b95ffe5b74
 
 RUN wget -q "http://resources.mybb.com/downloads/mybb_${MYBB_VERSION}.zip" -O /usr/local/src/mybb.zip &&\
-    echo "$SHA256_CHECKSUM /usr/local/src/mybb.zip" | sha256sum -c
+    echo "$MYBB_SHA256_CHECKSUM /usr/local/src/mybb.zip" | sha256sum -c
 
 COPY provision/ /provision
 
