@@ -1,11 +1,11 @@
-# aisberg/nextcloud aisberg/nextcloud:12.0.3
+# aisberg/nextcloud aisberg/nextcloud:12.0.4
 FROM aisberg/nginx-php7
 
 LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
-    Version=2.5 \
+    Version=2.6 \
     Comment="Nextcloud is an open-source client-server software for creating file hosting services. (https://nextcloud.org/)"
 
-ENV NEXTCLOUD_VERSION=12.0.3 \
+ENV NEXTCLOUD_VERSION=12.0.4 \
     PGP_KEY_ID=28806A878AE423A28372792ED75899B9A724937A
 
 RUN wget -q "https://download.nextcloud.com/server/releases/nextcloud-${NEXTCLOUD_VERSION}.tar.bz2" -O /usr/local/src/nextcloud.tar.bz2 &&\
