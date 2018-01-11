@@ -1,28 +1,14 @@
 #!/bin/bash
-
-# exit on errors
 set -eo pipefail
 
 print_info "Configuring MariaDB"
 
 # prepare parameter
 case "$(convert_to_lower_case "$CONFIG")" in
-    tiny)
-        export CONFIG=tiny
+    tiny|small|medium|large|huge|custom)
+        export CONFIG="$(convert_to_lower_case "$CONFIG")"
         ;;
-    small)
-        export CONFIG=small
-        ;;
-    large)
-        export CONFIG=large
-        ;;
-    huge)
-        export CONFIG=huge
-        ;;
-    custom)
-        export CONFIG=custom
-        ;;
-    medium|*)
+    *)
         export CONFIG=medium
         ;;
 esac
