@@ -22,7 +22,7 @@ defaults:
   ######################################
   - PHP_MAX_CHILDREN: 50
   - PHP_MIN_SPARE_SERVERS: 1
-  - PHP_MAX_SPARE_SERVERS: 5
+  - PHP_MAX_SPARE_SERVERS: 2
   - PHP_MAX_EXECUTION_TIME: 60
   - PHP_MAX_INPUT_TIME: 60
   - PHP_MEMORY_LIMIT: "180M"
