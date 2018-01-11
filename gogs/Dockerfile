@@ -1,15 +1,15 @@
-# aisberg/gogs aisberg/gogs:0.11.29
+# aisberg/gogs aisberg/gogs:0.11.34
 FROM aisberg/nginx
 
 LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
-    Version=2.10 \
+    Version=2.11 \
     Comment="A self-hosted git service. (https://gogs.io/)"
 
-ENV GOGS_VERSION=0.11.29 \
-    SHA256_CHECKSUM=2d0d8e9a3a7d69e6b1080194352e2218c6efa2d9e95810465927cd7fef9a4336
+ENV GOGS_VERSION=0.11.34 \
+    GOGS_SHA256_CHECKSUM=bfcd85f00ade51d7554aa99c0c5cb21735bc33e3d6d4bbdd156ed72a5d37d91f
 
 RUN wget -q "https://github.com/gogits/gogs/releases/download/v${GOGS_VERSION}/linux_amd64.tar.gz" -O /usr/local/src/gogs.tar.gz &&\
-    echo "$SHA256_CHECKSUM /usr/local/src/gogs.tar.gz" | sha256sum -c &&\
+    echo "$GOGS_SHA256_CHECKSUM /usr/local/src/gogs.tar.gz" | sha256sum -c &&\
     groupadd -g 999 git &&\
     useradd -p /home/git -m -g git -s /bin/bash -u 999 git &&\
     apt-get update &&\

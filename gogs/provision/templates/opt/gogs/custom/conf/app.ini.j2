@@ -201,7 +201,7 @@ ENABLE_REVERSE_PROXY_AUTO_REGISTRATION = {{ GOGS_SERVICE_ENABLE_REVERSE_PROXY_AU
 ENABLE_CAPTCHA = {{ GOGS_SERVICE_ENABLE_CAPTCHA }}
 
 [webhook]
-; Types are enabled for users to use, can be "gogs", "slack", "discord"
+; Types are enabled for users to use, can be "gogs", "slack", "discord", "dingtalk"
 TYPES = {{ GOGS_WEBHOOK_TYPES }}
 ; Hook task queue length, increase if webhook shooting starts hanging
 QUEUE_LENGTH = {{ GOGS_WEBHOOK_QUEUE_LENGTH }}
@@ -451,9 +451,8 @@ NEWS_FEED_PAGING_NUM = {{ GOGS_UI_USER_NEWS_FEED_PAGING_NUM }}
 COMMITS_PAGING_NUM = {{ GOGS_UI_USER_COMMITS_PAGING_NUM }}
 
 [i18n]
-LANGS = en-US,zh-CN,zh-HK,zh-TW,de-DE,fr-FR,nl-NL,lv-LV,ru-RU,ja-JP,es-ES,pt-BR,pl-PL,bg-BG,it-IT,fi-FI,tr-TR,cs-CZ,sr-SP,sv-SE,ko-KR,gl-ES,uk-UA,en-GB,hu-HU
-NAMES = English,简体中文,繁體中文（香港）,繁體中文（台湾）,Deutsch,français,Nederlands,latviešu,русский,日本語,español,português do Brasil,polski,български,italiano,suomi,Türkçe,čeština,српски,svenska,한국어,galego,українська,English (United Kingdom),Magyar
-
+LANGS = en-US,zh-CN,zh-HK,zh-TW,de-DE,fr-FR,nl-NL,lv-LV,ru-RU,ja-JP,es-ES,pt-BR,pl-PL,bg-BG,it-IT,fi-FI,tr-TR,cs-CZ,sr-SP,sv-SE,ko-KR,gl-ES,uk-UA,en-GB,hu-HU,sk-SK
+NAMES = English,简体中文,繁體中文（香港）,繁體中文（臺灣）,Deutsch,français,Nederlands,latviešu,русский,日本語,español,português do Brasil,polski,български,italiano,suomi,Türkçe,čeština,српски,svenska,한국어,galego,українська,English (United Kingdom),Magyar,slovenský
 
 ; Used for datetimepicker
 [i18n.datelang]

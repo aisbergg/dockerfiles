@@ -97,7 +97,7 @@ defaults:
   - GOGS_SERVICE_ENABLE_CAPTCHA: True
 
   # webhook
-  - GOGS_WEBHOOK_TYPES: "gogs, slack, discord"
+  - GOGS_WEBHOOK_TYPES: "gogs, slack, discord, dingtalk"
   - GOGS_WEBHOOK_QUEUE_LENGTH: 1000
   - GOGS_WEBHOOK_DELIVER_TIMEOUT: 15
   - GOGS_WEBHOOK_SKIP_TLS_VERIFY: False
