@@ -1,12 +1,12 @@
-# aisberg/mediawiki aisberg/mediawiki:1.29.1
+# aisberg/mediawiki aisberg/mediawiki:1.30.0
 FROM aisberg/nginx-php7
 
 LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
-    Version=2.3 \
+    Version=2.4 \
     Comment="MediaWiki is an open-source web application for creating a wiki. (https://www.mediawiki.org/wiki/MediaWiki)"
 
-ENV MEDIAWIKI_MAJOR=1.29 \
-    MEDIAWIKI_MINOR=1 \
+ENV MEDIAWIKI_MAJOR=1.30 \
+    MEDIAWIKI_MINOR=0 \
     PGP_KEY_ID=41B2ABE817ADD3E52BDA946F72BC1C5D23107F8A
 
 RUN wget -q "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR}/mediawiki-${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR}.tar.gz" -O /usr/local/src/mediawiki.tar.gz &&\
