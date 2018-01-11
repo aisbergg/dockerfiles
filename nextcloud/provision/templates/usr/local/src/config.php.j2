@@ -1010,8 +1010,7 @@ array (
  * encryption in MySQL or specify a custom wait timeout on a cheap hoster.
  */
 'dbdriveroptions' => array(
-	{%- if NEXTCLOUD_DBDRIVEROPTIONS_MYSQL_ATTR_SSL_CA != '' %}PDO::MYSQL_ATTR_SSL_CA => '{{ NEXTCLOUD_DBDRIVEROPTIONS_MYSQL_ATTR_SSL_CA }}',{% endif %}
-	{%- if NEXTCLOUD_DBDRIVEROPTIONS_MYSQL_ATTR_INIT_COMMAND != '' %}PDO::MYSQL_ATTR_INIT_COMMAND => '{{ NEXTCLOUD_DBDRIVEROPTIONS_MYSQL_ATTR_INIT_COMMAND }}'{% endif %}
+  {% for dbdriveropt in NEXTCLOUD_DBDRIVEROPTIONS %}{{ dbdriveropt }}{{ ', ' if not loop.last else '' }}{% endfor %}),
 ),
 
 /**
