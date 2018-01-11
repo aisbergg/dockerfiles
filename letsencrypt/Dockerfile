@@ -1,6 +1,9 @@
 # aisberg/letsencrypt
-FROM ubuntu:17.04
-MAINTAINER Andre Lehmann <aisberg@posteo.de>
+FROM ubuntu:17.10
+
+LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
+    Version=2.0 \
+    Description="Let’s Encrypt is a free, automated, and open Certificate Authority. (https://letsencrypt.org)"
 
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
