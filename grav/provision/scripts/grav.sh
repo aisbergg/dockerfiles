@@ -28,6 +28,8 @@ if [ ! -f "/var/www/grav/bin/grav" ]; then
 
 elif [[ "$AUTO_UPDATE" == "True" ]]; then
     pushd /var/www/grav > /dev/null
+    set +e
     su -s /bin/sh www-data -c "php bin/gpm selfupgrade -f"
+    set -e
     popd > /dev/null
 fi
