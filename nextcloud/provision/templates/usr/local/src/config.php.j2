@@ -1010,7 +1010,7 @@ array (
  * encryption in MySQL or specify a custom wait timeout on a cheap hoster.
  */
 'dbdriveroptions' => array(
-  {% for dbdriveropt in NEXTCLOUD_DBDRIVEROPTIONS %}{{ dbdriveropt }}{{ ', ' if not loop.last else '' }}{% endfor %}),
+  {% for dbdriveropt in NEXTCLOUD_DBDRIVEROPTIONS %}{{ dbdriveropt }}{{ ', ' if not loop.last else '' }}{% endfor %}
 ),
 
 /**
