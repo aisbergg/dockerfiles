@@ -24,8 +24,8 @@ RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 14AA40EC08317
         man \
         mysql-client \
         openssh-server \
-        php7.0-cli \
-        php7.0-mysql \
+        php7.1-cli \
+        php7.1-mysql \
         rsync \
         software-properties-common \
         sudo \
