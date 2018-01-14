@@ -109,7 +109,7 @@ def main():
                 else:
                     print("Failed to create certificate for: {0}".format(domain))
 
-    run_hook("/etc/letsencrypt/hooks/post-run.hook" str(created_or_renewed_cert))
+    run_hook("/etc/letsencrypt/hooks/post-run.hook", str(created_or_renewed_cert))
 
 
 if __name__ == "__main__":
