@@ -1,0 +1,56 @@
+# aisberg/base aisberg/base:ubuntu-17.10
+FROM ubuntu:17.10
+
+LABEL org.label-schema.schema-version="1.0" \
+    org.label-schema.name="Base" \
+    org.label-schema.description="Base Ubuntu image" \
+    org.label-schema.version="17.10-1" \
+    org.label-schema.authors.andre.name="Andre Lehmann" \
+    org.label-schema.authors.andre.email="aisberg@posteo.de" \
+    org.label-schema.authors.andre.role="Developer"
+
+ARG language=en_US.UTF-8
+
+ENV TERM=xterm \
+    DEBIAN_FRONTEND=noninteractive \
+    LANG=$language \
+    LC_ALL=$language
+
+COPY Templer.tar.gz /tmp/Templer.tar.gz
+COPY entrypoint.sh /entrypoint.sh
+
+RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends &&\
+    echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends &&\
+    apt-get update &&\
+    `#----- generate locales -----#` &&\
+    apt-get install -y locales &&\
+    sed -i -e "s/# $language/$language/" /etc/locale.gen &&\
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale language=$language &&\
+    `#----- install essential packages -----#` &&\
+    apt-get install -y \
+        bzip2 \
+        ca-certificates \
+        dirmngr \
+        iputils-ping \
+        nano \
+        python-pip \
+        python-setuptools \
+        python-yaml \
+        python2.7 \
+        supervisor \
+        unzip \
+        vim.tiny \
+        wget \
+        xz-utils &&\
+    `#----- install templating engine -----#` &&\
+    unset http_proxy https_proxy &&\
+    pip install /tmp/Templer.tar.gz &&\
+    `#----- prepare entrypoint -----#` &&\
+    chmod +x /entrypoint.sh &&\
+    `#----- cleanup -----#` &&\
+    rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/*
+
+COPY provision/ /provision
+
+ENTRYPOINT ["/entrypoint.sh", "container_start"]

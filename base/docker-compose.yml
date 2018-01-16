@@ -1,0 +1,9 @@
+version: '3'
+services:
+  base_ubuntu:
+    image: aisberg/base:ubuntu-17.10
+    build:
+      context: .
+      dockerfile: Dockerfile-Ubuntu
+      args:
+        language: de_DE.UTF-8
