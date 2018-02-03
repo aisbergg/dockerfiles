@@ -5,7 +5,7 @@ set -e
 
 print_info "Configuring Nginx"
 
-if [[ `standardise_bool "$NGINX_TLS_TERMINATED" True` == False ]]; then
+if [[ `bool "$NGINX_TLS_TERMINATED" true` == false ]]; then
     if [[ ! -f "/etc/ssl/private/dhparam.pem" ]]; then
         # create Diffie-Hellman parameter for forward secrecy
         NGINX_DH_SIZE=${NGINX_DH_SIZE:-512}

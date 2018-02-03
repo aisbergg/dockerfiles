@@ -6,7 +6,7 @@ set -e
 print_info "Configuring Wordpress"
 
 # removing all files before installing
-if [[ `standardise_bool "$CLEAN_INSTALLATION" False` == "True" ]]; then
+if [[ `bool "$CLEAN_INSTALLATION" false` == "True" ]]; then
     print_info "Removing all files in installation dir"
     shopt -s dotglob
     rm -rf /var/www/wordpress/*

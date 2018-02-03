@@ -3,7 +3,7 @@
 print_info "Configuring WebDAV-Sync"
 
 WEBDAV_SYNC_INTERVAL=${WEBDAV_SYNC_INTERVAL:-60}
-WEBDAV_PRINT_LOG=`standardise_bool "$WEBDAV_PRINT_LOG" False`
+WEBDAV_PRINT_LOG=`bool "$WEBDAV_PRINT_LOG" false`
 
 function val(){
     local varname="$1_`printf "%02d" $2`"

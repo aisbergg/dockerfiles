@@ -4,9 +4,9 @@ set -eo pipefail
 print_info "Configuring MariaDB"
 
 # prepare parameter
-case "$(convert_to_lower_case "$CONFIG")" in
+case "$(lower_case "$CONFIG")" in
     tiny|small|medium|large|huge|custom)
-        export CONFIG="$(convert_to_lower_case "$CONFIG")"
+        export CONFIG="$(lower_case "$CONFIG")"
         ;;
     *)
         export CONFIG=medium
@@ -49,15 +49,15 @@ if [ ! -d "$DATADIR/mysql" ]; then
     mysql_tzinfo_to_sql /usr/share/zoneinfo | sed 's/Local time zone must be set--see zic manual page/FCTY/' | "${mysql[@]}" mysql
 
     "${mysql[@]}" <<-EOSQL
-			-- What's done in this file shouldn't be replicated
-			--  or products like mysql-fabric won't work
-			SET @@SESSION.SQL_LOG_BIN=0;
-			DELETE FROM mysql.user ;
-			CREATE USER 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}' ;
-			GRANT ALL ON *.* TO 'root'@'%' WITH GRANT OPTION ;
-			DROP DATABASE IF EXISTS test ;
-			FLUSH PRIVILEGES ;
-		EOSQL
+        -- What's done in this file shouldn't be replicated
+        --  or products like mysql-fabric won't work
+        SET @@SESSION.SQL_LOG_BIN=0;
+        DELETE FROM mysql.user ;
+        CREATE USER 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}' ;
+        GRANT ALL ON *.* TO 'root'@'%' WITH GRANT OPTION ;
+        DROP DATABASE IF EXISTS test ;
+        FLUSH PRIVILEGES ;
+EOSQL
 
     if ! kill -s TERM "$pid" || ! wait "$pid"; then
         print_error 'MariaDB init process failed.'

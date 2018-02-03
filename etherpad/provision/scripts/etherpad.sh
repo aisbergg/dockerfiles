@@ -9,7 +9,7 @@ print_info "Configuring Etherpad"
 useradd --create-home --system --user-group etherpad
 
 # removing all files before installing
-if [[ `standardise_bool "$CLEAN_INSTALLATION" False` == "True" ]]; then
+if [[ `bool "$CLEAN_INSTALLATION" false` == "True" ]]; then
     print_info "Removing all files in installation dir"
     shopt -s dotglob
     rm -rf /opt/etherpad/*
@@ -58,7 +58,7 @@ if [ ! -f '/opt/etherpad/bin/run.sh' ]; then
     echo "${ETHERPAD_VERSION}" > .version
 
 # check if the installed version can be upgraded
-elif [[ `standardise_bool "$AUTO_UPDATE"` == "True" ]]; then
+elif [[ `bool "$AUTO_UPDATE"` == "True" ]]; then
     if [ ! -f /opt/etherpad/.version ]; then
         print_error "Installation found, but unable to find '.version' file!"
         exit 1

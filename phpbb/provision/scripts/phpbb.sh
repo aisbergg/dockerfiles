@@ -6,7 +6,7 @@ set -e
 print_info "Configuring phpBB"
 
 # removing all files before installing
-if [[ `standardise_bool "$CLEAN_INSTALLATION" False` == "True" ]]; then
+if [[ `bool "$CLEAN_INSTALLATION" false` == "True" ]]; then
     print_info "Removing all files in installation dir"
     shopt -s dotglob
     rm -rf /var/www/phpbb/*
@@ -30,7 +30,7 @@ then
     echo "${PHPBB_VERSION}" > /var/www/phpbb/.version
 
 # check if the installed version can be upgraded
-elif [[ `standardise_bool "$AUTO_UPDATE"` == "True" ]]; then
+elif [[ `bool "$AUTO_UPDATE"` == "True" ]]; then
     # information about upgrading phpbb can be found here: https://www.siteground.com/tutorials/phpbb2/phpbb_upgrade.htm
     # or here: https://www.phpbb.com/support/docs/en/3.1/ug/upgradeguide/upgrade3/
     if [ ! -f /var/www/phpbb/.version ]; then

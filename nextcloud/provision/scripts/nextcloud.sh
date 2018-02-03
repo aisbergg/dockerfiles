@@ -9,10 +9,10 @@ if [[ -z DOMAINNAMES ]]; then
     print_error "You need to specify at least one domainname"
     exit 1
 fi
-export NGINX_TLS_ONLY=`standardise_bool "$NGINX_TLS_ONLY" True`
+export NGINX_TLS_ONLY=`bool "$NGINX_TLS_ONLY" true`
 
 # removing all files before installing
-if [[ `standardise_bool "$CLEAN_INSTALLATION" False` == "True" ]]; then
+if [[ `bool "$CLEAN_INSTALLATION" false` == "True" ]]; then
     print_info "Removing all files in installation dir"
     shopt -s dotglob
     rm -rf /var/www/nextcloud/*
@@ -39,7 +39,7 @@ if [ ! -f "/var/www/nextcloud/version.php" ]; then
     chown -R www-data:www-data /var/lib/nextcloud
 
 # check if the installed version can be upgraded
-elif [[ `standardise_bool "$AUTO_UPDATE"` == "True" ]]; then
+elif [[ `bool "$AUTO_UPDATE"` == "True" ]]; then
     INSTALLED_VERSION="$(cat /var/www/nextcloud/version.php | grep '$OC_VersionString' | grep -o "'\S*'" | grep -o "[^\']*")"
     if [ "$INSTALLED_VERSION" != "$NEXTCLOUD_VERSION" ]; then
         # upgrade installation without destroying the userdata

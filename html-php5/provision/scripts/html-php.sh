@@ -1,2 +1,2 @@
 #!/bin/bash
-export NGINX_TLS_ONLY=`standardise_bool "$NGINX_TLS_ONLY" False`
+export NGINX_TLS_ONLY=`bool "$NGINX_TLS_ONLY" false`

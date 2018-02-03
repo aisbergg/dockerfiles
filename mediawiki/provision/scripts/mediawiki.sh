@@ -6,7 +6,7 @@ set -e
 print_info "Configuring MediaWiki"
 
 # removing all files before installing
-if [[ `standardise_bool "$CLEAN_INSTALLATION" False` == "True" ]]; then
+if [[ `bool "$CLEAN_INSTALLATION" false` == "True" ]]; then
     print_info "Removing all files in installation dir"
     shopt -s dotglob
     rm -rf /var/www/mediawiki/*
@@ -27,7 +27,7 @@ if [ ! -f '/var/www/mediawiki/LocalSettings.php' ]; then
     export MEDIAWIKI_IS_INSTALLED="False"
 
 # check if the installed version can be upgraded
-elif [[ `standardise_bool "$AUTO_UPDATE"` == "True" ]]; then
+elif [[ `bool "$AUTO_UPDATE"` == "True" ]]; then
     # information about upgrading MediaWiki can be found here: https://www.mediawiki.org/wiki/Manual:Upgrading
     INSTALLED_VERSION="$(cat /var/www/mediawiki/.version)"
     # check if newer version is available to upgrade the current installation

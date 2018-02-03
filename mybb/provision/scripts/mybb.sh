@@ -6,7 +6,7 @@ set -e
 print_info "Configuring MyBB"
 
 # removing all files before installing
-if [[ `standardise_bool "$CLEAN_INSTALLATION" False` == "True" ]]; then
+if [[ `bool "$CLEAN_INSTALLATION" false` == "True" ]]; then
     print_info "Removing all files in installation dir"
     shopt -s dotglob
     rm -rf /var/www/mybb/*
@@ -32,7 +32,7 @@ if [ ! -f '/var/www/mybb/inc/config.php' ]; then
     echo "${MYBB_VERSION}" > /var/www/mybb/.version
 
 # check if the installed version can be upgraded
-elif [[ `standardise_bool "$AUTO_UPDATE"` == "True" ]]; then
+elif [[ `bool "$AUTO_UPDATE"` == "True" ]]; then
     # information about upgrading mybb can be found here: http://docs.mybb.com/1.8/install/upgrade/
     if [ ! -f /var/www/mybb/.version ]; then
         print_error "Installation found, but unable to find '.version' file!"

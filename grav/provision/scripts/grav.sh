@@ -3,11 +3,11 @@ set -e
 
 print_info "Configuring Grav"
 
-export NGINX_TLS_ONLY=`standardise_bool "$NGINX_TLS_ONLY" True`
-export AUTO_UPDATE=`standardise_bool "$AUTO_UPDATE" True`
+export NGINX_TLS_ONLY=`bool "$NGINX_TLS_ONLY" true`
+export AUTO_UPDATE=`bool "$AUTO_UPDATE" true`
 
 # removing all files before installing
-if [[ `standardise_bool "$CLEAN_INSTALLATION" False` == "True" ]]; then
+if [[ `bool "$CLEAN_INSTALLATION" false` == "True" ]]; then
     print_info "Removing all files in installation dir"
     shopt -s dotglob
     rm -rf /var/www/grav/*

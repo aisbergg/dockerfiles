@@ -34,7 +34,7 @@ then
     echo "INSTALLED_CKEDITOR_VERSION=${CKEDITOR_VERSION}" >> /var/www/phplist/.version
 
 # check if the installed version can be upgraded
-elif [[ `standardise_bool "$AUTO_UPDATE"` == "True" ]]; then
+elif [[ `bool "$AUTO_UPDATE"` == "True" ]]; then
     # information about upgrading phplist can be found here: https://www.phplist.org/download-phplist/
     if [ ! -f /var/www/phplist/.version ]; then
         print_error "Installation found, but unable to find '.version' file!"

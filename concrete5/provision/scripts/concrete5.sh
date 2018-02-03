@@ -6,7 +6,7 @@ set -e
 print_info "Configuring Concrete5"
 
 # removing all files before installing
-if [[ `standardise_bool "$CLEAN_INSTALLATION" False` == True ]]; then
+if [[ `bool "$CLEAN_INSTALLATION" false` == true ]]; then
     print_info "Removing all files in installation dir"
     shopt -s dotglob
     rm -rf /var/www/concrete5/*

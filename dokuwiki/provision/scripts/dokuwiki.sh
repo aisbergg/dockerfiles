@@ -6,7 +6,7 @@ set -e
 print_info "Configuring DokuWiki"
 
 # removing all files before installing
-if [[ `standardise_bool "$CLEAN_INSTALLATION" False` == True ]]; then
+if [[ `bool "$CLEAN_INSTALLATION" false` == true ]]; then
     print_info "Removing all files in installation dir"
     shopt -s dotglob
     rm -rf /var/www/dokuwiki/*
@@ -28,7 +28,7 @@ if [ ! -f '/var/www/dokuwiki/doku.php' ]; then
     chown -R www-data:www-data /var/www/dokuwiki
 
 # check if the installed version can be upgraded
-elif [[ `standardise_bool "$AUTO_UPDATE"` == "True" ]]; then
+elif [[ `bool "$AUTO_UPDATE"` == "True" ]]; then
     # information about upgrading dokuwiki can be found here: https://www.dokuwiki.org/install:upgrade
     INSTALLED_VERSION="$(head -n 1 /var/www/dokuwiki/VERSION | grep -o '^[^\ ]*')"
     if [ "$INSTALLED_VERSION" != "$DOKUWIKI_VERSION" ]; then
