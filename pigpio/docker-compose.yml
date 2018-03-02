@@ -1,0 +1,14 @@
+version: '3.0'
+services:
+  pigpio:
+    image: aisberg/pigpio
+    build:
+      context: .
+    cap_add:
+      - SYS_RAWIO
+    command: ""
+    devices:
+      - "/dev/mem:/dev/mem"
+      - "/dev/vcio:/dev/vcio"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
