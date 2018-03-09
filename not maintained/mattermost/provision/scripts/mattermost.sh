@@ -14,7 +14,7 @@ if [ ! -f /var/lib/mattermost/config.json ]; then
     cp /opt/mattermost/config/config.json /var/lib/mattermost/config.json
     echo "$MATTERMOST_VERSION" > /var/lib/mattermost/.version
 else
-    INSTALLED_VERSION=`cat /var/lib/mattermost/.version`
+    INSTALLED_VERSION=$(cat /var/lib/mattermost/.version)
     # check if newer version is available to upgrade the current installation
     if [[ "$(cat /var/lib/mattermost/.version)" != "$MATTERMOST_VERSION" ]]; then
         printINFO "Mark the instalation to be upgraded"

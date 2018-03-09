@@ -9,7 +9,7 @@ printINFO "Configuring Roundcube"
 export DES_KEY="$( </dev/urandom tr -dc '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%' | head -c40; echo "")"
 
 # removing all files before installing
-if [[ `standardiseBool "$CLEAN_INSTALLATION" False` == "True" ]]; then
+if [[ $(standardiseBool "$CLEAN_INSTALLATION" False) == "True" ]]; then
     printINFO "Removing all files in installation dir"
     shopt -s dotglob
     rm -rf /var/www/roundcube/*
@@ -33,7 +33,7 @@ if [ ! -f '/var/www/roundcube/index.php' ]; then
     chown -R www-data:www-data /var/www/roundcube
 
 # check if the installed version can be upgraded
-elif [[ `standardiseBool "$AUTO_UPDATE"` == "True" ]]; then
+elif [[ $(standardiseBool "$AUTO_UPDATE") == "True" ]]; then
     INSTALLED_VERSION="$(cat /var/www/roundcube/index.php | grep "Version" | grep -oE '[0123456789\.]+')"
     if [ "$INSTALLED_VERSION" != "$ROUNDCUBE_VERSION" ]; then
         # upgrade installation without destroying the userdata

@@ -5,11 +5,11 @@
 # console output colors
 #################################
 
-C_INFO=`tput setaf 4`
-C_OK=`tput setaf 2`
-C_WARN=`tput setaf 3`
-C_ERROR=`tput setaf 1`
-C_RESET=`tput sgr0`
+C_INFO=$(tput setaf 4)
+C_OK=$(tput setaf 2)
+C_WARN=$(tput setaf 3)
+C_ERROR=$(tput setaf 1)
+C_RESET=$(tput sgr0)
 
 #################################
 # functions
@@ -109,7 +109,7 @@ function parseDockerFile() {
                 local cur_path="$(pwd)"
                 cd "$include_path"
                 # find Dockerfile
-                dockerfile=`findDockerFile`
+                dockerfile=$(findDockerFile)
                 if [ -z "$dockerfile" ]; then
                     printERROR "No valid Dockerfile found in $include_path!"
                     cleanup "$cur_path"
@@ -193,7 +193,7 @@ while [[ $# > 0 ]] ; do
 done
 
 # find Dockerfile
-dockerfile=`findDockerFile`
+dockerfile=$(findDockerFile)
 if [ -z "$dockerfile" ]; then
     printERROR "No Dockerfile found!"
     Exit 1

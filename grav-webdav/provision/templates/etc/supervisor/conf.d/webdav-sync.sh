@@ -33,7 +33,7 @@ exec 3>$STDERR_FILE
 
 # get list of parameter files
 parameter_files_dir=/etc/supervisor/conf.d/webdav-sync-parameter
-parameter_files=(`ls -1 $parameter_files_dir/*.env`)
+parameter_files=($(ls -1 $parameter_files_dir/*.env))
 
 # Create local paths if they do not exist
 for pfile in "${parameter_files[@]}"; do

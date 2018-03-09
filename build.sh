@@ -4,11 +4,11 @@
 # console output colors
 #################################
 
-C_INFO=`tput setaf 4`
-C_OK=`tput setaf 2`
-C_WARN=`tput setaf 3`
-C_ERROR=`tput setaf 1`
-C_RESET=`tput sgr0`
+C_INFO=$(tput setaf 4)
+C_OK=$(tput setaf 2)
+C_WARN=$(tput setaf 3)
+C_ERROR=$(tput setaf 1)
+C_RESET=$(tput sgr0)
 
 #################################
 # functions
@@ -68,20 +68,20 @@ Build docker image from a Dockerfile.
 no_cache_flag="--no-cache=false"
 src_dir=""
 while [[ $# > 0 ]]; do
-  	key="$1"
-  	case "$key" in
-    		-h|--help)
-    			echo "$USAGE"
-    			exit 0
-    			;;
-    		-n|--no-cache)
-    			no_cache_flag="--no-cache=true"
-    			shift 1
-    			;;
-    		*)
+  key="$1"
+  case "$key" in
+    -h|--help)
+    echo "$USAGE"
+    exit 0
+    ;;
+    -n|--no-cache)
+    no_cache_flag="--no-cache=true"
+    shift 1
+    ;;
+    *)
                 break
-    			;;
-  	esac
+    ;;
+  esac
 done
 if (( $# == 0 )); then
     echo "$USAGE"
@@ -92,10 +92,10 @@ fi
 
 while [[ -n "$1" ]]; do
     # get absolute path
-    src_dir=`readlink -f "$1"`
+    src_dir=$(readlink -f "$1")
 
     # find Dockerfile
-    dockerfile=`find_dockerfile "$src_dir"`
+    dockerfile=$(find_dockerfile "$src_dir")
     if [ -z "$dockerfile" ]; then
         print_error "No Dockerfile found in: $src_dir"
         Exit 1

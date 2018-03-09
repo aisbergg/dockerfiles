@@ -4,11 +4,11 @@
 # console output colors
 #################################
 
-C_INFO=`tput setaf 4`
-C_OK=`tput setaf 2`
-C_WARN=`tput setaf 3`
-C_ERROR=`tput setaf 1`
-C_RESET=`tput sgr0`
+C_INFO=$(tput setaf 4)
+C_OK=$(tput setaf 2)
+C_WARN=$(tput setaf 3)
+C_ERROR=$(tput setaf 1)
+C_RESET=$(tput sgr0)
 
 #################################
 # functions
@@ -53,16 +53,16 @@ function copy_dir_content_into() {
     fi
     for elm in "${dir_content[@]}"; do
         for excl in "${exclude[@]}"; do
-            [[ "`basename "$elm"`" == "$excl" ]] && continue 2
+            [[ "$(basename "$elm")" == "$excl" ]] && continue 2
         done
         for cpon in "${copy_once[@]}"; do
-            if [[ "`basename "$elm"`" == "$cpon" ]]; then
+            if [[ "$(basename "$elm")" == "$cpon" ]]; then
                 if [[ -e "$dest_dir/$cpon" ]]; then
                     continue 2
                 fi
                 continue
             fi
-            [[ "`basename "$elm"`" == "$excl" ]] && continue 2
+            [[ "$(basename "$elm")" == "$excl" ]] && continue 2
         done
         cp -af "$elm" "$2"
     done
@@ -109,7 +109,7 @@ function make_release_recursive() {
             pushd "$src_dir" >/dev/null
             if [[ -d "$include_path" ]] ; then
                 # find Dockerfile
-                dockerfile_name=`find_dockerfile "$include_path"`
+                dockerfile_name=$(find_dockerfile "$include_path")
                 if [[ -z "$dockerfile_name" ]]; then
                     print_error "No Dockerfile found in: $include_path"
                     Exit 1 y
@@ -152,20 +152,20 @@ src_dir=""
 dest_dir=""
 force=""
 while [[ $# > 0 ]]; do
-	key="$1"
-	case "$key" in
-		-h|--help)
-			echo "$USAGE"
-			exit 0
-			;;
-		-f|--force)
-			force="y"
-			shift 1
-			;;
-		*)
+key="$1"
+case "$key" in
+-h|--help)
+echo "$USAGE"
+exit 0
+;;
+-f|--force)
+force="y"
+shift 1
+;;
+*)
             break
-			;;
-	esac
+;;
+esac
 done
 if (( $# != 2 )); then
     echo "$USAGE"
@@ -181,11 +181,11 @@ if [[ ! -d "$src_dir" ]]; then
 fi
 
 # get absolute path
-src_dir=`readlink -f "$src_dir"`
-dest_dir=`readlink -f "$dest_dir"`
+src_dir=$(readlink -f "$src_dir")
+dest_dir=$(readlink -f "$dest_dir")
 
 # find Dockerfile
-dockerfile=`find_dockerfile "$src_dir"`
+dockerfile=$(find_dockerfile "$src_dir")
 if [ -z "$dockerfile" ]; then
     print_error "No Dockerfile found in: $src_dir"
     Exit 1
@@ -202,7 +202,7 @@ if [[ "$file_head" =~ ^\# ]]; then
 fi
 unset file_head
 if [[ -z "$image_name" ]]; then
-    image_name=`basename "$src_dir"`
+    image_name=$(basename "$src_dir")
 fi
 
 if [[ -e "$dest_dir" && ! -d "$dest_dir" ]]; then

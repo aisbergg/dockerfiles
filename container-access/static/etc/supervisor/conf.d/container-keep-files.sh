@@ -4,7 +4,7 @@ keep_files_dir=/root/container-keep-files
 
 # create array of files and dirs to keep
 IFS=' ' # can be anything but \n, so readarray will work
-readarray flines <<< `cat "${keep_files_dir}/filelist" | sed -e 's/^[[:space:]]*//'`
+readarray flines <<< $(cat "${keep_files_dir}/filelist" | sed -e 's/^[[:space:]]*//')
 IFS=$'\n'
 for fline in ${flines[@]}; do
     if [[ -n "$fline" && "$fline" != \#* ]]; then
@@ -19,7 +19,7 @@ fi
 # create lockfile
 lockfile="${keep_files_dir}/container-keep-files.lock"
 if [[ -f "$lockfile" ]]; then
-    if [[ -z "`head -n1 "$lockfile"`" ]]; then
+    if [[ -z "$(head -n1 "$lockfile")" ]]; then
         echo "1" > "$lockfile"
         while [[ -f "$lockfile" ]]; do sleep 5; done
     else
