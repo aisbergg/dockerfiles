@@ -1,0 +1,41 @@
+#!/bin/bash
+set -e
+
+USAGE="Usage: start [OPTIONS]
+
+Start the init process
+
+Options:
+  -h, --help           Show this help message and exit
+"
+
+# parse cli args
+while [[ $# > 0 ]]; do
+    case "$1" in
+        -h|--help)
+            echo "$USAGE"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option '$1'"
+            exit 1
+            ;;
+    esac
+done
+
+# execute init
+INIT=$(lower_case "${INIT:-runit}")
+case "$INIT" in
+    runit)
+        print_info "Starting Runit"
+        exec /sbin/runsvdir -P /etc/service ${INIT_ARGS[@]}
+        ;;
+    tini)
+        print_info "Starting Tini"
+        exec /sbin/tini -- ${INIT_ARGS[@]}
+        ;;
+    *)
+        print_error "Unknown container init: $INIT"
+        exit 1
+        ;;
+esac
