@@ -10,11 +10,11 @@ CREATED=$(shell date +'%d-%m-%Y %H:%M:%S %z')
 build: build-alpine build-ubuntu
 
 build-alpine:
-	docker build -t $(USERNAME)/base-alpine:$(VERSION_ALPINE) -f Dockerfile-Alpine --build-arg CREATED="$(CREATED)" . ; \
+	docker build --pull -t $(USERNAME)/base-alpine:$(VERSION_ALPINE) -f Dockerfile-Alpine --build-arg CREATED="$(CREATED)" . ; \
 	docker tag $(USERNAME)/base-alpine:$(VERSION_ALPINE) $(USERNAME)/base-alpine:latest
 
 build-ubuntu:
-	docker build -t $(USERNAME)/base-ubuntu:$(VERSION_UBUNTU) -f Dockerfile-Ubuntu --build-arg UBUNTU_MIRROR=$(UBUNTU_MIRROR) --build-arg CREATED="$(CREATED)" . ; \
+	docker build --pull -t $(USERNAME)/base-ubuntu:$(VERSION_UBUNTU) -f Dockerfile-Ubuntu --build-arg UBUNTU_MIRROR=$(UBUNTU_MIRROR) --build-arg CREATED="$(CREATED)" . ; \
 	docker tag $(USERNAME)/base-ubuntu:$(VERSION_UBUNTU) $(USERNAME)/base-ubuntu:latest
 
 push:
