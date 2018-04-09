@@ -5,7 +5,7 @@ UBUNTU_MIRROR=http://ftp.halifax.rwth-aachen.de/ubuntu/
 
 CREATED=$(shell date +'%d-%m-%Y %H:%M:%S %z')
 
-.PHONY: build build-alpine build-ubuntu push release
+.PHONY: build build-alpine build-ubuntu debug-alpine debug-ubuntu push release
 
 build: build-alpine build-ubuntu
 
@@ -16,6 +16,14 @@ build-alpine:
 build-ubuntu:
 	docker build --pull -t $(USERNAME)/base-ubuntu:$(VERSION_UBUNTU) -f Dockerfile-Ubuntu --build-arg UBUNTU_MIRROR=$(UBUNTU_MIRROR) --build-arg CREATED="$(CREATED)" . ; \
 	docker tag $(USERNAME)/base-ubuntu:$(VERSION_UBUNTU) $(USERNAME)/base-ubuntu:latest
+
+debug-alpine:
+	docker build -t $(USERNAME)/base-alpine:$(VERSION_ALPINE) -f Dockerfile-Alpine . ; \
+	docker run -it --rm --user root $(USERNAME)/base-alpine:$(VERSION_ALPINE) debug
+
+debug-ubuntu:
+	docker build -t $(USERNAME)/base-ubuntu:$(VERSION_UBUNTU) -f Dockerfile-Ubuntu --build-arg UBUNTU_MIRROR=$(UBUNTU_MIRROR) . ; \
+	docker run -it --rm --user root $(USERNAME)/base-ubuntu:$(VERSION_UBUNTU) debug
 
 push:
 	docker push $(USERNAME)/base-alpine:$(VERSION_ALPINE) ; \
