@@ -278,10 +278,8 @@ fi
 cmd="$1"
 shift 1
 
-if [[ -z "$(pidof cat)" ]]; then
-    # replacement for stdout and stderr
-    # see: https://github.com/moby/moby/issues/6880
-    cat <> /var/log/logpipe 1>&2 &
-fi
+# allow non-root users to write to stdout and stderr
+chmod o+w /dev/stdout /dev/stderr
 
+# run the specified command
 . "/provision/cmds/$cmd"

@@ -24,11 +24,15 @@ while [[ $# > 0 ]]; do
 done
 
 # execute init
-INIT=$(lower_case "${INIT:-runit}")
+INIT=$(lower_case "${INIT:-tini}")
 case "$INIT" in
     runit)
         print_info "Starting Runit"
         exec /sbin/runsvdir -P /etc/service ${INIT_ARGS[@]}
+        ;;
+    supervisor)
+        print_info "Starting Supervisor"
+        exec /sbin/tini -- /usr/bin/supervisord ${INIT_ARGS[@]} -c /etc/supervisor/supervisord.conf
         ;;
     tini)
         print_info "Starting Tini"

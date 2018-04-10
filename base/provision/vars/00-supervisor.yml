@@ -1,0 +1,30 @@
+---
+
+defaults:
+  # logging
+  SUPERVISOR_LOGLEVEL:
+    type: choice
+    default: error
+    choices:
+      - "critical"
+      - "error"
+      - "warn"
+      - "info"
+      - "debug"
+      - "trace"
+      - "blather"
+
+  # http server
+  SUPERVISOR_HTTP_SERVER:
+    type: choice
+    default: disabled
+    choices:
+      - "unix"
+      - "inet"
+      - "disabled"
+  SUPERVISOR_UNIX_HTTP_SERVER_FILE: "/tmp/supervisord.sock"
+  SUPERVISOR_UNIX_HTTP_SERVER_USERNAME: ""
+  SUPERVISOR_UNIX_HTTP_SERVER_PASSWORD: ""
+  SUPERVISOR_INET_HTTP_SERVER_HOST: "127.0.0.1"
+  SUPERVISOR_INET_HTTP_SERVER_USERNAME: ""
+  SUPERVISOR_INET_HTTP_SERVER_PASSWORD: ""

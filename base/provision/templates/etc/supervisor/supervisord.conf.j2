@@ -1,0 +1,21 @@
+[supervisord]
+pidfile = /var/run/supervisor/supervisord.pid
+logfile = /dev/stdout
+childlogdir = /var/log/supervisor
+loglevel = {{ SUPERVISOR_LOGLEVEL }}
+
+{%- if SUPERVISOR_HTTP_SERVER == "unix" %}
+[unix_http_server]
+file = {{ SUPERVISOR_UNIX_HTTP_SERVER_FILE }}
+; chmod = 0700 ; unsupported
+{%- if SUPERVISOR_UNIX_HTTP_SERVER_USERNAME != "" %}username = {{ SUPERVISOR_UNIX_HTTP_SERVER_USERNAME }}{% endif %}
+{%- if SUPERVISOR_UNIX_HTTP_SERVER_PASSWORD != "" %}password = {{ SUPERVISOR_UNIX_HTTP_SERVER_PASSWORD }}{% endif %}
+{%- elif SUPERVISOR_HTTP_SERVER == "inet" %}
+[inet_http_server]
+port = {{ SUPERVISOR_INET_HTTP_SERVER_HOST }}:9001
+{%- if SUPERVISOR_INET_HTTP_SERVER_USERNAME != "" %}username = {{ SUPERVISOR_INET_HTTP_SERVER_USERNAME }}{% endif %}
+{%- if SUPERVISOR_INET_HTTP_SERVER_PASSWORD != "" %}password = {{ SUPERVISOR_INET_HTTP_SERVER_PASSWORD }}{% endif %}
+{%- endif %}
+
+[include]
+files = /etc/supervisor/conf.d/*.conf
