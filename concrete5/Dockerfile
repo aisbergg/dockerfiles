@@ -1,17 +1,34 @@
-# aisberg/concrete5 aisberg/concrete5:8.3.1
-FROM aisberg/nginx-php5
+FROM aisberg/nginx-php7
 
-LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
-    Version=2.4 \
-    Comment="Concrete5 is an open-source content management system (CMS). http://www.concrete5.org/)"
+ENV CONCRETE5_VERSION=8.3.2 \
+    CONCRETE5_SHA256_CHECKSUM=86e38b59e6c488c2b9621c1fd80f60975c31b5910b49a13da7ccf3739efe232e
 
-ENV CONCRETE5_VERSION=8.3.1 \
-    CONCRETE5_SHA256_CHECKSUM=1de40d492dc52613e008dd6ef884f5fe3a682072d38b18fde8c977d066db66aa
+RUN wget -q "https://www.concrete5.org/download_file/-/view/100595/concrete5-${CONCRETE5_VERSION}.zip" -O /usr/local/src/concrete5.zip &&\
+    echo "$CONCRETE5_SHA256_CHECKSUM  /usr/local/src/concrete5.zip" | sha256sum -c &&\
+    apk add --update --no-cache --no-progress \
+        php7-fileinfo \
+        php7-simplexml \
+        php7-tokenizer \
+        php7-xml \
+        php7-xmlreader \
+        php7-xmlwriter &&\
+    workdirs /var/www/concrete5
 
-RUN wget -q "https://www.concrete5.org/download_file/-/view/99963/concrete5-${CONCRETE5_VERSION}.zip" -O /usr/local/src/concrete5.zip &&\
-    echo "$CONCRETE5_SHA256_CHECKSUM /usr/local/src/concrete5.zip" | sha256sum -c
-
-COPY provision/ /provision
+COPY provision /provision
+RUN find /provision -type f -exec chmod 0664 {} + &&\
+    find /provision -type d -exec chmod 0775 {} +
 
 VOLUME /var/www/concrete5 \
-    /etc/nginx/conf.d/concrete5
+    /etc/nginx/conf.d
+
+USER 999
+
+ARG CREATED
+LABEL org.opencontainers.image.title="Concrete5" \
+    org.opencontainers.image.version="$CONCRETE5_VERSION" \
+    org.opencontainers.image.description="Concrete5 is an open-source content management system (CMS)." \
+    org.opencontainers.image.url="http://www.concrete5.org/" \
+    org.opencontainers.image.licenses="MIT" \
+    org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/concrete5" \
+    org.opencontainers.image.created="$CREATED"
