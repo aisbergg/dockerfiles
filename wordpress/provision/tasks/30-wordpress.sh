@@ -1,12 +1,10 @@
 #!/bin/bash
-
-# exit on errors
 set -e
 
 print_info "Configuring Wordpress"
 
 # removing all files before installing
-if [[ `bool "$CLEAN_INSTALLATION" false` == "True" ]]; then
+if [[ $(bool "$CLEAN_INSTALLATION" false) == "True" ]]; then
     print_info "Removing all files in installation dir"
     shopt -s dotglob
     rm -rf /var/www/wordpress/*
@@ -14,7 +12,7 @@ if [[ `bool "$CLEAN_INSTALLATION" false` == "True" ]]; then
 fi
 
 # if Wordpress is not yet installed, copy it into web root
-if [ ! -f '/var/www/wordpress/wp-config.php' ]; then
+if [[ ! -d '/var/www/wordpress/wp-content' ]]; then
     print_info "No previous Wordpress installation found, creating a new one"
     if ! is_dir_empty /var/www/wordpress; then
         print_error "Install dir is not empty! Make sure the target dir is empty before trying to install a new Wordpress!"
@@ -22,12 +20,10 @@ if [ ! -f '/var/www/wordpress/wp-config.php' ]; then
     fi
 
     tar xfz /usr/local/src/wordpress.tar.gz -C /var/www
-    chown -R www-data:www-data /var/www/wordpress/
 else
-    # set file owner to www-data but leave the group as it is
-    chown -R www-data /var/www/wordpress/
-    # confine access permissions for settings file
-    chmod 660 /var/www/wordpress/wp-config.php
+    if [[ -f '/var/www/wordpress/wp-config.php' ]]; then
+        chmod o-rwx /var/www/wordpress/wp-config.php
+    fi
 fi
 # information about upgrading wordpress can be found here: https://codex.wordpress.org/Updating_WordPress
 

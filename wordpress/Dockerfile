@@ -1,20 +1,46 @@
-# aisberg/wordpress aisberg/wordpress:4.9.1
 FROM aisberg/nginx-php7
 
-LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
-    Version=2.9 \
-    Comment="Wordpress is an open-source content management system (CMS). (https://wordpress.org/)"
-
-ENV WORDPRESS_VERSION=4.9.1 \
-    WORDPRESS_SHA256_CHECKSUM=a94ae99cda7666bfd482b36f268ad240a3bde2a66724e1312dabf068a9555100
+ENV WORDPRESS_VERSION=4.9.5 \
+    WORDPRESS_SHA256_CHECKSUM=a1664b259755021adbfbe5e8f7fd78a98c015e92e1f985258abed19f759822cb
 
 RUN wget -q "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz" -O /usr/local/src/wordpress.tar.gz &&\
-    echo "$WORDPRESS_SHA256_CHECKSUM /usr/local/src/wordpress.tar.gz" | sha256sum -c &&\
-    apt-get update &&\
-    apt-get install -y imagemagick &&\
-    rm -rf /var/lib/apt/lists/*
+    echo "$WORDPRESS_SHA256_CHECKSUM  /usr/local/src/wordpress.tar.gz" | sha256sum -c &&\
+    `#---- install imagemagick ----#` &&\
+    apk add --update --no-cache --no-progress \
+        graphviz \
+        imagemagick \
+        imagemagick-libs \
+        shared-mime-info &&\
+    workdirs \
+        /etc/ImageMagick-7 \
+        /var/www/wordpress
 
-COPY provision/ /provision
+# RUN wget -q "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz" -O /usr/local/src/wordpress.tar.gz &&\
+#     echo "$WORDPRESS_SHA256_CHECKSUM  /usr/local/src/wordpress.tar.gz" | sha256sum -c &&\
+#     `#---- install imagemagick ----#` &&\
+#     apt-get update &&\
+#     apt-get install -y \
+#         ghostscript \
+#         graphviz \
+#         gsfonts \
+#         imagemagick \
+#         libmagickcore-6.q16-3-extra \
+#         netpbm \
+#         shared-mime-info &&\
+#     rm -rf /var/lib/apt/lists/*
 
-VOLUME /var/www/wordpress \
-    /etc/nginx/conf.d/wordpress
+COPY provision /provision
+
+VOLUME /var/www/wordpress
+
+USER 999
+
+ARG CREATED
+LABEL org.opencontainers.image.title="Wordpress" \
+    org.opencontainers.image.version="$WORDPRESS_VERSION" \
+    org.opencontainers.image.description="Wordpress is an open-source content management system (CMS)." \
+    org.opencontainers.image.url="https://wordpress.org/" \
+    org.opencontainers.image.licenses="MIT" \
+    org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/wordpress" \
+    org.opencontainers.image.created="$CREATED"
