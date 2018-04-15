@@ -48,7 +48,7 @@ defaults:
   # TLS related
   NGINX_TLS_TERMINATED: false
   NGINX_REWRITE_HTTPS: false
-  NGINX_REWRITE_HTTPS_PORT: 8443
+  NGINX_REWRITE_HTTPS_PORT: 443
   NGINX_BEHIND_PROXY: false
   # NGINX_TLS_KEY: "/etc/ssl/private/key.pem"
   # NGINX_TLS_CERT: "/etc/ssl/private/cert.pem"
