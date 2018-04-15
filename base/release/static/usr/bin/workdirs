@@ -1,0 +1,19 @@
+#!bin/bash
+set -e
+
+while [[ $# > 0 ]]; do
+    if [[ ! -e "$1" ]]; then
+        mkdir -p "$1"
+    fi
+
+    find "$1" |
+    while read elm; do
+        # follow symlinks
+        elm="$(readlink -f $elm | cat -)"
+        if [[ -n "$elm" ]]; then
+            chown root:root "$elm"
+            chmod g+rwX "$elm"
+        fi
+    done
+    shift
+done

@@ -1,0 +1,62 @@
+FROM golang:alpine as build
+WORKDIR /usr/local/src
+RUN apk add --update --no-cache --no-progress git &&\
+    go get -v -u github.com/ochinchina/supervisord &&\
+    go get -v -u github.com/papertrail/remote_syslog2 &&\
+    CGO_ENABLED=0 GOOS=linux go build -a -ldflags "-extldflags -static" -o /usr/bin/supervisord github.com/ochinchina/supervisord &&\
+    CGO_ENABLED=0 GOOS=linux go build -a -ldflags="-extldflags -static" -o /usr/bin/remote_syslog github.com/papertrail/remote_syslog2
+
+#-------------------------------------------------------------------------------
+
+FROM alpine:3.7
+
+ARG LANG=en_US.UTF-8
+ENV LANG=$LANG \
+    LANGUAGE=$LANG \
+    LC_ALL=$LANG
+
+COPY --from=build /usr/bin/supervisord /usr/bin/supervisord
+COPY --from=build /usr/bin/remote_syslog /usr/bin/remote_syslog
+
+RUN adduser -S -u 999 -G root cu &&\
+    apk update && apk upgrade &&\
+    apk add --update --no-cache --no-progress  \
+        bash \
+        ca-certificates \
+        git \
+        gnupg \
+        nano \
+        python3 \
+        rsync \
+        tini \
+        wget &&\
+    pip3 install --upgrade pip &&\
+    pip3 install wheel &&\
+    pip3 install git+https://github.com/Aisbergg/python-templer.git@v1.1.1 &&\
+    pip3 install git+https://github.com/Aisbergg/python-confmerge.git@v0.2.0
+
+COPY provision /provision
+COPY static /
+RUN chmod 0755 /entrypoint /usr/bin/workdirs &&\
+    find /provision -type f -exec chmod 0664 {} + &&\
+    find /provision -type d -exec chmod 0775 {} + &&\
+    workdirs \
+        /etc/remote_syslog \
+        /etc/supervisor \
+        /usr/local/src \
+        /var/log \
+        /var/log/supervisor \
+        /var/run/supervisor
+
+ENTRYPOINT ["/entrypoint"]
+CMD ["run"]
+
+ARG CREATED
+LABEL org.opencontainers.image.title="Base Image - Alpine Linux" \
+    org.opencontainers.image.version="3.7" \
+    org.opencontainers.image.description="A base image build upon Alpine Linux" \
+    org.opencontainers.image.url="https://www.alpinelinux.org" \
+    org.opencontainers.image.licenses="MIT" \
+    org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/base" \
+    org.opencontainers.image.created="$CREATED"

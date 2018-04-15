@@ -56,33 +56,6 @@ case "$TERM" in
 esac
 
 #######################################
-# functions
-#######################################
-
-# ex - archive extractor
-# usage: ex <file>
-function extract () {
-    if [ -f $1 ] ; then
-        case $1 in
-            *.tar.bz2)   tar xjf $1   ;;
-            *.tar.gz)    tar xzf $1   ;;
-            *.bz2)       bunzip2 $1   ;;
-            *.rar)       unrar x $1   ;;
-            *.gz)        gunzip $1    ;;
-            *.tar)       tar xf $1    ;;
-            *.tbz2)      tar xjf $1   ;;
-            *.tgz)       tar xzf $1   ;;
-            *.zip)       unzip $1     ;;
-            *.Z)         uncompress $1;;
-            *.7z)        7z x $1      ;;
-            *)           echo "'$1' cannot be extracted via ex()" ;;
-        esac
-    else
-        echo "'$1' is not a valid file"
-    fi
-}
-
-#######################################
 # alias
 #######################################
 
@@ -112,25 +85,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
-
-# git
-alias gpo='git push origin master'
-alias gd='git diff'
-alias gr='git reflog'
-alias glf='git ls-files'
-alias ga='git add'
-alias gb='git br'
-alias gd='git diff'
-alias gdc='git diff --cached'
-alias gl='git log'
-alias gp='git pull'
-alias gs='git status'
-alias gst='git stash'
-alias gplo='git pull origin master'
-alias gbv='git branch -vv'
-
-# set permissions for a dir to 750 and files to 640
-alias fix-permissions='find $(pwd) -type d -exec chmod 750 {} + && find $(pwd) -type f -exec chmod 640 {} +'
 
 #######################################
 # env

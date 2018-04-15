@@ -31,6 +31,11 @@ if [[ -d /run/secrets ]]; then
     done
 fi
 
+# load environment variables from a file mounted inside the container
+if [[ -f /etc/container_environment ]]; then
+    source /etc/container_environment
+fi
+
 # execute provision tasks (bash or python)
 print_info "Running provision tasks"
 for t in /provision/tasks/*.{sh,py}; do
@@ -59,9 +64,6 @@ if [[ -n "$tempdir" ]]; then
     rm -r "$tempdir"
     unset tempdir
 fi
-
-# make runit service files executable
-find /etc/service -type f -name "run" -exec chmod 755 {} +
 
 # execute post provision tasks (bash or python)
 print_info "Running post provision tasks"

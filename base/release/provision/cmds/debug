@@ -23,4 +23,4 @@ while [[ $# > 0 ]]; do
 done
 
 print_debug "Entering debug mode"
-exec /bin/bash
+exec /bin/bash --rcfile /etc/bash.bashrc
