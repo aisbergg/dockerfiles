@@ -43,7 +43,7 @@ server {
     rewrite_by_lua_block {
         if not string.match(ngx.var.request_uri, "^/%.well%-known/acme%-challenge") and
                 ngx.var.real_scheme ~= "https" then
-            return ngx.redirect("https://" .. ngx.var.host ..{{ ' "' + NGINX_REWRITE_HTTPS_PORT + '" ..' if NGINX_REWRITE_HTTPS_PORT != 443 else '' }} ngx.var.request_uri, 301)
+            return ngx.redirect("https://" .. ngx.var.host ..{{ ' ":' + NGINX_REWRITE_HTTPS_PORT + '" ..' if NGINX_REWRITE_HTTPS_PORT != 443 else '' }} ngx.var.request_uri, 301)
         end
     }
     {%- endif %}
