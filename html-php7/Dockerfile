@@ -1,11 +1,26 @@
-# aisberg/html-php7
 FROM aisberg/nginx-php7
 
-LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
-    Version=2.1 \
-    Comment="Webserver with PHP capabilities"
+ARG CREATED
+LABEL org.opencontainers.image.title="HTML+PHP7" \
+    org.opencontainers.image.description="Webserver with PHP capabilities" \
+    org.opencontainers.image.licenses="MIT" \
+    org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/html-php7" \
+    org.opencontainers.image.created="$CREATED"
 
-COPY provision/ /provision
+# install imagemagick
+RUN apk add --update --no-cache --no-progress \
+        graphviz \
+        imagemagick \
+        imagemagick-libs \
+        shared-mime-info
 
-VOLUME /var/www/html-php \
-    /etc/nginx/conf.d/html-php
+COPY provision /provision
+RUN find /provision -type f -exec chmod 0664 {} + &&\
+    find /provision -type d -exec chmod 0775 {} + &&\
+    workdirs /var/www/html
+
+VOLUME /var/www/html \
+    /etc/nginx/conf.d
+
+USER 999
