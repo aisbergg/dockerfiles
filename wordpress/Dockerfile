@@ -19,7 +19,8 @@ COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} +
 
-VOLUME /var/www/wordpress
+VOLUME /var/www/wordpress \
+    /etc/nginx/conf.d
 
 USER 999
 
