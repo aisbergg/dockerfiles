@@ -64,7 +64,7 @@ http {
     default_type             application/octet-stream;
 
     # maximal allowed size of the client request body
-    client_max_body_size     {{ NGINX_CLIENT_MAX_BODY_SIZE | default(MAX_UPLOAD_FILESIZE) }};
+    client_max_body_size     {{ NGINX_CLIENT_MAX_BODY_SIZE | default(NGINX_MAX_UPLOAD_FILESIZE) }};
 
     ignore_invalid_headers   on;
     types_hash_max_size      2048;
@@ -221,14 +221,6 @@ http {
     }
     limit_conn_status        429;
     limit_req_status         429;
-
-
-    # (reserve 5m of memory for states of various keys)
-    # zone for limiting concurrent connections per ip
-    limit_conn_zone          $limit zone=conn_limit_per_ip:5m;
-    # zone for limiting requests per second per ip
-    limit_req_zone           $limit zone=req_limit_per_ip:5m rate={{ NGINX_REQ_LIMIT_PER_IP_RATE }}r/s;
-
 
     ###############################################
     # Other
