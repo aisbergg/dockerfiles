@@ -3,6 +3,7 @@ set -eo pipefail
 
 print_info "Configuring Nginx"
 
+export NGINX_TLS_TERMINATED=$(bool "$NGINX_TLS_TERMINATED" false)
 export NGINX_TLS_CERT=${NGINX_TLS_CERT:-"/etc/ssl/private/cert.pem"}
 export NGINX_TLS_KEY=${NGINX_TLS_KEY:-"/etc/ssl/private/key.pem"}
 export NGINX_DHPARAM=${NGINX_DHPARAM:-"/etc/ssl/private/dhparam.pem"}
@@ -10,7 +11,7 @@ export NGINX_DHPARAM=${NGINX_DHPARAM:-"/etc/ssl/private/dhparam.pem"}
 # !!! IN PRODUCTION USE 4096 !!!
 export NGINX_DHPARAM_SIZE=${NGINX_DHPARAM_SIZE:-"512"}
 
-if [[ $(bool "$NGINX_TLS_TERMINATED" true) == false ]]; then
+if [[ "$NGINX_TLS_TERMINATED" == false ]]; then
     # TLS certificate and key
     if [[ ! -f "$NGINX_TLS_CERT" && ! -f "$NGINX_TLS_KEY" ]]; then
         print_info "Generating TLS-Key and TLS-Certificate..."
