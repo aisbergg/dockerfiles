@@ -1,0 +1,6 @@
+version: '3'
+services:
+  nginx:
+    image: aisberg/html
+    build:
+      context: .
