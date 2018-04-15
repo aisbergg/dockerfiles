@@ -1,0 +1,46 @@
+---
+
+defaults:
+  ######################################
+  ## Supervisor
+  ######################################
+  SUPERVISOR_LOGLEVEL:
+    type: choice
+    default: error
+    choices:
+      - "critical"
+      - "error"
+      - "warn"
+      - "info"
+      - "debug"
+      - "trace"
+      - "blather"
+  SUPERVISOR_LOGFILE_BACKUPS: 0
+  SUPERVISOR_LOGFILE_MAXBYTES: 5MB
+
+  SUPERVISOR_HTTP_SERVER:
+    type: choice
+    default: disabled
+    choices:
+      - "unix"
+      - "inet"
+      - "disabled"
+  SUPERVISOR_UNIX_HTTP_SERVER_FILE: "/tmp/supervisord.sock"
+  SUPERVISOR_UNIX_HTTP_SERVER_USERNAME: ""
+  SUPERVISOR_UNIX_HTTP_SERVER_PASSWORD: ""
+  SUPERVISOR_INET_HTTP_SERVER_HOST: "127.0.0.1"
+  SUPERVISOR_INET_HTTP_SERVER_USERNAME: ""
+  SUPERVISOR_INET_HTTP_SERVER_PASSWORD: ""
+
+  ######################################
+  ## Remote Syslog
+  ######################################
+  REMOTE_SYSLOG_ENABLED: false
+  REMOTE_SYSLOG_PROTO:
+    type: choice
+    default: tcp
+    choices:
+      - "tcp"
+      - "tls"
+  REMOTE_SYSLOG_HOST: ''
+  REMOTE_SYSLOG_PORT: 514
