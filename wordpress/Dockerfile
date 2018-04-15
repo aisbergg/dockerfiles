@@ -15,21 +15,9 @@ RUN wget -q "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz" -O /us
         /etc/ImageMagick-7 \
         /var/www/wordpress
 
-# RUN wget -q "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz" -O /usr/local/src/wordpress.tar.gz &&\
-#     echo "$WORDPRESS_SHA256_CHECKSUM  /usr/local/src/wordpress.tar.gz" | sha256sum -c &&\
-#     `#---- install imagemagick ----#` &&\
-#     apt-get update &&\
-#     apt-get install -y \
-#         ghostscript \
-#         graphviz \
-#         gsfonts \
-#         imagemagick \
-#         libmagickcore-6.q16-3-extra \
-#         netpbm \
-#         shared-mime-info &&\
-#     rm -rf /var/lib/apt/lists/*
-
 COPY provision /provision
+RUN find /provision -type f -exec chmod 0664 {} + &&\
+    find /provision -type d -exec chmod 0775 {} +
 
 VOLUME /var/www/wordpress
 
