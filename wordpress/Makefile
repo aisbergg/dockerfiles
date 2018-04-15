@@ -10,7 +10,7 @@ build:
 	docker tag $(USERNAME)/$(NAME):$(VERSION) $(USERNAME)/$(NAME):latest
 
 debug:
-	docker build -t $(USERNAME)/$(NAME):debug -f Dockerfile . ; \
+	docker build -t $(USERNAME)/$(NAME):$(VERSION) -f Dockerfile . ; \
 	docker run -it --rm $(USERNAME)/$(NAME):$(VERSION) debug
 
 push:
