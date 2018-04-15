@@ -44,11 +44,9 @@ RUN apk add --update --no-cache --no-progress \
     chmod +x /usr/bin/composer &&\
     `#---- directories and files ----#` &&\
     rm /etc/php7/php-fpm.d/* &&\
-    ln -sf /dev/stdout /var/log/php7/error.log &&\
     workdirs \
         /etc/php7 \
         /var/cache/php/tmp \
-        /var/log/php7 \
         /var/run/php
 
 COPY provision /provision
