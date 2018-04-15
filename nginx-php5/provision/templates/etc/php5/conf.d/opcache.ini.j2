@@ -42,12 +42,8 @@ opcache.revalidate_path={{ OPCACHE_REVALIDATE_PATH }}
 ; size of the optimized code.
 opcache.save_comments={{ OPCACHE_SAVE_COMMENTS }}
 
-; If disabled, PHPDoc comments are not loaded from SHM, so "Doc Comments"
-; may be always stored (save_comments=1), but not loaded by applications
-; that don't need them anyway.
-opcache.load_comments={{ OPCACHE_LOAD_COMMENTS }}
-
 ; If enabled, a fast shutdown sequence is used for the accelerated code
+; Depending on the used Memory Manager this may cause some incompatibilities.
 opcache.fast_shutdown={{ OPCACHE_FAST_SHUTDOWN }}
 
 ; Allow file existence override (file_exists, etc.) performance feature.
@@ -95,6 +91,36 @@ opcache.preferred_memory_model={{ OPCACHE_PREFERRED_MEMORY_MODEL }}
 ; Protect the shared memory from unexpected writing during script execution.
 ; Useful for internal debugging only.
 opcache.protect_memory={{ OPCACHE_PROTECT_MEMORY }}
+
+; Allows calling OPcache API functions only from PHP scripts which path is
+; started from specified string. The default "" means no restriction
+opcache.restrict_api={{ OPCACHE_RESTRICT_API }}
+
+; Mapping base of shared memory segments (for Windows only). All the PHP
+; processes have to map shared memory into the same address space. This
+; directive allows to manually fix the "Unable to reattach to base address"
+; errors.
+opcache.mmap_base={{ OPCACHE_MMAP_BASE }}
+
+; Enables and sets the second level cache directory.
+; It should improve performance when SHM memory is full, at server restart or
+; SHM reset. The default "" disables file based caching.
+opcache.file_cache={{ OPCACHE_FILE_CACHE }}
+
+; Enables or disables opcode caching in shared memory.
+opcache.file_cache_only={{ OPCACHE_FILE_CACHE_ONLY }}
+
+; Enables or disables checksum validation when script loaded from file cache.
+opcache.file_cache_consistency_checks={{ OPCACHE_FILE_CACHE_CONSISTENCY_CHECKS }}
+
+; Implies opcache.file_cache_only=1 for a certain process that failed to
+; reattach to the shared memory (for Windows only). Explicitly enabled file
+; cache is required.
+opcache.file_cache_fallback={{ OPCACHE_FILE_CACHE_FALLBACK }}
+
+; Enables or disables copying of PHP code (text segment) into HUGE PAGES.
+; This should improve performance, but requires appropriate OS configuration.
+opcache.huge_code_pages={{ OPCACHE_HUGE_CODE_PAGES }}
 
 ; Validate cached file permissions.
 opcache.validate_permission={{ OPCACHE_VALIDATE_PERMISSION }}

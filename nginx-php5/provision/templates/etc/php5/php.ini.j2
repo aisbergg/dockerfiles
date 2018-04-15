@@ -666,7 +666,14 @@ auto_globals_jit = On
 ; Its value may be 0 to disable the limit. It is ignored if POST data reading
 ; is disabled through enable_post_data_reading.
 ; http://php.net/post-max-size
-post_max_size = {{ PHP_POST_MAX_SIZE }}
+{% macro add_16mb(value) -%}
+  {% if value.endswith('G') -%}
+    {{ value[:-1]|int * 1024 + 16 }}M
+  {%- else -%}
+    {{ value[:-1]|int  + 16 }}M
+  {%- endif %}
+{%- endmacro %}
+post_max_size = {{ add_16mb(PHP_POST_MAX_SIZE | default(NGINX_MAX_UPLOAD_FILESIZE) | upper) }}
 
 ; Automatically add files before PHP document.
 ; http://php.net/auto-prepend-file
@@ -715,7 +722,7 @@ default_charset = "UTF-8"
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; UNIX: "/path1:/path2"
-;include_path = ".:/usr/share/php"
+;include_path = ".:/php/includes"
 ;
 ; Windows: "\path1;\path2"
 ;include_path = ".;c:\php\includes"
@@ -738,7 +745,7 @@ user_dir =
 
 ; Directory in which the loadable extensions (modules) reside.
 ; http://php.net/extension-dir
-; extension_dir = "./"
+extension_dir = "/usr/lib/php5/modules"
 ; On windows:
 ; extension_dir = "ext"
 
@@ -804,6 +811,10 @@ enable_dl = Off
 ; http://php.net/cgi.rfc2616-headers
 ;cgi.rfc2616_headers = 0
 
+; If this is enabled, the PHP CGI binary can safely be placed outside of the
+; web tree and people will not be able to circumvent .htaccess security.
+cgi.discard_path = 1
+
 ; cgi.check_shebang_line controls whether CGI PHP checks for line starting with #!
 ; (shebang) at the top of the running script. This line might be needed if the
 ; script support running both as stand-alone script and via PHP CGI<. PHP in CGI
@@ -826,7 +837,7 @@ upload_tmp_dir = /var/cache/php/tmp
 
 ; Maximum allowed size for uploaded files.
 ; http://php.net/upload-max-filesize
-upload_max_filesize = {{ PHP_UPLOAD_MAX_FILESIZE }}
+upload_max_filesize = {{ PHP_UPLOAD_MAX_FILESIZE | default(NGINX_MAX_UPLOAD_FILESIZE) | upper }}
 
 ; Maximum number of files that can be uploaded via a single request
 max_file_uploads = {{ PHP_MAX_FILE_UPLOADS }}
@@ -1451,7 +1462,7 @@ session.save_handler = files
 ; where MODE is the octal representation of the mode. Note that this
 ; does not overwrite the process's umask.
 ; http://php.net/session.save-path
-;session.save_path = "/var/lib/php/sessions"
+;session.save_path = "/tmp"
 
 ; Whether to use strict session mode.
 ; Strict session mode does not accept uninitialized session ID and regenerate
@@ -1513,7 +1524,7 @@ session.serialize_handler = php
 ; Development Value: 1
 ; Production Value: 1
 ; http://php.net/session.gc-probability
-session.gc_probability = 0
+session.gc_probability = 1
 
 ; Defines the probability that the 'garbage collection' process is started on every
 ; session initialization. The probability is calculated by using the following equation:
