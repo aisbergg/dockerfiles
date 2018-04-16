@@ -60,7 +60,7 @@ RUN apk add --update --no-cache --no-progress \
     rm -rf /usr/share/php7 &&\
     apk del .pecl-deps &&\
     `#---- install Composer ----#` &&\
-    curl -s -o /usr/bin/composer "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar" &&\
+    curl -fSL "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar" -o /usr/bin/composer &&\
     echo "$COMPOSER_SHA256_CHECKSUM  /usr/bin/composer" | sha256sum -c &&\
     chmod +x /usr/bin/composer &&\
     `#---- directories and files ----#` &&\
