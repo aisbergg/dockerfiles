@@ -58,8 +58,10 @@ server {
 
     # prevent some types of XSS
     more_set_headers "X-XSS-Protection: 1; mode=block";
+    {% if NGINX_DISALLOW_EMBED -%}
     # disallow embedding this site somewhere else
     more_set_headers "X-Permitted-Cross-Domain-Policies: none";
+    {%- endif %}
 
     # disable logging
     location = /robots.txt  { access_log off; log_not_found off; allow all; }

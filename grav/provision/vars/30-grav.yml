@@ -13,6 +13,7 @@ defaults:
   NGINX_FASTCGI_READ_TIMEOUT: 120
   NGINX_MAX_UPLOAD_FILESIZE: 512M
   NGINX_REWRITE_HTTPS: true
+  NGINX_DISALLOW_EMBED: true
 
   ######################################
   ## PHP
