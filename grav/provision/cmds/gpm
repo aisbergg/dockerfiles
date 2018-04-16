@@ -1,0 +1,27 @@
+#!/bin/bash
+set -e
+
+# parse cli args
+provision=true
+while [[ $# > 0 ]]; do
+    case "$1" in
+        --skip-provision)
+            provision=false
+            shift 1
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+args=($@)
+shift $#
+
+# provision the container first
+if [[ "$provision" == true ]]; then
+    . /provision/cmds/provision
+    print_info "Running Grav GPM..."
+fi
+
+cd /var/www/grav
+exec php bin/gpm ${args[@]}
