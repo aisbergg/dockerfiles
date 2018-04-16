@@ -23,13 +23,12 @@ RUN adduser -S -u 999 -G root cu &&\
     apk add --update --no-cache --no-progress  \
         bash \
         ca-certificates \
+        curl \
         git \
         gnupg \
         nano \
         python3 \
-        rsync \
-        tini \
-        wget &&\
+        tini &&\
     pip3 install --upgrade pip &&\
     pip3 install wheel &&\
     pip3 install git+https://github.com/Aisbergg/python-templer.git@v1.1.1 &&\
