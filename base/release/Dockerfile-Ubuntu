@@ -52,14 +52,14 @@ RUN useradd -r -u 999 -G root cu &&\
         python3-pip \
         python3-setuptools \
         python3-wheel &&\
-    curl -s -o /sbin/tini "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini" &&\
-    curl -s -o /tmp/tini.asc "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini.asc" &&\
+    curl -fSL "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini" -o /sbin/tini &&\
+    curl -fSL "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini.asc" -o /tmp/tini.asc &&\
     ( gpg --keyserver ipv4.pool.sks-keyservers.net --keyserver-options timeout=10 --recv-keys "$TINI_PGP_KEY_ID" \
         || gpg --keyserver pgp.mit.edu --keyserver-options timeout=10 --recv-keys "$TINI_PGP_KEY_ID" \
         || gpg --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$TINI_PGP_KEY_ID" ) &&\
     gpg --verify /tmp/tini.asc /sbin/tini &&\
     pip3 install --upgrade pip &&\
-    pip3 install git+https://github.com/Aisbergg/python-templer.git@v1.1.1 &&\
+    pip3 install git+https://github.com/Aisbergg/python-templer.git@v1.1.2 &&\
     pip3 install git+https://github.com/Aisbergg/python-confmerge.git@v0.2.0 &&\
     `#----- cleanup -----#` &&\
     rm -rf /var/lib/apt/lists/* /var/cache/* /tmp/tini.asc
