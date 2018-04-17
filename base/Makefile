@@ -2,6 +2,7 @@ USERNAME=aisberg
 VERSION_ALPINE=3.7
 VERSION_UBUNTU=17.10
 UBUNTU_MIRROR=http://ftp.halifax.rwth-aachen.de/ubuntu/
+ALPINE_MIRROR=http://ftp.halifax.rwth-aachen.de/alpine/v3.7/
 
 CREATED=$(shell date +'%d-%m-%Y %H:%M:%S %z')
 
