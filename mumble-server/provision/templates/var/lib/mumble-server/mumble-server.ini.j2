@@ -126,7 +126,7 @@ port=64738
 host={{ MUMBLE_HOST }}
 
 ; Password to join server.
-serverpassword={{ MUMBLE_SERVERPASSWORD }}
+serverpassword={{ MUMBLE_SERVER_PASSWORD }}
 
 ; Maximum bandwidth (in bits per second) clients are allowed
 ; to send speech at.
@@ -181,10 +181,10 @@ allowhtml={{ MUMBLE_ALLOWHTML }}
 ; addresses.
 ; Only uncomment the 'registerName' parameter if you wish to give your "Root" channel a custom name.
 ;
-{{ ';' if MUMBLE_REGISTER_NAME == "" }}registerName={{ MUMBLE_REGISTER_NAME }}
-{{ ';' if MUMBLE_REGISTER_PASSWORD == "" }}registerPassword={{ MUMBLE_REGISTER_PASSWORD }}
-{{ ';' if MUMBLE_REGISTER_URL == "" }}registerUrl={{ MUMBLE_REGISTER_URL }}
-{{ ';' if MUMBLE_REGISTER_HOSTNAME == "" }}registerHostname={{ MUMBLE_REGISTER_HOSTNAME }}
+{{ ';' if MUMBLE_REGISTER_NAME == "" else '' }}registerName={{ MUMBLE_REGISTER_NAME }}
+{{ ';' if MUMBLE_REGISTER_PASSWORD == "" else '' }}registerPassword={{ MUMBLE_REGISTER_PASSWORD }}
+{{ ';' if MUMBLE_REGISTER_URL == "" else '' }}registerUrl={{ MUMBLE_REGISTER_URL }}
+{{ ';' if MUMBLE_REGISTER_HOSTNAME == "" else '' }}registerHostname={{ MUMBLE_REGISTER_HOSTNAME }}
 
 ; If this option is enabled, the server will announce its presence via the
 ; bonjour service discovery protocol. To change the name announced by bonjour
@@ -195,15 +195,15 @@ bonjour={{ MUMBLE_BONJOUR }}
 
 ; If you have a proper SSL certificate, you can provide the filenames here.
 ; Otherwise, Murmur will create its own certificate automatically.
-{{ ';' if MUMBLE_SSL_CERT == "" }}sslCert={{ MUMBLE_SSL_CERT }}
-{{ ';' if MUMBLE_SSL_KEY == "" }}sslKey={{ MUMBLE_SSL_KEY }}
+{{ ';' if MUMBLE_TLS_CERT == "" else '' }}sslCert={{ MUMBLE_TLS_CERT }}
+{{ ';' if MUMBLE_TLS_KEY == "" else '' }}sslKey={{ MUMBLE_TLS_KEY }}
 
 ; The sslDHParams option allows you to specify a PEM-encoded file with
 ; Diffie-Hellman parameters, which will be used as the default Diffie-
 ; Hellman parameters for all virtual servers.
 ; If a file is not specified, each Murmur virtual server will auto-generate
 ; its own unique set of 2048-bit Diffie-Hellman parameters on first launch.
-{{ ';' if MUMBLE_SSL_DHPARAMS == "" }}sslDHParams={{ MUMBLE_SSL_DHPARAMS }}
+{{ ';' if MUMBLE_TLS_DHPARAMS == "" else '' }}sslDHParams={{ MUMBLE_TLS_DHPARAMS }}
 
 ; The sslCiphers option chooses the cipher suites to make available for use
 ; in SSL/TLS. This option is server-wide, and cannot be set on a
@@ -221,7 +221,7 @@ bonjour={{ MUMBLE_BONJOUR }}
 ; Note: Changing this option may impact the backwards compatibility of your
 ; Murmur server, and can remove the ability for older Mumble clients to be able
 ; to connect to it.
-sslCiphers={{ MUMBLE_SSL_CIPHERS }}
+sslCiphers={{ MUMBLE_TLS_CIPHERS }}
 
 ; If Murmur is started as root, which user should it switch to?
 ; This option is ignored if Murmur isn't started with root privileges.
