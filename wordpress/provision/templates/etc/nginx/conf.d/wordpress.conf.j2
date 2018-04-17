@@ -65,12 +65,15 @@ server {
     }
 
     location /wp-login.php {
-        limit_req       zone=login nodelay;
-        include         conf.d/php.inc;
-    }
-
-    location = /wp-login.php {
-        limit_req   zone=login nodelay;
+        location ~ \.php$ {
+            limit_req               zone=login nodelay;
+            try_files               $uri =404;
+            fastcgi_read_timeout    {{ NGINX_FASTCGI_READ_TIMEOUT }};
+            include                 fastcgi_params;
+            fastcgi_index           index.php;
+            fastcgi_param           SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_pass            unix:/var/run/php/php7-fpm.sock;
+        }
     }
 
     # turn  off logging for following locations
@@ -91,7 +94,16 @@ server {
         default_type text/plain;
     }
 
-    include             conf.d/php.inc;
+    # pass PHP scripts to PHP-FPM
+    location ~ \.php$ {
+        limit_req               zone=php burst=50;
+        try_files               $uri =404;
+        fastcgi_read_timeout    {{ NGINX_FASTCGI_READ_TIMEOUT }};
+        include                 fastcgi_params;
+        fastcgi_index           index.php;
+        fastcgi_param           SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass            unix:/var/run/php/php7-fpm.sock;
+    }
 
     # client caching
     location ~* \.(?:css|js|jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)$ {
