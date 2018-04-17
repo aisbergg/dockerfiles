@@ -1,1 +1,0 @@
-# HAProxy (aisberg/haproxy)
