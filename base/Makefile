@@ -10,29 +10,29 @@ CREATED=$(shell date +'%d-%m-%Y %H:%M:%S %z')
 build: build-alpine build-ubuntu
 
 build-alpine: update
-	cd release; \
-	docker build --pull -t $(USERNAME)/base-alpine:$(VERSION_ALPINE) -f Dockerfile-Alpine --build-arg CREATED="$(CREATED)" . ; \
+	cd release
+	docker build --pull -t $(USERNAME)/base-alpine:$(VERSION_ALPINE) -f Dockerfile-Alpine --build-arg CREATED="$(CREATED)" .
 	docker tag $(USERNAME)/base-alpine:$(VERSION_ALPINE) $(USERNAME)/base-alpine:latest
 
 build-ubuntu: update
-	cd release; \
-	docker build --pull -t $(USERNAME)/base-ubuntu:$(VERSION_UBUNTU) -f Dockerfile-Ubuntu --build-arg UBUNTU_MIRROR=$(UBUNTU_MIRROR) --build-arg CREATED="$(CREATED)" . ; \
+	cd release
+	docker build --pull -t $(USERNAME)/base-ubuntu:$(VERSION_UBUNTU) -f Dockerfile-Ubuntu --build-arg UBUNTU_MIRROR=$(UBUNTU_MIRROR) --build-arg CREATED="$(CREATED)" .
 	docker tag $(USERNAME)/base-ubuntu:$(VERSION_UBUNTU) $(USERNAME)/base-ubuntu:latest
 
 debug-alpine: update
-	cd release; \
-	docker build -t $(USERNAME)/base-alpine:$(VERSION_ALPINE) -f Dockerfile-Alpine . ; \
+	cd release
+	docker build -t $(USERNAME)/base-alpine:$(VERSION_ALPINE) -f Dockerfile-Alpine .
 	docker run -it --rm $(USERNAME)/base-alpine:$(VERSION_ALPINE) debug
 
 debug-ubuntu: update
-	cd release; \
-	docker build -t $(USERNAME)/base-ubuntu:$(VERSION_UBUNTU) -f Dockerfile-Ubuntu --build-arg UBUNTU_MIRROR=$(UBUNTU_MIRROR) . ; \
+	cd release
+	docker build -t $(USERNAME)/base-ubuntu:$(VERSION_UBUNTU) -f Dockerfile-Ubuntu --build-arg UBUNTU_MIRROR=$(UBUNTU_MIRROR) .
 	docker run -it --rm $(USERNAME)/base-ubuntu:$(VERSION_UBUNTU) debug
 
 push:
-	docker push $(USERNAME)/base-alpine:$(VERSION_ALPINE) ; \
-	docker push $(USERNAME)/base-alpine:latest ; \
-	docker push $(USERNAME)/base-ubuntu:$(VERSION_UBUNTU) ; \
+	docker push $(USERNAME)/base-alpine:$(VERSION_ALPINE)
+	docker push $(USERNAME)/base-alpine:latest
+	docker push $(USERNAME)/base-ubuntu:$(VERSION_UBUNTU)
 	docker push $(USERNAME)/base-ubuntu:latest ;
 
 release: build push
