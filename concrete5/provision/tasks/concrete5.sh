@@ -19,7 +19,7 @@ if [ ! -f /var/www/concrete5/concrete/config/concrete.php ]; then
         exit 1
     fi
     unzip_strip /usr/local/src/concrete5.zip /var/www/concrete5/
-else
+elif [[ -f /var/www/concrete5/application/config/database.php ]]; then
     chmod o-rwx /var/www/concrete5/application/config/database.php
 fi
 # to upgrade the installation checkout: http://documentation.concrete5.org/developers/installation/upgrading-concrete5

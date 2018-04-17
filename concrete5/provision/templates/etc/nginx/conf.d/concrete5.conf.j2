@@ -63,8 +63,8 @@ server {
     }
 
     location /login {
-        limit_req       zone=login nodelay;
-        include         conf.d/php.inc;
+        limit_req zone=login nodelay;
+        try_files = /index.php?$args;
     }
 
     location = /robots.txt  { log_not_found off; }
@@ -83,5 +83,15 @@ server {
         more_set_headers        "Cache-Control: public";
     }
 
-    include             conf.d/php.inc;
+    # pass PHP scripts to PHP-FPM
+    location ~ ^(.+\.php)(.*)$ {
+        limit_req               zone=php burst=50;
+        try_files               $fastcgi_script_name =404;
+        fastcgi_split_path_info ^(.+\.php)(.*)$;
+        fastcgi_read_timeout    {{ NGINX_FASTCGI_READ_TIMEOUT }};
+        include                 fastcgi_params;
+        fastcgi_index           index.php;
+        fastcgi_param           SCRIPT_FILENAME   $document_root$fastcgi_script_name;
+        fastcgi_pass            unix:/var/run/php/php7-fpm.sock;
+    }
 }

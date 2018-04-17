@@ -3,15 +3,27 @@ FROM aisberg/nginx-php7
 ENV CONCRETE5_VERSION=8.3.2 \
     CONCRETE5_SHA256_CHECKSUM=86e38b59e6c488c2b9621c1fd80f60975c31b5910b49a13da7ccf3739efe232e
 
-RUN wget -q "https://www.concrete5.org/download_file/-/view/100595/concrete5-${CONCRETE5_VERSION}.zip" -O /usr/local/src/concrete5.zip &&\
+# PHP requirements: https://documentation.concrete5.org/developers/installation/system-requirements
+RUN curl -fSL "https://www.concrete5.org/download_file/-/view/100595/concrete5-${CONCRETE5_VERSION}.zip" -o /usr/local/src/concrete5.zip &&\
     echo "$CONCRETE5_SHA256_CHECKSUM  /usr/local/src/concrete5.zip" | sha256sum -c &&\
     apk add --update --no-cache --no-progress \
+        php7-apcu \
+        php7-curl \
+        php7-dom \
         php7-fileinfo \
+        php7-gd \
+        php7-iconv \
+        php7-mbstring \
+        php7-mcrypt \
+        php7-mysqli \
+        php7-opcache \
+        php7-pdo_mysql \
         php7-simplexml \
         php7-tokenizer \
         php7-xml \
         php7-xmlreader \
-        php7-xmlwriter &&\
+        php7-xmlwriter \
+        php7-zip &&\
     workdirs /var/www/concrete5
 
 COPY provision /provision
