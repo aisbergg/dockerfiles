@@ -1,64 +1,32 @@
-# aisberg/redis
-FROM ubuntu:17.10
+FROM aisberg/base-alpine:3.7
 
-# included from template-ubuntu ------------------------------------------------
-ARG language=en_US.UTF-8
+RUN apk add --update --no-cache --no-progress \
+        openssl \
+        redis &&\
+    `#---- directories and files ----#` &&\
+    workdirs \
+        /etc/redis \
+        /etc/service \
+        /var/lib/redis \
+        /var/log/redis \
+        /var/run/redis
 
-ENV TERM=xterm \
-    DEBIAN_FRONTEND=noninteractive
-
-COPY Templer.tar.gz /tmp/Templer.tar.gz
-COPY entrypoint.sh /entrypoint.sh
-
-RUN chmod +x /entrypoint.sh &&\
-    echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends &&\
-    echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends &&\
-    apt-get update &&\
-    `#----- generate locales -----#` &&\
-    apt-get install -y locales &&\
-    sed -i -e "s/# $language/$language/" /etc/locale.gen &&\
-    dpkg-reconfigure --frontend=noninteractive locales && \
-    update-locale language=$language &&\
-    `#----- install essential packages -----#` &&\
-    apt-get install -y \
-        bzip2 \
-        ca-certificates \
-        dirmngr \
-        iputils-ping \
-        nano \
-        python-pip \
-        python-setuptools \
-        python-yaml \
-        python2.7 \
-        supervisor \
-        unzip \
-        vim.tiny \
-        wget \
-        xz-utils &&\
-    `#----- install templating engine -----#` &&\
-    unset http_proxy https_proxy &&\
-    pip install /tmp/Templer.tar.gz &&\
-    `#----- cleanup -----#` &&\
-    rm -rf /tmp/*
-
-ENV LANG=$language \
-    LC_ALL=$language
-
-ENTRYPOINT ["/entrypoint.sh", "container_start"]
-#-------------------------------------------------------------------------------
-
-LABEL maintainer="Andre Lehmann <aisberg@posteo.de>" \
-    version=1.0 \
-    description="Redis is an open source, in-memory data structure store, used as a database, cache and message broker. (https://redis.io)"
-
-RUN apt-get update &&\
-    apt-get install -y redis-server &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    mkdir -p /var/run/redis &&\
-    chown redis:redis /var/run/redis
-
-COPY provision/ /provision
+COPY provision /provision
+RUN find /provision -type f -exec chmod 0664 {} + &&\
+    find /provision -type d -exec chmod 0775 {} +
 
 VOLUME /var/lib/redis
 
 EXPOSE 6379/tcp
+
+USER 999
+
+ARG CREATED
+LABEL org.opencontainers.image.title="Redis" \
+    org.opencontainers.image.version="4.0.6" \
+    org.opencontainers.image.description="Redis is an open source, in-memory data structure store, used as a database, cache and message broker" \
+    org.opencontainers.image.url="https://redis.io" \
+    org.opencontainers.image.licenses="MIT" \
+    org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/redis" \
+    org.opencontainers.image.created="$CREATED"
