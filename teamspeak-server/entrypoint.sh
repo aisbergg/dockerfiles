@@ -19,4 +19,4 @@ for ts_file in ${TS_FILES[@]}; do
     ln -sf /var/lib/teamspeak-server/$ts_file /opt/teamspeak/$ts_file
 done
 
-exec /opt/teamspeak/ts3server_minimal_runscript.sh "logpath=/var/lib/teamspeak-server/logs"
+exec /opt/teamspeak/ts3server_minimal_runscript.sh "logpath=/var/lib/teamspeak-server/logs" "license_accepted=1"
