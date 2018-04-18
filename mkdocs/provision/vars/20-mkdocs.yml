@@ -1,0 +1,14 @@
+---
+
+# Load Dynamic Nginx Modules
+NGINX_LOAD_NDK_HTTP_MODULE: {{ NGINX_REWRITE_HTTPS }}
+NGINX_LOAD_NGX_HTTP_LUA_MODULE: {{ NGINX_REWRITE_HTTPS }}
+NGINX_LOAD_NGX_HTTP_HEADERS_MORE_FILTER_MODULE: True
+
+GIT_SSH_KEY: "{{ GIT_SSH_KEY | mandatory('SSH key file is mandatory.') }}"
+GIT_REPO_URI: "{{ GIT_REPO_URI | mandatory('URI of git repo is mandatory.') }}"
+
+defaults:
+  NGINX_REDIRECT_TO_FIRST_DOMAIN: False
+  NGINX_CONN_LIMIT_PER_IP: 7
+  GIT_BRANCH: "master"

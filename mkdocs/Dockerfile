@@ -15,4 +15,4 @@ RUN useradd -p /home/mkdocs -m -g www-data -s /bin/bash -u 999 mkdocs &&\
     pip install mkdocs &&\
     rm -rf /var/lib/apt/lists/*
 
-COPY provision/ /provision
+COPY provision /provision
