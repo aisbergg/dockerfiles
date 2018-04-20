@@ -1,6 +1,6 @@
 FROM aisberg/nginx-php7
 
-ENV PHPMYADMIN_VERSION=4.8.0 \
+ENV PHPMYADMIN_VERSION=4.8.0.1 \
     PHPMYADMIN_PGP_KEY_ID=3D06A59ECE730EB71B511C17CE752F178259BD92
 
 RUN curl -fSL "https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz" -o /usr/local/src/phpmyadmin.tar.gz &&\
@@ -39,7 +39,7 @@ USER 999
 
 ARG CREATED
 LABEL org.opencontainers.image.title="phpMyAdmin" \
-    org.opencontainers.image.version="4.8.0" \
+    org.opencontainers.image.version="$PHPMYADMIN_VERSION" \
     org.opencontainers.image.description="phpMyAdmin is an open-source web frontend for MySQL and MariaDB databases." \
     org.opencontainers.image.url="https://www.phpmyadmin.net/" \
     org.opencontainers.image.licenses="MIT" \

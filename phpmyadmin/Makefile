@@ -1,6 +1,6 @@
 USERNAME=aisberg
 NAME=phpmyadmin
-VERSION=4.8.0
+VERSION=4.8.0.1
 
 .PHONY: build debug push rmi release
 
