@@ -59,7 +59,7 @@ RUN useradd -r -u 999 -G root cu &&\
         || gpg --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$TINI_PGP_KEY_ID" ) &&\
     gpg --verify /tmp/tini.asc /sbin/tini &&\
     pip3 install --upgrade pip &&\
-    pip3 install git+https://github.com/Aisbergg/python-templer.git@v1.1.2 &&\
+    pip3 install git+https://github.com/Aisbergg/python-templer.git@v1.1.3 &&\
     pip3 install git+https://github.com/Aisbergg/python-confmerge.git@v0.2.0 &&\
     `#----- cleanup -----#` &&\
     rm -rf /var/lib/apt/lists/* /var/cache/* /tmp/tini.asc
