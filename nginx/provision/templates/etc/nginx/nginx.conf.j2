@@ -12,7 +12,7 @@ worker_rlimit_nofile            {{ NGINX_WORKER_OPENED_FILES }};
 # Enables the use of JIT for regular expressions to speed-up their processing.
 pcre_jit on;
 
-error_log                       /var/stderr    warn;
+error_log                       /dev/stderr    warn;
 
 ###################################################
 # Activated Dynamic Modules
