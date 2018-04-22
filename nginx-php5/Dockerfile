@@ -45,8 +45,7 @@ RUN apk add --update --no-cache --no-progress \
     workdirs \
         /etc/php5 \
         /etc/php5/php-fpm.d \
-        /var/cache/php/tmp \
-        /var/run/php
+        /var/cache/php/tmp
 
 COPY provision /provision
 

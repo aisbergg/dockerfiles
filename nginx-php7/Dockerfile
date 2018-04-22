@@ -67,8 +67,7 @@ RUN apk add --update --no-cache --no-progress \
     rm /etc/php7/php-fpm.d/* &&\
     workdirs \
         /etc/php7 \
-        /var/cache/php/tmp \
-        /var/run/container
+        /var/cache/php/tmp
 
 COPY provision /provision
 
