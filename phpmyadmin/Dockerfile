@@ -17,6 +17,7 @@ RUN curl -fSL "https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/php
         /usr/local/src/phpmyadmin.tar.gz \
         /var/www/phpMyAdmin/examples \
         /var/www/phpMyAdmin/setup &&\
+    ln -fs /data/app/config.inc.php /var/www/phpMyAdmin/config.inc.php &&\
     apk add --update --no-cache --no-progress \
         php7-gd \
         php7-json \
@@ -26,14 +27,15 @@ RUN curl -fSL "https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/php
         php7-session \
         php7-zip &&\
     workdirs \
-        /var/lib/mysql_dumps \
+        /data/app \
+        /data/mysql_dumps \
         /var/www/phpMyAdmin
 
 COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} +
 
-VOLUME /var/lib/mysql_dumps
+VOLUME /data/mysql_dumps
 
 USER 999
 
