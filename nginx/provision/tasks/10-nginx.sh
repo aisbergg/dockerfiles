@@ -4,12 +4,12 @@ set -eo pipefail
 print_info "Configuring Nginx"
 
 export NGINX_TLS_TERMINATED=$(bool "$NGINX_TLS_TERMINATED" false)
-export NGINX_TLS_CERT=${NGINX_TLS_CERT:-"/etc/ssl/private/cert.pem"}
-export NGINX_TLS_KEY=${NGINX_TLS_KEY:-"/etc/ssl/private/key.pem"}
-export NGINX_DHPARAM=${NGINX_DHPARAM:-"/etc/ssl/private/dhparam.pem"}
+export NGINX_TLS_CERT=${NGINX_TLS_CERT:-"/data/tls/cert.pem"}
+export NGINX_TLS_KEY=${NGINX_TLS_KEY:-"/data/tls/key.pem"}
+export NGINX_TLS_DHPARAM=${NGINX_TLS_DHPARAM:-"/data/tls/dhparam.pem"}
 # !!! INSECURE, FOR TESTING ONLY !!!
 # !!! IN PRODUCTION USE 4096 !!!
-export NGINX_DHPARAM_SIZE=${NGINX_DHPARAM_SIZE:-"512"}
+export NGINX_TLS_DHPARAM_SIZE=${NGINX_TLS_DHPARAM_SIZE:-"512"}
 
 if [[ "$NGINX_TLS_TERMINATED" == false ]]; then
     # TLS certificate and key
@@ -20,6 +20,7 @@ if [[ "$NGINX_TLS_TERMINATED" == false ]]; then
         -keyout "$NGINX_TLS_KEY" \
         -out "$NGINX_TLS_CERT" \
         -days 365 -nodes -sha256 > /dev/null
+        chmod o-rwx "$NGINX_TLS_KEY" "$NGINX_TLS_CERT"
     elif [[ -f "$NGINX_TLS_CERT" && ! -f "$NGINX_TLS_KEY" ]]; then
         print_error "TLS certificate given but no key found!"
         exit 1
@@ -31,8 +32,9 @@ if [[ "$NGINX_TLS_TERMINATED" == false ]]; then
     fi
 
     # Diffie-Hellman parameter for forward secrecy
-    if [[ ! -f "$NGINX_DHPARAM" ]]; then
-        print_info "Generating ${NGINX_DHPARAM_SIZE}bit Diffie-Hellman-Parameter (May take a long time)..."
-        openssl dhparam -out "$NGINX_DHPARAM" "$NGINX_DHPARAM_SIZE"
+    if [[ ! -f "$NGINX_TLS_DHPARAM" ]]; then
+        print_info "Generating ${NGINX_TLS_DHPARAM_SIZE}bit Diffie-Hellman-Parameter (May take a long time)..."
+        openssl dhparam -out "$NGINX_TLS_DHPARAM" "$NGINX_TLS_DHPARAM_SIZE"
+        chmod o-rwx "$NGINX_TLS_DHPARAM"
     fi
 fi

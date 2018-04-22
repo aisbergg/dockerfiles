@@ -24,11 +24,10 @@ RUN apk add --update --no-cache --no-progress \
     ln -sf /dev/stdout /var/lib/nginx/logs/access.log &&\
     ln -sf /dev/stderr /var/lib/nginx/logs/error.log &&\
     workdirs \
+        /data/tls \
         /etc/nginx \
-        /etc/ssl/private \
         /var/lib/nginx \
         /var/lib/nginx/client_body_temp \
-        /var/run/nginx \
         /var/www
 
 COPY provision /provision
