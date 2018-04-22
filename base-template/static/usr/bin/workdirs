@@ -1,5 +1,6 @@
 #!bin/bash
 set -e
+umask 0002
 
 while [[ $# > 0 ]]; do
     if [[ ! -e "$1" ]]; then
