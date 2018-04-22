@@ -68,7 +68,7 @@ RUN apk add --update --no-cache --no-progress \
     workdirs \
         /etc/php7 \
         /var/cache/php/tmp \
-        /var/run/php
+        /var/run/container
 
 COPY provision /provision
 
