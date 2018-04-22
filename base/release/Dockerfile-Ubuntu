@@ -74,8 +74,8 @@ RUN chmod 0755 /entrypoint /usr/bin/workdirs &&\
         /etc/supervisor \
         /usr/local/src \
         /var/log \
-        /var/log/supervisor \
-        /var/run/supervisor
+        /data/log \
+        /var/run/container
 
 ENTRYPOINT ["/entrypoint"]
 CMD ["run"]

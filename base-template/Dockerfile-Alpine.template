@@ -42,12 +42,11 @@ RUN chmod 0755 /entrypoint /usr/bin/workdirs &&\
     find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} + &&\
     workdirs \
+        /data/log \
         /etc/remote_syslog \
         /etc/supervisor \
         /usr/local/src \
-        /var/log \
-        /var/log/supervisor \
-        /var/run/supervisor
+        /var/run/container
 
 ENTRYPOINT ["/entrypoint"]
 CMD ["run"]
