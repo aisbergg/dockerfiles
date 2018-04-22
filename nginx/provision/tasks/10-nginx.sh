@@ -16,7 +16,7 @@ if [[ "$NGINX_TLS_TERMINATED" == false ]]; then
     if [[ ! -f "$NGINX_TLS_CERT" && ! -f "$NGINX_TLS_KEY" ]]; then
         print_info "Generating TLS-Key and TLS-Certificate..."
         openssl req -x509 -newkey rsa:4096 \
-        -subj "/C=DE/ST=Devtown/L=Devland/O=Developer/CN=localhost" \
+        -subj "/C=/ST=/L=/O=/CN=$HOSTNAME" \
         -keyout "$NGINX_TLS_KEY" \
         -out "$NGINX_TLS_CERT" \
         -days 365 -nodes -sha256 > /dev/null

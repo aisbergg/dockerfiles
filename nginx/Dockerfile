@@ -20,10 +20,11 @@ RUN apk add --update --no-cache --no-progress \
         nginx-mod-mail \
         nginx-mod-stream &&\
     `#---- directories and files ----#` &&\
-    rm -rf /var/www/* /etc/nginx/conf.d/* &&\
-    ln -sf /dev/stdout /var/lib/nginx/logs/access.log &&\
-    ln -sf /dev/stderr /var/lib/nginx/logs/error.log &&\
+    rm -rf /var/www/* /etc/nginx/conf.d &&\
+    ln -sf /data/cfg/nginx/nginx.conf /etc/nginx/nginx.conf &&\
+    ln -sf /data/cfg/nginx/conf.d /etc/nginx/conf.d &&\
     workdirs \
+        /data/cfg \
         /data/tls \
         /etc/nginx \
         /var/lib/nginx \

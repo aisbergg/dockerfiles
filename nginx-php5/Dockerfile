@@ -42,6 +42,7 @@ RUN apk add --update --no-cache --no-progress \
     echo "$COMPOSER_SHA256_CHECKSUM  /usr/bin/composer" | sha256sum -c &&\
     chmod +x /usr/bin/composer &&\
     `#---- directories and files ----#` &&\
+    ln -sf /data/cfg/php/php.ini /etc/php7/php.ini &&\
     workdirs \
         /etc/php5 \
         /etc/php5/php-fpm.d \

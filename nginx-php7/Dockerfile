@@ -65,6 +65,7 @@ RUN apk add --update --no-cache --no-progress \
     chmod +x /usr/bin/composer &&\
     `#---- directories and files ----#` &&\
     rm /etc/php7/php-fpm.d/* &&\
+    ln -sf /data/cfg/php/php.ini /etc/php7/php.ini &&\
     workdirs \
         /etc/php7 \
         /var/cache/php/tmp
