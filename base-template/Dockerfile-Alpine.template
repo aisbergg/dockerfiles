@@ -19,8 +19,15 @@ ENV LANG=$LANG \
 COPY --from=build /usr/bin/supervisord /usr/bin/supervisord
 COPY --from=build /usr/bin/remote_syslog /usr/bin/remote_syslog
 
-RUN adduser -S -u 999 -G root cu &&\
-    echo -e "${ALPINE_MIRROR}main\n${ALPINE_MIRROR}community" > /etc/apk/repositories &&\
+RUN \
+    # add container user (cu)
+    adduser -S -u 999 -G root cu &&\
+    \
+    # install software
+    { \
+        echo "${ALPINE_MIRROR}main"; \
+        echo "${ALPINE_MIRROR}community"; \
+    } > /etc/apk/repositories &&\
     apk update && apk upgrade &&\
     apk add --update --no-cache --no-progress  \
         bash \
@@ -41,6 +48,8 @@ COPY static /
 RUN chmod 0755 /entrypoint /usr/bin/workdirs &&\
     find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} + &&\
+    \
+    # prepare working directories
     workdirs \
         /data/log \
         /etc/remote_syslog \
