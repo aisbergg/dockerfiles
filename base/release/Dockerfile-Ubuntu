@@ -17,30 +17,44 @@ ENV TERM=xterm \
     DEBIAN_FRONTEND=noninteractive \
     LANG=$LANG \
     LC_ALL=$LANG \
-    TINI_VERSION=v0.17.0 \
+    TINI_VERSION=v0.18.0 \
     TINI_PGP_KEY_ID=595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7
 
 COPY --from=build /usr/bin/supervisord /usr/bin/supervisord
 COPY --from=build /usr/bin/remote_syslog /usr/bin/remote_syslog
 
-RUN useradd -r -u 999 -G root cu &&\
-    echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends &&\
-    echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends &&\
-    echo "deb $UBUNTU_MIRROR artful main universe multiverse restricted\ndeb $UBUNTU_MIRROR artful-updates main universe multiverse restricted\ndeb $UBUNTU_MIRROR artful-backports main universe multiverse restricted\ndeb $UBUNTU_MIRROR artful-security main universe multiverse" > /etc/apt/sources.list &&\
+RUN \
+    # add container user (cu)
+    useradd -r -u 999 -G root cu &&\
+    \
+    # configure apt
+    { \
+        echo 'APT::Install-Recommends 0;'; \
+        echo 'APT::Install-Suggests 0;'; \
+    } >> /etc/apt/apt.conf.d/01norecommends &&\
+    { \
+        echo 'deb $UBUNTU_MIRROR artful main universe multiverse restricted'; \
+        echo 'deb $UBUNTU_MIRROR artful-updates main universe multiverse restricted'; \
+        echo 'deb $UBUNTU_MIRROR artful-backports main universe multiverse restricted'; \
+        echo 'deb $UBUNTU_MIRROR artful-security main universe multiverse'; \
+    } > /etc/apt/sources.list &&\
     if [ -n "$APT_CACHER_NG" ]; then echo "Acquire::http { Proxy \"$APT_CACHER_NG\"; };" >> /etc/apt/apt.conf.d/01proxy; fi &&\
     apt-get update &&\
-    `#----- fix some problems -----#` &&\
+    \
+    # fix some problems with package install
     dpkg-divert --local --rename --add /sbin/initctl &&\
     ln -sf /bin/true /sbin/initctl &&\
     dpkg-divert --local --rename --add /usr/bin/ischroot &&\
     ln -sf /bin/true /usr/bin/ischroot &&\
     unset http_proxy https_proxy &&\
-    `#----- generate locales -----#` &&\
+    \
+    # generate locales
     apt-get install -y locales &&\
     sed -i -e "s/# $LANG/$LANG/" /etc/locale.gen &&\
     dpkg-reconfigure --frontend=noninteractive locales && \
     update-locale language=$LANG &&\
-    `#----- install packages -----#` &&\
+    \
+    # install software
     apt-get install -y \
         ca-certificates \
         curl \
@@ -61,7 +75,8 @@ RUN useradd -r -u 999 -G root cu &&\
     pip3 install --upgrade pip &&\
     pip3 install git+https://github.com/Aisbergg/python-templer.git@v1.1.3 &&\
     pip3 install git+https://github.com/Aisbergg/python-confmerge.git@v0.2.0 &&\
-    `#----- cleanup -----#` &&\
+    \
+    # cleanup
     rm -rf /var/lib/apt/lists/* /var/cache/* /tmp/tini.asc
 
 COPY provision /provision
@@ -69,12 +84,13 @@ COPY static /
 RUN chmod 0755 /entrypoint /usr/bin/workdirs &&\
     find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} + &&\
+    \
+    # prepare working directories ----#` &&\
     workdirs \
+        /data/log \
         /etc/remote_syslog \
         /etc/supervisor \
         /usr/local/src \
-        /var/log \
-        /data/log \
         /var/run/container
 
 ENTRYPOINT ["/entrypoint"]
