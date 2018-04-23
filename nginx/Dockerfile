@@ -2,8 +2,10 @@ FROM aisberg/base-alpine:3.7
 
 ENV INIT=supervisor
 
-# for informations on Nginx modules see: https://www.nginx.com/resources/wiki/modules/
-RUN apk add --update --no-cache --no-progress \
+RUN \
+    # install packages
+    # for informations on Nginx modules see: https://www.nginx.com/resources/wiki/modules/
+    apk add --update --no-cache --no-progress \
         openssl \
         nginx \
         nginx-mod-http-cache-purge \
@@ -19,12 +21,10 @@ RUN apk add --update --no-cache --no-progress \
         nginx-mod-http-xslt-filter \
         nginx-mod-mail \
         nginx-mod-stream &&\
-    `#---- directories and files ----#` &&\
-    rm -rf /var/www/* /etc/nginx/conf.d &&\
-    ln -sf /data/cfg/nginx/nginx.conf /etc/nginx/nginx.conf &&\
-    ln -sf /data/cfg/nginx/conf.d /etc/nginx/conf.d &&\
+    \
+    # prepare directories and files
+    rm -rf /var/www/* /etc/nginx/conf.d/* &&\
     workdirs \
-        /data/cfg \
         /data/tls \
         /etc/nginx \
         /var/lib/nginx \

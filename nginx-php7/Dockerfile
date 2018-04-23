@@ -6,7 +6,9 @@ ENV COMPOSER_VERSION=1.6.4 \
     COMPOSER_HOME=/tmp
 
 # inspired by https://github.com/graze/docker-php-alpine
-RUN apk add --update --no-cache --no-progress \
+RUN \
+    # install packages
+    apk add --update --no-cache --no-progress \
         yaml \
         pcre \
         zlib \
@@ -41,7 +43,8 @@ RUN apk add --update --no-cache --no-progress \
         php7-xmlreader \
         php7-zip \
         php7-zlib &&\
-    `#---- build PHP extension: YAML ----#` &&\
+    \
+    # build PHP YAML extension
     apk add --no-cache --no-progress --virtual .pecl-deps \
         autoconf \
         file \
@@ -59,13 +62,14 @@ RUN apk add --update --no-cache --no-progress \
     echo "extension=yaml.so" > /etc/php7/conf.d/01_yaml.ini &&\
     rm -rf /usr/share/php7 &&\
     apk del .pecl-deps &&\
-    `#---- install Composer ----#` &&\
+    \
+    # install PHP Composer
     curl -fSL "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar" -o /usr/bin/composer &&\
     echo "$COMPOSER_SHA256_CHECKSUM  /usr/bin/composer" | sha256sum -c &&\
     chmod +x /usr/bin/composer &&\
-    `#---- directories and files ----#` &&\
+    \
+    # prepare working directories
     rm /etc/php7/php-fpm.d/* &&\
-    ln -sf /data/cfg/php/php.ini /etc/php7/php.ini &&\
     workdirs \
         /etc/php7 \
         /var/cache/php/tmp
