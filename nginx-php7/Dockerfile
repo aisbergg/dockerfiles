@@ -36,11 +36,13 @@ RUN \
         php7-pgsql \
         php7-phar \
         php7-session \
+        php7-simplexml \
         php7-soap \
         php7-sockets \
         php7-sqlite3 \
         php7-xml \
         php7-xmlreader \
+        php7-xmlwriter \
         php7-zip \
         php7-zlib &&\
     \
@@ -58,6 +60,7 @@ RUN \
         yaml-dev \
         pcre-dev &&\
     sed -i 's/^exec $PHP -C -n/exec $PHP -C/g' $(which pecl) &&\
+    pecl channel-update pecl.php.net &&\
     pecl install yaml &&\
     echo "extension=yaml.so" > /etc/php7/conf.d/01_yaml.ini &&\
     rm -rf /usr/share/php7 &&\
