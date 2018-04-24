@@ -32,6 +32,10 @@ RUN \
         php7-openssl \
         php7-pear \
         php7-session \
+        php7-simplexml \
+        php7-xml \
+        php7-xmlwriter \
+        php7-tokenizer \
         rsync \
         shared-mime-info &&\
     pear channel-update pear.php.net &&\

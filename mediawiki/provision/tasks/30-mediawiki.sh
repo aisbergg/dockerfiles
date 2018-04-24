@@ -20,6 +20,9 @@ if [[ ! -f '/data/www/LocalSettings.php' ]]; then
     fi
     tar xfz /usr/local/src/mediawiki.tar.gz -C /data/www --strip-components=1
     ( shopt -s dotglob && chmod g+rwX -R /data/www/* && shopt -u dotglob )
+    # fix syntax of Alpines 'timeout' program, so that ImageMagick can be used
+    sed -i -e 's?/usr/bin/timeout \$MW_WALL_CLOCK_LIMIT?/usr/bin/timeout -t \$MW_WALL_CLOCK_LIMIT?g' /data/www/includes/shell/limit.sh
+
     echo "${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR}" > /data/www/.version
     # temporary disable a nginx rule until the wiki is properly installed
     export MEDIAWIKI_IS_INSTALLED="false"
@@ -48,6 +51,9 @@ elif [[ $(bool "$AUTO_UPDATE" true) == "true" ]]; then
             rsync -rlD --include "/$dir/" --exclude '/*' "$tempdir/"  /data/www/
         done
 
+        # fix syntax of Alpines 'timeout' program, so that ImageMagick can be used
+        sed -i -e 's?/usr/bin/timeout \$MW_WALL_CLOCK_LIMIT?/usr/bin/timeout -t \$MW_WALL_CLOCK_LIMIT?g' /data/www/includes/shell/limit.sh
+
         rm -rf "$tempdir"
 
         echo "${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR}" > /data/www/.version
@@ -69,8 +75,8 @@ fi
 export MEDIAWIKI_IS_INSTALLED=${MEDIAWIKI_IS_INSTALLED:-"true"}
 
 # confine access permissions for settings file
-if [[ -f /data/www/LocalSettings.php ]]; then
-    chmod o-rwx /data/www/LocalSettings.php
+if [[ -f /data/www/LocalSettings.php && "$(stat -c '%a' /data/www/LocalSettings.php | cut -c 3)" -ge 4 ]]; then
+    print_warning "ATTENTION: The settings file 'LocalSettings.php' should not be world readable. Use 'chmod' to change its permissions."
 fi
 
 export IMAGEMAGICK_SHARED_SECRET="$( </dev/urandom tr -dc '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' | head -c40; echo "")"
