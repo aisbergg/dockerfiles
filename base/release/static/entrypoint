@@ -259,7 +259,13 @@ function version_greater() {
     #     $2 (string): Version B
     # Usage:
     #    if version_greater 1.2 1.1 ; then ... ; fi
-	[[ "$(printf '%s\n' "$@" | sort -n | head -n 1)" != "$1" ]];
+    local sort_flags
+    if [[ $(source /etc/os-release && echo "$NAME") == "Ubuntu" ]]; then
+        sort_flags='-V'
+    elif [[ $(source /etc/os-release && echo "$NAME") == "Alpine Linux" ]]; then
+        sort_flags='-n'
+    fi
+	[[ "$(printf '%s\n' "$@" | sort $sort_flags | head -n 1)" != "$1" ]];
 }
 
 #-------------------------------------------------------------------------------
