@@ -4,6 +4,7 @@
 # 'autogen false'
 #-------------------------------------------------------------------------------
 
+
 limit_conn_log_level    warn;
 limit_req_zone          $limit zone=php:5m rate=50r/s;
 #login zone to limit login request to 1 request per second
@@ -38,7 +39,7 @@ server {
     server_name     {% if NGINX_REDIRECT_TO_FIRST_DOMAIN %}{{ DOMAINNAMES[0] }}{% else %}{% for domain in DOMAINNAMES %}{{ domain }} {% endfor %}{% endif %};
     {%- endif %}
 
-    root                /var/www/wordpress;
+    root                /data/www;
     index               index.php;
 
     {% if NGINX_REWRITE_HTTPS -%}
@@ -65,15 +66,8 @@ server {
     }
 
     location /wp-login.php {
-        location ~ \.php$ {
-            limit_req               zone=login nodelay;
-            try_files               $uri =404;
-            fastcgi_read_timeout    {{ NGINX_FASTCGI_READ_TIMEOUT }};
-            include                 fastcgi_params;
-            fastcgi_index           index.php;
-            fastcgi_param           SCRIPT_FILENAME $document_root$fastcgi_script_name;
-            fastcgi_pass            unix:/var/run/php/php7-fpm.sock;
-        }
+        limit_req zone=login nodelay;
+        try_files /wp-login.php _;
     }
 
     # turn  off logging for following locations
@@ -102,7 +96,7 @@ server {
         include                 fastcgi_params;
         fastcgi_index           index.php;
         fastcgi_param           SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_pass            unix:/var/run/php/php7-fpm.sock;
+        fastcgi_pass            unix:/var/run/container/php7-fpm.sock;
     }
 
     # client caching

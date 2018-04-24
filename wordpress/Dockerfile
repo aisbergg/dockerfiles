@@ -3,9 +3,12 @@ FROM aisberg/nginx-php7
 ENV WORDPRESS_VERSION=4.9.5 \
     WORDPRESS_SHA256_CHECKSUM=a1664b259755021adbfbe5e8f7fd78a98c015e92e1f985258abed19f759822cb
 
-RUN curl -fSL "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz" -o /usr/local/src/wordpress.tar.gz &&\
+RUN \
+    # download Wordpress sources
+    curl -fSL "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz" -o /usr/local/src/wordpress.tar.gz &&\
     echo "$WORDPRESS_SHA256_CHECKSUM  /usr/local/src/wordpress.tar.gz" | sha256sum -c &&\
-    `#---- install imagemagick ----#` &&\
+    \
+    # install required packages
     apk add --update --no-cache --no-progress \
         graphviz \
         imagemagick \
@@ -16,16 +19,17 @@ RUN curl -fSL "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz" -o /
         php7-opcache \
         php7-tokenizer \
         shared-mime-info &&\
+    \
+    # prepare working directories
     workdirs \
-        /etc/ImageMagick-7 \
-        /var/www/wordpress
+        /data/www \
+        /etc/ImageMagick-7
 
 COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} +
 
-VOLUME /var/www/wordpress \
-    /etc/nginx/conf.d
+VOLUME /data/www
 
 USER 999
 

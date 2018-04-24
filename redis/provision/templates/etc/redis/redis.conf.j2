@@ -137,7 +137,7 @@ tcp-keepalive {{ REDIS_TCP_KEEPALIVE }}
 ################################# GENERAL #####################################
 
 # By default Redis does not run as a daemon. Use 'yes' if you need it.
-# Note that Redis will write a pid file in /var/run/redis.pid when daemonized.
+# Note that Redis will write a pid file in /var/run/container/redis.pid when daemonized.
 daemonize no
 
 # If you run Redis from upstart or systemd, Redis can interact with your
@@ -156,11 +156,11 @@ supervised no
 #
 # When the server runs non daemonized, no pid file is created if none is
 # specified in the configuration. When the server is daemonized, the pid file
-# is used even if not specified, defaulting to "/var/run/redis.pid".
+# is used even if not specified, defaulting to "/var/run/container/redis.pid".
 #
 # Creating a pid file is best effort: if Redis is not able to create it
 # nothing bad happens, the server will start and run normally.
-pidfile /var/run/redis/redis.pid
+pidfile /var/run/container/redis.pid
 
 # Specify the server verbosity level.
 # This can be one of:
@@ -264,7 +264,7 @@ dbfilename {{ REDIS_DBFILENAME }}
 # The Append Only File will also be created inside this directory.
 #
 # Note that you must specify a directory here, not a file name.
-dir /var/lib/redis
+dir /data/redis
 
 ################################# REPLICATION #################################
 

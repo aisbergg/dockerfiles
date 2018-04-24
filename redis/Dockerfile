@@ -1,21 +1,21 @@
 FROM aisberg/base-alpine:3.7
 
-RUN apk add --update --no-cache --no-progress \
+RUN \
+    # install required packages
+    apk add --update --no-cache --no-progress \
         openssl \
         redis &&\
-    `#---- directories and files ----#` &&\
+    \
+    # prepare working directories
     workdirs \
-        /etc/redis \
-        /etc/service \
-        /var/lib/redis \
-        /var/log/redis \
-        /var/run/redis
+        /data/redis \
+        /etc/redis
 
 COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} +
 
-VOLUME /var/lib/redis
+VOLUME /data/redis
 
 EXPOSE 6379/tcp
 
