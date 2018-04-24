@@ -11,11 +11,15 @@ LABEL org.opencontainers.image.title="Nginx HTML" \
 COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} + &&\
+    \
+    # prepare working directories
+    ln -sf /data/nginx /etc/nginx/conf.d &&\
     workdirs \
-        /etc/ImageMagick-7 \
-        /var/www/html
+        /data/www \
+        /data/nginx \
+        /etc/ImageMagick-7
 
-VOLUME /var/www/html \
-    /etc/nginx/conf.d
+VOLUME /data/www \
+    /data/nginx
 
 USER 999
