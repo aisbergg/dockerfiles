@@ -2,13 +2,17 @@ FROM aisberg/base-alpine:3.7
 
 ENV INIT=supervisor
 
-RUN apk add --update --no-cache --no-progress \
+RUN \
+    # install required packages
+    apk add --update --no-cache --no-progress \
         murmur \
         openssl \
         tzdata &&\
+    \
+    # prepare working directories
     workdirs \
-        /var/lib/mumble-server \
-        /etc/ssl/private
+        /data/mumble-server \
+        /data/tls
 
 COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
@@ -17,7 +21,7 @@ RUN find /provision -type f -exec chmod 0664 {} + &&\
 EXPOSE 64738 64738/udp
 
 ARG CREATED
-LABEL org.opencontainers.image.title="Nginx" \
+LABEL org.opencontainers.image.title="Mumble Server" \
     org.opencontainers.image.version="1.2.19" \
     org.opencontainers.image.description="Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming." \
     org.opencontainers.image.url="https://wiki.mumble.info/wiki/Main_Page" \
