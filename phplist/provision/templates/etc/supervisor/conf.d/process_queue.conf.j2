@@ -1,0 +1,6 @@
+[program:process_queue]
+command=/usr/bin/python3 /etc/supervisor/conf.d/process_queue.py
+autostart=true
+autorestart=unexpected
+redirect_stderr=true
+stdout_logfile=None

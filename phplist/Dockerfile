@@ -1,23 +1,55 @@
-# aisberg/phplist aisberg/phplist:3.3.1
 FROM aisberg/nginx-php7
 
-LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
-    Version=2.5 \
-    Comment="phpList is an open-source newsletter and email marketing software. (https://www.phplist.org/)"
-
 ENV PHPLIST_VERSION=3.3.1 \
-    SHA256_CHECKSUM=d22b43eab6ead43a44167dce6eb54cb08501534ec27bd6400257314b9c8474fa \
-    CKEDITOR_VERSION=4.8.0 \
-    CKEDITOR_SHA256_CHECKSUM=0bb0fb1c8868ea8e456bdad69f0d86b0e33a4bd9645342941339759cf1572555
+    PHPLIST_SHA256_CHECKSUM=d22b43eab6ead43a44167dce6eb54cb08501534ec27bd6400257314b9c8474fa \
+    CKEDITOR_VERSION=4.9.2 \
+    CKEDITOR_SHA256_CHECKSUM=7830b30ab61c5751c738597c301f757f28f57fc9b11db3449b59dd4c2bb0ee27
 
-RUN wget -q "https://sourceforge.net/projects/phplist/files/phplist/${PHPLIST_VERSION}/phplist-${PHPLIST_VERSION}.tgz/download" -O /usr/local/src/phplist.tgz &&\
-    wget -q "http://download.cksource.com/CKEditor/CKEditor/CKEditor ${CKEDITOR_VERSION}/ckeditor_${CKEDITOR_VERSION}_standard.zip" -O /usr/local/src/ckeditor.zip &&\
-    echo "$SHA256_CHECKSUM /usr/local/src/phplist.tgz\n$CKEDITOR_SHA256_CHECKSUM /usr/local/src/ckeditor.zip" | sha256sum -c &&\
-    apt-get update &&\
-    apt-get install -y cron patch &&\
-    rm -rf /var/lib/apt/lists/*
+COPY install /install
 
-COPY provision/ /provision
+RUN \
+    # install required packages
+    # PHP requirements: https://resources.phplist.com/system/start
+    apk add --update --no-cache --no-progress \
+        pcre \
+        php7-apcu \
+        php7-curl \
+        php7-gd \
+        php7-gettext \
+        php7-iconv \
+        php7-imap \
+        php7-json \
+        php7-mbstring \
+        php7-mysqli \
+        php7-mysqlnd \
+        php7-opcache \
+        php7-openssl \
+        php7-session \
+        php7-simplexml \
+        php7-xml &&\
+    pip3 install schedule &&\
+    \
+    # download and install phpList
+    bash /install/install-phplist.sh &&\
+    rm -rf /install &&\
+    \
+    # prepare working directories
+    workdirs /data/www
 
-VOLUME /var/www/phplist \
-    /etc/nginx/conf.d/phplist
+COPY provision /provision
+RUN find /provision -type f -exec chmod 0664 {} + &&\
+    find /provision -type d -exec chmod 0775 {} +
+
+VOLUME /data/www/uploadimages
+
+USER 999
+
+ARG CREATED
+LABEL org.opencontainers.image.title="phpList" \
+    org.opencontainers.image.version="$PHPLIST_VERSION" \
+    org.opencontainers.image.description="phpList is an open-source newsletter and email marketing software." \
+    org.opencontainers.image.url="https://www.phplist.org/" \
+    org.opencontainers.image.licenses="MIT" \
+    org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/phplist" \
+    org.opencontainers.image.created="$CREATED"
