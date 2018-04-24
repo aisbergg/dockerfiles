@@ -5,7 +5,9 @@ ENV COMPOSER_VERSION=1.6.4 \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME=/tmp
 
-RUN apk add --update --no-cache --no-progress \
+RUN \
+    # install packages
+    apk add --update --no-cache --no-progress \
         pcre \
         zlib \
         php5 \
@@ -37,11 +39,13 @@ RUN apk add --update --no-cache --no-progress \
         php5-zip \
         php5-zlib &&\
     ln -sf /usr/bin/php5 /usr/bin/php &&\
-    `#---- install Composer ----#` &&\
+    \
+    # install PHP Composer
     curl -s -o /usr/bin/composer "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar" &&\
     echo "$COMPOSER_SHA256_CHECKSUM  /usr/bin/composer" | sha256sum -c &&\
     chmod +x /usr/bin/composer &&\
-    `#---- directories and files ----#` &&\
+    \
+    # prepare working directories
     workdirs \
         /etc/php5 \
         /etc/php5/php-fpm.d \

@@ -20,6 +20,17 @@ defaults:
       - "warning"
       - "notice"
       - "debug"
+  PHP_FPM_SPAWN_MODE:
+    type: choice
+    default: dynamic
+    choices:
+      - "dynamic"
+      - "ondemand"
+      - "static"
+  PHP_FPM_MAX_CHILDREN: 40
+  PHP_FPM_MIN_SPARE_SERVERS: 1
+  PHP_FPM_MAX_SPARE_SERVERS: 2
+  PHP_FPM_PROCESS_IDLE_TIMEOUT: 10
 
   # Extension: APC
   APC_ENABLED: 1
