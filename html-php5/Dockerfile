@@ -1,22 +1,28 @@
 FROM aisberg/nginx-php5
 
-RUN apk add --update --no-cache --no-progress \
+RUN \
+    # install packages
+    apk add --update --no-cache --no-progress \
         graphviz \
         imagemagick \
         imagemagick-libs \
         php5-gd \
         php5-zlib \
         shared-mime-info &&\
+    \
+    # prepare working directories
+    ln -sf /data/nginx /etc/nginx/conf.d &&\
     workdirs \
-        /data/html \
+        /data/www \
+        /data/nginx \
         /etc/ImageMagick-7
 
 COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} +
 
-VOLUME /data/html \
-    /data/cfg
+VOLUME /data/www \
+    /data/nginx
 
 USER 999
 
