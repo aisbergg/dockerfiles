@@ -1,7 +1,7 @@
 FROM aisberg/nginx-php7
 
 RUN \
-    # install packages
+    # install required packages
     apk add --update --no-cache --no-progress \
         graphviz \
         imagemagick \

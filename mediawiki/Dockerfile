@@ -14,7 +14,7 @@ RUN \
     gpg --verify /usr/local/src/mediawiki.tar.gz.sig /usr/local/src/mediawiki.tar.gz &&\
     rm /usr/local/src/mediawiki.tar.gz.sig &&\
     \
-    # install packages
+    # install required packages
     apk add --update --no-cache --no-progress \
         diffutils \
         graphviz \

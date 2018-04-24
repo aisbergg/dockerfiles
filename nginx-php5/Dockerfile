@@ -6,7 +6,7 @@ ENV COMPOSER_VERSION=1.6.4 \
     COMPOSER_HOME=/tmp
 
 RUN \
-    # install packages
+    # install required packages
     apk add --update --no-cache --no-progress \
         pcre \
         zlib \

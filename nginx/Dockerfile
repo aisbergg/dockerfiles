@@ -3,7 +3,7 @@ FROM aisberg/base-alpine:3.7
 ENV INIT=supervisor
 
 RUN \
-    # install packages
+    # install required packages
     # for informations on Nginx modules see: https://www.nginx.com/resources/wiki/modules/
     apk add --update --no-cache --no-progress \
         openssl \

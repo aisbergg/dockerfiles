@@ -7,7 +7,7 @@ ENV COMPOSER_VERSION=1.6.4 \
 
 # inspired by https://github.com/graze/docker-php-alpine
 RUN \
-    # install packages
+    # install required packages
     apk add --update --no-cache --no-progress \
         yaml \
         pcre \

@@ -19,7 +19,11 @@ if [[ ! -f '/data/www/LocalSettings.php' ]]; then
         exit 1
     fi
     tar xfz /usr/local/src/mediawiki.tar.gz -C /data/www --strip-components=1
-    ( shopt -s dotglob && chmod g+rwX -R /data/www/* && shopt -u dotglob )
+    shopt -s dotglob
+    chmod g+rwX -R /data/www/* &&\
+    chgrp root -R /data/www/*
+    shopt -u dotglob
+
     # fix syntax of Alpines 'timeout' program, so that ImageMagick can be used
     sed -i -e 's?/usr/bin/timeout \$MW_WALL_CLOCK_LIMIT?/usr/bin/timeout -t \$MW_WALL_CLOCK_LIMIT?g' /data/www/includes/shell/limit.sh
 
@@ -51,6 +55,11 @@ elif [[ $(bool "$AUTO_UPDATE" true) == "true" ]]; then
             rsync -rlD --include "/$dir/" --exclude '/*' "$tempdir/"  /data/www/
         done
 
+        shopt -s dotglob
+        chmod g+rwX -R /data/www/* &&\
+        chgrp root -R /data/www/*
+        shopt -u dotglob
+
         # fix syntax of Alpines 'timeout' program, so that ImageMagick can be used
         sed -i -e 's?/usr/bin/timeout \$MW_WALL_CLOCK_LIMIT?/usr/bin/timeout -t \$MW_WALL_CLOCK_LIMIT?g' /data/www/includes/shell/limit.sh
 
@@ -74,7 +83,7 @@ fi
 # will activate a rule in nginx/conf.d/mediawiki.conf
 export MEDIAWIKI_IS_INSTALLED=${MEDIAWIKI_IS_INSTALLED:-"true"}
 
-# confine access permissions for settings file
+# warn about lax permissions of the settings file
 if [[ -f /data/www/LocalSettings.php && "$(stat -c '%a' /data/www/LocalSettings.php | cut -c 3)" -ge 4 ]]; then
     print_warning "ATTENTION: The settings file 'LocalSettings.php' should not be world readable. Use 'chmod' to change its permissions."
 fi
