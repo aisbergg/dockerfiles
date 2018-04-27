@@ -1,7 +1,10 @@
 FROM aisberg/nginx-php7
 
-# PHP requirements: https://learn.getgrav.org/basics/requirements#php-requirements
-RUN apk add --update --no-cache --no-progress \
+
+RUN \
+    # install required packages
+    # PHP requirements: https://learn.getgrav.org/basics/requirements#php-requirements
+    apk add --update --no-cache --no-progress \
         php7-apcu \
         php7-ctype \
         php7-curl \
@@ -17,14 +20,15 @@ RUN apk add --update --no-cache --no-progress \
         php7-xml \
         `# php7-yaml` \
         php7-zip &&\
-    workdirs /var/www/grav
+    \
+    # prepare working directory
+    workdirs /data/www
 
 COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} +
 
-VOLUME /var/www/grav \
-    /etc/nginx/conf.d
+VOLUME /data/www
 
 USER 999
 

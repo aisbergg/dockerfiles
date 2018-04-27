@@ -18,9 +18,10 @@ defaults:
   ######################################
   ## PHP
   ######################################
-  PHP_MAX_CHILDREN: 50
-  PHP_MIN_SPARE_SERVERS: 1
-  PHP_MAX_SPARE_SERVERS: 2
+  PHP_FPM_SPAWN_MODE: dynamic
+  PHP_FPM_MAX_CHILDREN: 40
+  PHP_FPM_MIN_SPARE_SERVERS: 1
+  PHP_FPM_MAX_SPARE_SERVERS: 2
   PHP_MAX_EXECUTION_TIME: 60
   PHP_MAX_INPUT_TIME: 60
   PHP_MEMORY_LIMIT: "180M"
