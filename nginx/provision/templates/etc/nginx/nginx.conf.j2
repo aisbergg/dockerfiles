@@ -263,6 +263,11 @@ http {
         'https' 1;
     }
 
+    map $real_scheme $real_server_port {
+        default 80;
+        'https' 443;
+    }
+
     # Nginx is serving from 8080 and 8443 but the ports are mapped to 80 and
     # 443. This option prevents Nginx from adding the wrong port in a redirect.
     port_in_redirect            off;
