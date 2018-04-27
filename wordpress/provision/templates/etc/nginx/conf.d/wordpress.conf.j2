@@ -5,21 +5,21 @@
 #-------------------------------------------------------------------------------
 
 
-limit_conn_log_level    warn;
-limit_req_zone          $limit zone=php:5m rate=50r/s;
+limit_conn_log_level            warn;
+limit_req_zone                  $limit zone=php:5m rate=50r/s;
 #login zone to limit login request to 1 request per second
-limit_req_zone          $limit zone=login:5m rate=1r/s;
+limit_req_zone                  $limit zone=login:5m rate=1r/s;
 
 {% if NGINX_REDIRECT_TO_FIRST_DOMAIN and DOMAINNAMES|length > 1 -%}
 server {
-    listen              8080;
-    listen              [::]:8080;
-    listen              8443 ssl{{ ' http2' if NGINX_HTTP_VERSION == "2.0" else '' }};
-    listen              [::]:8443 ssl{{ ' http2' if NGINX_HTTP_VERSION == "2.0" else '' }};
-    server_name         {% for domain in DOMAINNAMES %}{% if not loop.first %}{{ domain }} {% endif %}{% endfor %};
+    listen                      8080;
+    listen                      [::]:8080;
+    listen                      8443 ssl{{ ' http2' if NGINX_HTTP_VERSION == "2.0" else '' }};
+    listen                      [::]:8443 ssl{{ ' http2' if NGINX_HTTP_VERSION == "2.0" else '' }};
+    server_name                 {% for domain in DOMAINNAMES %}{% if not loop.first %}{{ domain }} {% endif %}{% endfor %};
 
     location / {
-        return 301      $real_scheme://{{ DOMAINNAMES[0] }}$request_uri;
+        return 301              $real_scheme://{{ DOMAINNAMES[0] }}$request_uri;
     }
 
     # Let's Encrypt challenge response uri
@@ -31,16 +31,16 @@ server {
 
 {% endif -%}
 server {
-    listen              8080;
-    listen              [::]:8080;
-    listen              8443 ssl{{ ' http2' if NGINX_HTTP_VERSION == "2.0" else '' }} default_server;
-    listen              [::]:8443 ssl{{ ' http2' if NGINX_HTTP_VERSION == "2.0" else '' }};
+    listen                      8080;
+    listen                      [::]:8080;
+    listen                      8443 ssl{{ ' http2' if NGINX_HTTP_VERSION == "2.0" else '' }} default_server;
+    listen                      [::]:8443 ssl{{ ' http2' if NGINX_HTTP_VERSION == "2.0" else '' }};
     {% if DOMAINNAMES|length > 0 -%}
     server_name     {% if NGINX_REDIRECT_TO_FIRST_DOMAIN %}{{ DOMAINNAMES[0] }}{% else %}{% for domain in DOMAINNAMES %}{{ domain }} {% endfor %}{% endif %};
     {%- endif %}
 
-    root                /data/www;
-    index               index.php;
+    root                        /data/www;
+    index                       index.php;
 
     {% if NGINX_REWRITE_HTTPS -%}
     # rewrite HTTP requests to HTTPS, except when the request is a Let's Encrypt
@@ -62,12 +62,13 @@ server {
     location / {
         # Try using a file from given path. If it doesn't exist try the next
         # file in the row. First try $uri, then $uri/ and /index.php as fallback
-        try_files $uri $uri/ /index.php?$args;
+        try_files               $uri $uri/ /index.php?$args;
     }
 
-    location /wp-login.php {
-        limit_req zone=login nodelay;
-        try_files /wp-login.php _;
+    # limit requests to login page
+    location ^~ /wp-login.php {
+        limit_req               zone=login nodelay;
+        try_files               @php @php;
     }
 
     # turn  off logging for following locations
@@ -78,7 +79,7 @@ server {
     location ~ /\.                                    { access_log off; log_not_found off; deny all; }
     location ~* wp-includes/js/tinymce/langs/.*\.php  { internal; }
     location ~* /(?:uploads|files)/.*\.php$           { deny all; }
-    location ~* wp-config.php                         { deny all; }
+    location ~* /wp-config.php                        { deny all; }
     location ~* \.(pl|cgi|py|sh|lua)\$                { return 444; }
 
     # prevent any potentially-executable files in the uploads directory from being executed
@@ -88,8 +89,13 @@ server {
         default_type text/plain;
     }
 
-    # pass PHP scripts to PHP-FPM
     location ~ \.php$ {
+        limit_req               zone=php burst=50;
+        try_files               @php @php;
+    }
+
+    # pass PHP scripts to PHP-FPM
+    location @php {
         limit_req               zone=php burst=50;
         try_files               $uri =404;
         fastcgi_read_timeout    {{ NGINX_FASTCGI_READ_TIMEOUT }};
