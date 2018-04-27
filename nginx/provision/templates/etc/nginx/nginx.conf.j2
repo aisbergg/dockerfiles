@@ -232,8 +232,14 @@ http {
     # Other
     ###############################################
 
-    # add nosniff header (https://www.owasp.org/index.php/List_of_useful_HTTP_headers)
-    add_header                  X-Content-Type-Options nosniff;
+    # add nosniff header
+    #   see: https://www.owasp.org/index.php/List_of_useful_HTTP_headers
+    add_header                  X-Content-Type-Options "nosniff";
+
+    # enable anti-cross-site scripting filter built into Internet Explorer,
+    # Chrome and Safari
+    #   see: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
+    add_header                  X-XSS-Protection "1; mode=block";
 
     {% if NGINX_BEHIND_PROXY -%}
     # get client ip from header set by reverse proxy
