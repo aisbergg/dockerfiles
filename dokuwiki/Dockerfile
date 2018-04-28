@@ -1,10 +1,14 @@
 FROM aisberg/nginx-php7
 
-ENV DOKUWIKI_VERSION=2017-02-19e \
-    SHA256_CHECKSUM=93172a28ab88107a8abac1e6a34fa6cef54b6e407cd03a8cc14d2a604a63e888
+ENV DOKUWIKI_VERSION=2018-04-22 \
+    SHA256_CHECKSUM=508ae5f9d9a3fd3743b48de1b8c4b39ed8c8dc4bc34db68e7c5bdf989f538ef8
 
-RUN curl -fSL "http://download.dokuwiki.org/src/dokuwiki/dokuwiki-$DOKUWIKI_VERSION.tgz" -o /usr/local/src/dokuwiki.tgz && \
+RUN  \
+    # download DokuWiki sources
+    curl -fSL "http://download.dokuwiki.org/src/dokuwiki/dokuwiki-$DOKUWIKI_VERSION.tgz" -o /usr/local/src/dokuwiki.tgz && \
     echo "$SHA256_CHECKSUM  /usr/local/src/dokuwiki.tgz" | sha256sum -c &&\
+    \
+    # install required packages
     apk add --update --no-cache --no-progress \
         php7-apcu \
         php7-curl \
@@ -14,14 +18,15 @@ RUN curl -fSL "http://download.dokuwiki.org/src/dokuwiki/dokuwiki-$DOKUWIKI_VERS
         php7-openssl \
         php7-xml \
         php7-zlib &&\
-    workdirs /var/www/dokuwiki
+    \
+    # prepare working directories
+    workdirs /data/www
 
 COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} +
 
-VOLUME /var/www/dokuwiki \
-    /etc/nginx/conf.d
+VOLUME /data/www
 
 USER 999
 
