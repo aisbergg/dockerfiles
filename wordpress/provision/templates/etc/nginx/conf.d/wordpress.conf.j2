@@ -7,8 +7,8 @@
 
 limit_conn_log_level            warn;
 limit_req_zone                  $limit zone=php:5m rate=50r/s;
-#login zone to limit login request to 1 request per second
-limit_req_zone                  $limit zone=login:5m rate=1r/s;
+# limit login request to 2 request per second
+limit_req_zone                  $limit zone=login:5m rate=2r/s;
 
 {% if NGINX_REDIRECT_TO_FIRST_DOMAIN and DOMAINNAMES|length > 1 -%}
 server {
