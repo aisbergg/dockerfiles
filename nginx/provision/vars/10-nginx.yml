@@ -47,8 +47,7 @@ defaults:
 
   # TLS related
   NGINX_TLS_TERMINATED: false
-  NGINX_REWRITE_HTTPS: false
-  NGINX_REWRITE_HTTPS_PORT: 443
+  NGINX_REWRITE_HTTPS: true
   NGINX_BEHIND_PROXY: false
   # following variables are defined in 'tasks/10-nginx.sh' and not needed here
   # NGINX_TLS_KEY: "/data/tls/key.pem"

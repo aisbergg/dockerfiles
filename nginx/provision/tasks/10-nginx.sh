@@ -3,7 +3,7 @@ set -eo pipefail
 
 print_info "Configuring Nginx"
 
-export NGINX_REWRITE_HTTPS=$(bool "$NGINX_REWRITE_HTTPS" false)
+export NGINX_REWRITE_HTTPS=$(bool "$NGINX_REWRITE_HTTPS" true)
 export NGINX_TLS_TERMINATED=$(bool "$NGINX_TLS_TERMINATED" false)
 export NGINX_TLS_CERT=${NGINX_TLS_CERT:-"/data/tls/cert.pem"}
 export NGINX_TLS_KEY=${NGINX_TLS_KEY:-"/data/tls/key.pem"}

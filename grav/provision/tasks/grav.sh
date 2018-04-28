@@ -3,9 +3,6 @@ set -e
 
 print_info "Configuring Grav"
 
-export NGINX_REWRITE_HTTPS=$(bool "$NGINX_REWRITE_HTTPS" false)
-export AUTO_UPDATE=$(bool "$AUTO_UPDATE" true)
-
 # removing all files before installing
 if [[ $(bool "$CLEAN_INSTALLATION" false) == "true" ]]; then
     print_info "Removing all files in installation dir"
@@ -27,7 +24,7 @@ if [[ ! -f "/data/www/bin/grav" ]]; then
     popd >/dev/null
     rm -rf /tmp/composer-cache
 
-elif [[ "$AUTO_UPDATE" == "true" ]]; then
+elif [[ $(bool "$GRAV_AUTO_UPDATE" true) == "true" ]]; then
     pushd /data/www > /dev/null
     ( php bin/gpm selfupgrade -f || true )
     popd > /dev/null
