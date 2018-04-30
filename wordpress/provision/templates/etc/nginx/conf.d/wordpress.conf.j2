@@ -7,8 +7,8 @@
 
 limit_conn_log_level            warn;
 limit_req_zone                  $limit zone=php:5m rate=50r/s;
-# limit login request to 2 request per second
-limit_req_zone                  $limit zone=login:5m rate=2r/s;
+# limit login request to 1 request per second
+limit_req_zone                  $limit zone=login:5m rate=1r/s;
 
 {% if NGINX_REDIRECT_TO_FIRST_DOMAIN and DOMAINNAMES|length > 1 -%}
 server {
@@ -67,7 +67,7 @@ server {
 
     # limit requests to login page
     location ^~ /wp-login.php {
-        limit_req               zone=login nodelay;
+        limit_req               zone=login burst=5;
         try_files               @php @php;
     }
 
@@ -96,7 +96,6 @@ server {
 
     # pass PHP scripts to PHP-FPM
     location @php {
-        limit_req               zone=php burst=50;
         try_files               $uri =404;
         fastcgi_read_timeout    {{ NGINX_FASTCGI_READ_TIMEOUT }};
         include                 fastcgi_params;
