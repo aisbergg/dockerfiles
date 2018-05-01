@@ -66,6 +66,7 @@ RUN \
         python3-pip \
         python3-setuptools \
         python3-wheel &&\
+    ln -sf /usr/bin/python3 /usr/bin/python &&\
     curl -fSL "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini" -o /sbin/tini &&\
     curl -fSL "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini.asc" -o /tmp/tini.asc &&\
     ( gpg --keyserver ipv4.pool.sks-keyservers.net --keyserver-options timeout=10 --recv-keys "$TINI_PGP_KEY_ID" \
@@ -73,7 +74,8 @@ RUN \
         || gpg --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$TINI_PGP_KEY_ID" ) &&\
     gpg --verify /tmp/tini.asc /sbin/tini &&\
     pip3 install --upgrade pip &&\
-    pip3 install git+https://github.com/Aisbergg/python-templer.git@v1.1.3 &&\
+    pip3 install schedule &&\
+    pip3 install git+https://github.com/Aisbergg/python-templer.git@v1.1.4 &&\
     pip3 install git+https://github.com/Aisbergg/python-confmerge.git@v0.2.0 &&\
     \
     # cleanup
@@ -81,7 +83,7 @@ RUN \
 
 COPY provision /provision
 COPY static /
-RUN chmod 0755 /entrypoint /usr/bin/workdirs &&\
+RUN chmod 0755 /entrypoint /usr/bin/workdirs /usr/bin/schedule_program &&\
     find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} + &&\
     \
