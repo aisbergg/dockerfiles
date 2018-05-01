@@ -1,0 +1,59 @@
+#!/bin/bash
+
+USAGE="Usage: $0 [OPTIONS] DATABASE DUMP_FILE
+
+Dump a single MySQL database.
+
+OPTIONS:
+    --help              Show this help message and exit
+    -h, --host          Database host (mysql)
+    -p, --password      Database password
+    -P, --port          Port (3306)
+    --compresslevel     When greater 0 a GZip compressed dump will be created
+                        dump (0)
+    -u, --user          Database user"
+
+db_name=""
+db_user=""
+db_password=""
+db_host="mysql"
+db_port=3306
+dump_filename=""
+compress_level=0
+
+args=$(getopt -o "f:h:n:p:P:u:" -l "compresslevel:,help,host:,password:,port:,user:" -- "$@")
+eval set -- "$args"
+while [[ $# > 0 ]]; do
+    case "$1" in
+        -f|--filename) dump_file="$2"; shift 2;;
+        --help) echo "$USAGE"; exit 0;;
+        -h|--host) db_host="$2"; shift 2;;
+        -p|--password) db_password="$2"; shift 2;;
+        -P|--port) db_port="$2"; shift 2;;
+        --compresslevel) compresslevel="$2"; shift 2;;
+        -u|--user) db_user="$2"; shift 2;;
+        --) shift ; break ;;
+        *) echo "Unknown option '$1'"; exit 1;;
+    esac
+done
+if [[ $# > 0 ]]; then db_name="$1"; shift 1; else echo "Missing database name"; exit 1; fi
+if [[ $# > 0 ]]; then dump_file="$1"; shift 1; else echo "Missing dump filename"; exit 1; fi
+if [[ -z "$db_name" ]]; then echo "Missing database name"; exit 1; fi
+if [[ -z "$db_user" ]]; then echo "Missing database user"; exit 1; fi
+if [[ -z "$db_password" ]]; then echo "Missing database password"; exit 1; fi
+if [[ -z "$dump_file" ]]; then echo "Missing dump file" ; exit 1; fi
+
+if [[ $compresslevel > 0 ]]; then
+    # compressed database dump
+    dump_file="${dump_file%.gz}"
+    dump_file="${dump_file%.sql}.sql.gz"
+    mkdir -p "$(dirname "$dump_file")"
+    mysqldump --host=$db_host --protocol=TCP --force --opt --user=$db_user --password=$db_password $db_name | gzip > "$dump_file"
+    exit $?
+else
+    # uncompressed database dump
+    dump_file="${dump_file%.sql}.sql"
+    mkdir -p "$(dirname "$dump_file")"
+    mysqldump --host=$db_host --protocol=TCP --force --opt --user=$db_user --password=$db_password $db_name > "$dump_file"
+    exit $?
+fi

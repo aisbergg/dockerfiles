@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e
+
+# parse cli args
+provision=false
+while [[ $# > 0 ]]; do
+    case "$1" in
+        --provision)
+            provision=false
+            shift 1
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+args=($@)
+shift $#
+
+# provision the container first
+if [[ "$provision" == true ]]; then
+    . /provision/cmds/provision
+fi
+
+exec burp -Q ${args[@]}

@@ -1,0 +1,272 @@
+---
+
+defaults:
+  ######################################
+  ## Burp General
+  ######################################
+
+  BURP_MODE:
+    type: choice
+    default: client
+    choices:
+      - client
+      - server
+
+  ######################################
+  ## Burp Server
+  ######################################
+
+  BURP_SERVER_ADDRESS: "0.0.0.0"
+  BURP_SERVER_STATUS_ADDRESS: "0.0.0.0"
+  BURP_SERVER_DEDUP_GROUP: "global"
+  BURP_SERVER_DEDUP_TIME:
+    type: list
+    delimiter: ';'
+    strip: true
+    default:
+      - "Sunday 03:00"
+  BURP_SERVER_PROTOCOL:
+    type: choice
+    default: "1"
+    choices:
+      - "0"
+      - "1"
+      - "2"
+  BURP_SERVER_HARDLINKED_ARCHIVE: false
+  BURP_SERVER_WORKING_DIR_RECOVERY_METHOD: delete
+  BURP_SERVER_MAX_CHILDREN: 5
+  BURP_SERVER_MAX_STATUS_CHILDREN: 5
+  BURP_SERVER_UMASK: 0002
+
+  BURP_SERVER_RATELIMIT: 0.0
+  BURP_SERVER_NETWORK_TIMEOUT: 7200
+
+  BURP_SERVER_PASSWORD_CHECK: true
+
+  BURP_SERVER_COMPRESSION:
+    type: choice
+    default: "9"
+    choices:
+      - "0"
+      - "1"
+      - "2"
+      - "3"
+      - "4"
+      - "5"
+      - "6"
+      - "7"
+      - "8"
+      - "9"
+  BURP_SERVER_VERSION_WARN: true
+  BURP_SERVER_KEEP:
+    type: list
+    delimiter: ';'
+    strip: true
+    default: [7, 4, 4]
+
+  BURP_SERVER_HARDLINKED_ARCHIVE: false
+  BURP_SERVER_MAX_HARDLINKS: 10000
+  BURP_SERVER_LIBRSYNC: true
+
+  BURP_SERVER_MONITOR_BROWSE_CACHE: true
+
+  # Transport Encryption (TLS)
+  BURP_SERVER_CA_NAME: burpCA
+  BURP_SERVER_CA_SERVER_NAME: burpserver
+  BURP_SERVER_CA_CRL_CHECK: true
+  BURP_SERVER_SSL_CERT_CA: /data/tls/cert-ca.pem
+  BURP_SERVER_SSL_CERT: /data/tls/cert-server.pem
+  BURP_SERVER_SSL_KEY: /data/tls/cert-server.key
+  BURP_SERVER_SSL_KEY_PASSWORD: ""
+  BURP_SERVER_SSL_DHFILE: /data/tls/dhfile.pem
+
+  # Timer and Timestamp format
+  BURP_SERVER_TIMESTAMP_FORMAT: "%Y-%m-%d %H:%M:%S %z"
+  BURP_SERVER_TIMER_ARG:
+    type: list
+    delimiter: ';'
+    strip: true
+    default:
+      - "20h"
+      - "Mon,Tue,Wed,Thu,Fri,00,01,02,03,04,05,19,20,21,22,23"
+      - "Sat,Sun,00,01,02,03,04,05,06,07,08,17,18,19,20,21,22,23"
+
+  # E-Mail Notification
+  BURP_SERVER_NOTIFY_SUCCESS: false
+  BURP_SERVER_NOTIFY_SUCCESS_SUBJECT: "%b succeeded: %c %w"
+  BURP_SERVER_NOTIFY_SUCCESS_WARNINGS_ONLY: true
+  BURP_SERVER_NOTIFY_SUCCESS_CHANGES_ONLY: true
+
+  BURP_SERVER_NOTIFY_FAILURE: false
+  BURP_SERVER_NOTIFY_FAILURE_SUBJECT: "%b failed: %c %w"
+
+  # Server Pre and Post Tasks
+  BURP_SERVER_SCRIPT_PRE: ""
+  BURP_SERVER_SCRIPT_PRE_NOTIFY: false
+  BURP_SERVER_SCRIPT_POST: ""
+  BURP_SERVER_SCRIPT_POST_RUN_ON_FAIL: false
+  BURP_SERVER_SCRIPT_POST_NOTIFY: false
+
+  # Client permissions
+  BURP_SERVER_RESTORE_CLIENT:
+    type: list
+    delimiter: ';'
+    strip: true
+    default: []
+  BURP_SERVER_CLIENT_CAN_DELETE: true
+  BURP_SERVER_CLIENT_CAN_FORCE_BACKUP: true
+  BURP_SERVER_CLIENT_CAN_LIST: true
+  BURP_SERVER_CLIENT_CAN_RESTORE: true
+  BURP_SERVER_CLIENT_CAN_VERIFY: true
+  BURP_SERVER_CLIENT_CAN_VERIFY: true
+
+  ######################################
+  ## Burp Client
+  ######################################
+
+  BURP_CLIENT_SERVER_HOST: "{% if BURP_MODE|lower == 'client' %}{{ BURP_CLIENT_SERVER_HOST|mandatory('The server address must be defined with BURP_CLIENT_SERVER_HOST') }}{% endif %}"
+  BURP_CLIENT_SERVER_PORT: 4971
+  BURP_CLIENT_SERVER_STATUS_PORT: 4972
+  BURP_CLIENT_PASSWORD: ""
+  BURP_CLIENT_CNAME: "{% if BURP_MODE|lower == 'client' %}{{ BURP_CLIENT_CNAME|mandatory('The clients CName must be defined with BURP_CLIENT_CNAME') }}{% endif %}"
+  BURP_CLIENT_PROTOCOL:
+    type: choice
+    default: "1"
+    choices:
+      - "0"
+      - "1"
+      - "2"
+  BURP_CLIENT_RATELIMIT: 0.0
+  BURP_CLIENT_NETWORK_TIMEOUT: 7200
+  BURP_CLIENT_RANDOMISE: 1200
+  BURP_CLIENT_SERVER_CAN_RESTORE: true
+  BURP_CLIENT_SERVER_CAN_OVERRIDE_INCLUDES: true
+  BURP_CLIENT_ENCRYPTION_PASSWORD: ""
+
+  # TLS
+  BURP_CLIENT_SSL_CERT_CA: /data/tls/cert-ca.pem
+  BURP_CLIENT_SSL_CERT: /data/tls/cert-client.pem
+  BURP_CLIENT_SSL_KEY: /data/tls/cert-client.key
+  BURP_CLIENT_SSL_KEY_PASSWORD: ""
+  BURP_CLIENT_SSL_PEER_CN: burpserver
+
+  # Scripts
+  BURP_CLIENT_BACKUP_SCRIPT_PRE: "/data/burp/pre-backup.sh"
+  BURP_CLIENT_BACKUP_SCRIPT_POST: "/data/burp/post-backup.sh"
+  BURP_CLIENT_RESTORE_SCRIPT_PRE: ""
+  BURP_CLIENT_RESTORE_SCRIPT_POST: "/tmp/backup/post-restore.sh"
+
+  # Includes and Excludes
+  BURP_CLIENT_INCLUDE:
+    type: list
+    delimiter: ';'
+    strip: true
+    default: []
+  BURP_CLIENT_INCLUDE_GLOB:
+    type: list
+    delimiter: ';'
+    strip: true
+    default: []
+  BURP_CLIENT_INCLUDE_EXT:
+    type: list
+    delimiter: ';'
+    strip: true
+    default: []
+  BURP_CLIENT_INCLUDE_FS:
+    type: list
+    delimiter: ';'
+    strip: true
+    default: []
+
+  BURP_CLIENT_EXCLUDE:
+    type: list
+    delimiter: ';'
+    strip: true
+    default: []
+  BURP_CLIENT_EXCLUDE_REGEX:
+    type: list
+    delimiter: ';'
+    strip: true
+    default: []
+  BURP_CLIENT_EXCLUDE_EXT:
+    type: list
+    delimiter: ';'
+    strip: true
+    default: []
+  BURP_CLIENT_EXCLUDE_FS:
+    type: list
+    delimiter: ';'
+    strip: true
+    default:
+      - "devfs"
+      - "devpts"
+      - "proc"
+      - "sysfs"
+      - "tmpfs"
+
+  BURP_CLIENT_MIN_FILE_SIZE: "0 Mb"
+  BURP_CLIENT_MAX_FILE_SIZE: "0 Mb"
+
+  BURP_CLIENT_CROSS_FILESYSTEM:
+    type: list
+    delimiter: ';'
+    strip: true
+    default: []
+  BURP_CLIENT_CROSS_ALL_FILESYSTEMS: true
+
+  BURP_CLIENT_NOBACKUP:
+    type: list
+    delimiter: ';'
+    strip: true
+    default:
+      - ".nobackup"
+
+  BURP_CLIENT_ACL: true
+  BURP_CLIENT_XATTR: true
+
+  # Errors
+  BURP_CLIENT_SCAN_PROBLEM_RAISES_ERROR: true
+
+  ######################################
+  ## SMTP
+  ######################################
+
+  SMTP_HOST: ""
+  SMTP_PORT: 587
+  SMTP_AUTHMETHOD:
+    type: choice
+    default: "plain"
+    choices:
+      - "plain"
+      - "scram-sha-1"
+      - "cram-md5"
+      - "gssapi"
+      - "external"
+      - "digest-md5 "
+  SMTP_USER: ""
+  SMTP_PASSWORD: ""
+  SMTP_FROM: ""
+  SMTP_TO: ""
+  SMTP_TLS:
+    type: choice
+    default: "TLS"
+    choices:
+      - "TLS"
+      - "STARTTLS"
+      - "OFF"
+
+  ######################################
+  ## MySQL
+  ######################################
+
+  MYSQL_DATABASES:
+    type: list
+    delimiter: ';'
+    strip: true
+    default: []
+  {% if MYSQL_DATABASES != "" -%}
+  MYSQL_HOST: "{{ MYSQL_HOST|mandatory('MYSQL_HOST is required') }}"
+  MYSQL_PORT: 3306
+  MYSQL_USER: "{{ MYSQL_USER|mandatory('MYSQL_USER is required') }}"
+  MYSQL_PASSWORD: "{{ MYSQL_PASSWORD|mandatory('MYSQL_PASSWORD is required') }}"
+  {%- endif %}

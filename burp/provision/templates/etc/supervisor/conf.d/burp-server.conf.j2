@@ -1,0 +1,8 @@
+[program:burp-server]
+command=/usr/sbin/burp -F -c /data/burp/burp.conf
+autostart={{ 'true' if BURP_MODE|lower == 'server' else 'false' }}
+autorestart=unexpected
+directory=/data/burp
+redirect_stderr=true
+stdout_logfile=/data/log/burp-server.log
+stdout_logfile_maxbytes={{ SUPERVISOR_LOGFILE_MAXBYTES }}

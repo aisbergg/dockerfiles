@@ -1,0 +1,16 @@
+# msmtprc configuration file
+# documentation: http://msmtp.sourceforge.net/doc/msmtp.html
+
+defaults
+protocol smtp
+
+host {{ SMTP_HOST }}
+port {{ SMTP_PORT }}
+auth {{ SMTP_AUTHMETHOD }}
+user {{ SMTP_USER }}
+password {{ SMTP_PASSWORD }}
+tls {{ 'on' if SMTP_TLS == 'TLS' or SMTP_TLS == 'STARTTLS' else 'off' }}
+tls_starttls {{ 'on' if SMTP_TLS == 'STARTTLS' else 'off' }}
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+
+# from {{ SMTP_FROM }}
