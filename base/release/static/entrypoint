@@ -6,7 +6,7 @@ function print_log() {
     #
     # Usage: print_log "Message" "LOG_TYPE"
     # where LOG_TYPE is one of: INFO, WARN, ERROR, DEBG
-    echo "$(date +"%Y-%d-%m %T,%3N") $2 ContainerProvisioning $1"
+    echo "$(date +"%Y-%d-%m %T %z") $2 ContainerProvisioning $1"
 }
 
 function print_warning() {
