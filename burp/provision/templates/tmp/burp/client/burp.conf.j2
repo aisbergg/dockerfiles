@@ -100,6 +100,9 @@ restore_script_post = {{ BURP_CLIENT_RESTORE_SCRIPT_POST }}
 # the server side and 'server_can_override_includes=1'.
 
 # Includes
+{% if BURP_CLIENT_BACKUP_SCRIPT_PRE == "/data/burp/pre-backup.sh" -%}
+include = /tmp/backup
+{%- endif %}
 {% for path in BURP_CLIENT_INCLUDE %}
 include = {{ path }}
 {%- endfor %}
