@@ -138,8 +138,7 @@ timer_arg = {{ timer }}
 # %c - client name
 # %w - number of warnings, if any
 {% if BURP_SERVER_NOTIFY_SUCCESS -%}
-notify_success_script = /usr/share/burp/scripts/notify_script
-notify_success_arg = msmtp
+notify_success_script = /data/burp/notify.sh
 notify_success_arg = To: {{ SMTP_TO }}
 notify_success_arg = From: {{ SMTP_FROM }}
 notify_success_arg = Subject: {{ BURP_SERVER_NOTIFY_SUCCESS_SUBJECT }}

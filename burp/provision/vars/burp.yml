@@ -32,7 +32,6 @@ defaults:
       - "0"
       - "1"
       - "2"
-  BURP_SERVER_HARDLINKED_ARCHIVE: false
   BURP_SERVER_WORKING_DIR_RECOVERY_METHOD: delete
   BURP_SERVER_MAX_CHILDREN: 5
   BURP_SERVER_MAX_STATUS_CHILDREN: 5
@@ -246,10 +245,14 @@ defaults:
   SMTP_USER: ""
   SMTP_PASSWORD: ""
   SMTP_FROM: ""
-  SMTP_TO: ""
+  SMTP_TO:
+    type: list
+    delimiter: ' '
+    strip: true
+    default: []
   SMTP_TLS:
     type: choice
-    default: "TLS"
+    default: "STARTTLS"
     choices:
       - "TLS"
       - "STARTTLS"
