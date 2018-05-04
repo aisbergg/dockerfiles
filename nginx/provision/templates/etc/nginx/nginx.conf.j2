@@ -85,12 +85,16 @@ http {
     # a comprehensive list of all parameters can be found at:
     # http://nginx.org/en/docs/http/ngx_http_core_module.html
 
-    # sendfile copies data between one FD and other from within the kernel
+    # for detailed information on the next three parameters read:
+    # https://thoughts.t37.net/nginx-optimization-understanding-sendfile-tcp-nodelay-and-tcp-nopush-c55cdd276765
+    # sendfile copies data between one file descriptor and another directly in
+    # kernel space
     sendfile                    on;
-    # send headers in one peace
+    # optimize the amount of data that is send in one TCP packet
     tcp_nopush                  on;
-    # don't buffer data sent, good for small data bursts in real time
+    # don't introduce artificial delay
     tcp_nodelay                 on;
+
     # timeout for keep-alive connections. Server will close connections after this time
     keepalive_timeout           {{ NGINX_KEEPALIVE_TIMEOUT }};
     # maximum number of requests that can be served through one keep-alive connection
