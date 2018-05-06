@@ -1,6 +1,7 @@
 [program:process_queue]
-command=/usr/bin/python3 /etc/supervisor/conf.d/process_queue.py
+command=/usr/bin/schedule_program --minutes 15 --wake-up 30 -- /usr/bin/php /data/www/admin/index.php -pprocessqueue -c /data/www/config/config.php
 autostart=true
 autorestart=unexpected
+directory=/data/www/
 redirect_stderr=true
-stdout_logfile=None
+stdout_logfile=/data/log/process_queue.log
