@@ -147,7 +147,7 @@ defaults:
   BURP_CLIENT_SSL_CERT: /data/tls/cert-client.pem
   BURP_CLIENT_SSL_KEY: /data/tls/cert-client.key
   BURP_CLIENT_SSL_KEY_PASSWORD: ""
-  BURP_CLIENT_SSL_PEER_CN: burpserver
+  BURP_CLIENT_SSL_PEER_CN: {{ BURP_CLIENT_SERVER_HOST|default('burp-server') }}
 
   # Scripts
   BURP_CLIENT_BACKUP_SCRIPT_PRE: "/data/burp/pre-backup.sh"
