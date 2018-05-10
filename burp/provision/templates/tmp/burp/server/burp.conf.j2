@@ -109,7 +109,7 @@ ssl_cert = {{ BURP_SERVER_SSL_CERT }}
 ssl_key = {{ BURP_SERVER_SSL_KEY }}
 
 # Server SSL ciphers
-ssl_ciphers = EECDH+AESGCM:EDH+AESGCM:EECDH:EDH:!MD5:!RC4:!PSK:!LOW:!MEDIUM:!CAMELLIA:!ECDSA:!DES:!DSS:!3DES:!EXPORT:!SEED:!aNULL:!eNULL:!NULL
+ssl_ciphers = EECDH+AESGCM:EDH+AESGCM
 
 # Disable TLS compression to protect against BEAST and CRIME attacks
 ssl_compression = zlib0
