@@ -168,13 +168,12 @@ http {
     ###############################################
 
     {% if not NGINX_TLS_TERMINATED -%}
-    ssl_protocols               TLSv1.2;
+    ssl_protocols               TLSv1.2 TLSv1.3;
 
-    # enable ciphers
-    ssl_prefer_server_ciphers on;
-    # preferred ciphers, EECDH+AESGCM, EDH+AESGCM, EECDH and EDH are dynamic
-    # cipher lists. Use `openssl ciphers '...'` to check the actual tls ciphers
-    ssl_ciphers                 'EECDH+AESGCM:EDH+AESGCM:EECDH:EDH:!MD5:!RC4:!PSK:!LOW:!MEDIUM:!CAMELLIA:!ECDSA:!DES:!DSS:!3DES:!EXPORT:!SEED:!aNULL:!eNULL:!NULL';
+    # let the server decide which cipher to use
+    ssl_prefer_server_ciphers   on;
+    # accepted ciphers, use `openssl ciphers -v '...'` to get the actual ciphers.
+    ssl_ciphers                 ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:EECDH+AESGCM:EDH+AESGCM;
 
     # elliptic curve type
     ssl_ecdh_curve              secp521r1:secp384r1:prime256v1;
@@ -182,6 +181,7 @@ http {
     # boost performance
     ssl_session_cache           shared:SSL:20m;
     ssl_session_timeout         10m;
+    ssl_session_tickets         on;
 
     # TLS key and certificate
     ssl_certificate             {{ NGINX_TLS_CERT }};
