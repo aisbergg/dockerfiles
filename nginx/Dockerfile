@@ -5,8 +5,8 @@ ENV INIT=supervisor
 RUN \
     # install required packages
     # for informations on Nginx modules see: https://www.nginx.com/resources/wiki/modules/
-    apk add --update --no-cache --no-progress \
-        openssl \
+    apk add --update --no-cache --no-progress --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
+        libressl \
         nginx \
         nginx-mod-http-cache-purge \
         nginx-mod-http-fancyindex \
