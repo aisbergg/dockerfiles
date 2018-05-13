@@ -36,8 +36,6 @@ class ScheduledProgram(object):
         signal.signal(signal.SIGQUIT, self.handle_signal)
         signal.signal(signal.SIGTERM, self.handle_signal)
 
-        schedule.every(15).minutes.do(self._run_prog)
-
         while True:
             try:
                 schedule.run_pending()
