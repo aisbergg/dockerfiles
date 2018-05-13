@@ -1,6 +1,6 @@
 USERNAME=aisberg
 VERSION_ALPINE=3.7
-VERSION_UBUNTU=17.10
+VERSION_UBUNTU=18.04
 UBUNTU_MIRROR=http://ftp.halifax.rwth-aachen.de/ubuntu/
 ALPINE_MIRROR=http://ftp.halifax.rwth-aachen.de/alpine/v3.7/
 
@@ -41,6 +41,6 @@ push:
 release: build push
 
 update:
-	bash ./update.sh
+	IMAGE_VERSION_ALPINE=$(VERSION_ALPINE) IMAGE_VERSION_UBUNTU=$(VERSION_UBUNTU) bash ./update.sh
 
 default: build
