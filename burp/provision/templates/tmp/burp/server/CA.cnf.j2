@@ -8,25 +8,27 @@
 RANDFILE                = /dev/urandom
 CA_DIR                  = /data/tls/CA
 
-
 [ ca ]
+# directory and file locations
 dir                     = $ENV::CA_DIR
-database                = $dir/index.txt
-serial                  = $dir/serial.txt
 certs                   = $dir/certs
 new_certs_dir           = $dir/newcerts
+database                = $dir/index.txt
+serial                  = $dir/serial.txt
+
+# for certificate revocation lists
+crl                     = $dir/crl/ca.crl.pem
 crlnumber               = $dir/crlnumber.txt
-
-unique_subject          = no
-
-default_md              = sha512
-default_days            = 7300
+crl_extensions          = crl_ext
 default_crl_days        = 7300
 
-#????
+unique_subject          = no
+default_md              = sha512
+
 name_opt                = ca_default
 cert_opt                = ca_default
-
+default_days            = 7300
+preserve                = no
 x509_extensions         = usr_cert
 copy_extensions         = copy
 policy                  = policy_anything
@@ -36,3 +38,20 @@ basicConstraints        = CA:FALSE
 
 [ policy_anything ]
 commonName              = supplied
+
+[ req ]
+# Options for the `req` tool (`man req`).
+default_bits            = 4096
+distinguished_name      = req_distinguished_name
+string_mask             = utf8only
+default_md              = sha512
+
+# Extension to add when the -x509 option is used.
+x509_extensions         = v3_ca
+
+[ v3_ca ]
+# Extensions for a typical CA (`man x509v3_config`).
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true
+keyUsage = critical, digitalSignature, cRLSign, keyCertSign
