@@ -17,6 +17,7 @@ ENV TERM=xterm \
     DEBIAN_FRONTEND=noninteractive \
     LANG=$LANG \
     LC_ALL=$LANG \
+    TZ=:/etc/localtime \
     TINI_VERSION=v0.18.0 \
     TINI_PGP_KEY_ID=595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7
 
@@ -33,10 +34,10 @@ RUN \
         echo "APT::Install-Suggests 0;"; \
     } >> /etc/apt/apt.conf.d/01norecommends &&\
     { \
-        echo "deb $UBUNTU_MIRROR artful main universe multiverse restricted"; \
-        echo "deb $UBUNTU_MIRROR artful-updates main universe multiverse restricted"; \
-        echo "deb $UBUNTU_MIRROR artful-backports main universe multiverse restricted"; \
-        echo "deb $UBUNTU_MIRROR artful-security main universe multiverse"; \
+        echo "deb $UBUNTU_MIRROR bionic main universe multiverse restricted"; \
+        echo "deb $UBUNTU_MIRROR bionic-updates main universe multiverse restricted"; \
+        echo "deb $UBUNTU_MIRROR bionic-backports main universe multiverse restricted"; \
+        echo "deb $UBUNTU_MIRROR bionic-security main universe multiverse"; \
     } > /etc/apt/sources.list &&\
     if [ -n "$APT_CACHER_NG" ]; then echo "Acquire::http { Proxy \"$APT_CACHER_NG\"; };" >> /etc/apt/apt.conf.d/01proxy; fi &&\
     apt-get update &&\
@@ -60,6 +61,7 @@ RUN \
         curl \
         dirmngr \
         git \
+        gnupg \
         iputils-ping \
         nano \
         python3 \
@@ -73,6 +75,7 @@ RUN \
         || gpg --keyserver pgp.mit.edu --keyserver-options timeout=10 --recv-keys "$TINI_PGP_KEY_ID" \
         || gpg --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$TINI_PGP_KEY_ID" ) &&\
     gpg --verify /tmp/tini.asc /sbin/tini &&\
+    chmod 755 /sbin/tini &&\
     # pip3 install --upgrade pip &&\
     pip3 install schedule &&\
     pip3 install git+https://github.com/Aisbergg/python-templer.git@v1.1.4 &&\
