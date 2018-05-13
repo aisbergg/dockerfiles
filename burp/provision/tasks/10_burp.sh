@@ -25,7 +25,7 @@ elif [[ "$BURP_MODE" == client ]]; then
         /data/burp \
         /data/tls
 
-    BURP_CLIENT_SCHEDULE=${BURP_SERVER_SSL_DHFILE:-30}
+    BURP_CLIENT_SCHEDULE=${BURP_CLIENT_SCHEDULE:-20}
     export INIT=tini
     export INIT_ARGS=( /usr/bin/schedule_program --minutes $BURP_CLIENT_SCHEDULE --wake-up 60 -- /usr/sbin/burp -a t -c /data/burp/burp.conf )
 fi
