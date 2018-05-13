@@ -1,45 +1,53 @@
-FROM aisberg/base-alpine
+FROM buildpack-deps:bionic as build
 
-ENV BURP_VERSION=2.2.0 \
-    BURP_SHA256_CHECKSUM=3b3a4fe068bd6c5f5823deb36bdf7cc79eb15a28893434edfe1503e89584c4b9
+ENV BURP_VERSION=2.2.2 \
+    BURP_SHA256_CHECKSUM=21574c87632d2923f8f4bb16738a8ddf8e28005c510964682222a157d8618931
 
-RUN \
-    # install required packages
-    apk add --update --no-cache --no-progress \
-        file \
-        libressl \
-        librsync \
-        libssl1.0 \
-        mariadb-client \
-        msmtp \
-        ncurses \
-        uthash \
-        yajl \
-        zlib &&\
-    \
-    # download and build Burp
-    apk add --no-cache --no-progress --virtual .build-deps \
+RUN apt-get update &&\
+    apt-get install -y \
         autoconf \
         automake \
         check \
         g++ \
-        libressl-dev \
+        libncurses-dev \
         librsync-dev \
+        libssl-dev \
         libtool \
+        libyajl-dev \
         make \
-        ncurses-dev \
         pkgconf \
         uthash-dev \
-        yajl-dev \
-        zlib-dev &&\
+        zlib1g-dev &&\
     curl -fSL "https://github.com/grke/burp/archive/${BURP_VERSION}.tar.gz" -o /usr/local/src/burp.tar.gz &&\
     echo "$BURP_SHA256_CHECKSUM  /usr/local/src/burp.tar.gz" | sha256sum -c &&\
     tempdir="$(mktemp -d)" &&\
     tar xzf /usr/local/src/burp.tar.gz -C "$tempdir" --strip-components=1 &&\
-    ( cd "$tempdir" && autoreconf -vif &&\
+    cd "$tempdir" &&\
+    autoreconf -vif &&\
     ./configure --prefix=/usr --sysconfdir=/data/burp --localstatedir=/var &&\
-    make && make install && make install-configs ) &&\
-    rm -rf $tempdir && apk del .build-deps &&\
+    make && DESTDIR=/burp make install && DESTDIR=/burp make install-configs &&\
+    rm -rf $tempdir
+
+#-------------------------------------------------------------------------------
+
+FROM aisberg/base-ubuntu
+
+COPY --from=build /burp /
+
+RUN \
+    # install required packages
+    apt-get update &&\
+    apt-get install -y \
+        file \
+        libncurses5 \
+        librsync1 \
+        libssl1.0.0 \
+        libyajl2 \
+        mariadb-client \
+        msmtp \
+        openssl \
+        postgresql-client-10 \
+        zlibc &&\
     \
     # prepare working directories and files
     touch /etc/msmtprc &&\
