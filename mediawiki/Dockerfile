@@ -33,9 +33,10 @@ RUN \
         php7-pear \
         php7-session \
         php7-simplexml \
+        php7-tokenizer \
         php7-xml \
         php7-xmlwriter \
-        php7-tokenizer \
+        poppler-utils \
         rsync \
         shared-mime-info &&\
     pear channel-update pear.php.net &&\
