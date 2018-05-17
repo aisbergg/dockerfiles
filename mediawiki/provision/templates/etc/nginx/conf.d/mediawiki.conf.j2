@@ -87,7 +87,7 @@ server {
     # Force potentially-malicious files uploaded by the users to be served with
     # a text/plain mime type, to prevent them from being executed by the PHP
     # handler
-    location ~* ^/(?:images|files|nfsuploads|uploads)/.*\.(?:html|htm|shtml|php)$ {
+    location ~* ^/(?:images)/.*\.(?:html|htm|shtml|php)$ {
         types { }
         default_type text/plain;
     }
