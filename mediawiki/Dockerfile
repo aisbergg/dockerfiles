@@ -17,6 +17,7 @@ RUN \
     # install required packages
     apk add --update --no-cache --no-progress \
         diffutils \
+        ghostscript-fonts \
         graphviz \
         imagemagick \
         imagemagick-libs \
@@ -41,6 +42,13 @@ RUN \
         shared-mime-info &&\
     pear channel-update pear.php.net &&\
     pear install Net_SMTP mail Auth_SASL2-beta mail_mime &&\
+    \
+    # install MS fonts for graphviz
+    apk add --no-cache --no-progress --virtual .ms-fonts-deps \
+        msttcorefonts-installer &&\
+    /usr/bin/update-ms-fonts &&\
+    fc-cache -f &&\
+    apk del .ms-fonts-deps &&\
     \
     # prepare working directories
     workdirs \
