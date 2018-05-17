@@ -43,12 +43,12 @@ elif [[ $(bool "$AUTO_UPDATE" true) == "true" ]]; then
         tar xfz /usr/local/src/mediawiki.tar.gz -C "$tempdir" --strip-components=1
 
         rsync -rlD --delete \
+            --exclude /composer.local.json \
             --exclude /extensions/ \
             --exclude /favicon.ico \
             --exclude /images/ \
             --exclude /LocalSettings.php \
             --exclude /skins/ \
-            --exclude /uploads/ \
             "$tempdir/" /data/www/
 
         for dir in extensions skins; do
