@@ -331,7 +331,7 @@ shift 1
 chmod o+w /dev/stdout /dev/stderr
 
 # file permissions for newly created files
-umask 0002
+umask 0007
 
 # run the specified command
 . "/provision/cmds/$cmd"
