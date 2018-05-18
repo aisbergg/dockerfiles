@@ -5,3 +5,5 @@ autorestart=unexpected
 directory=/data/www/
 redirect_stderr=true
 stdout_logfile=/data/log/process_queue.log
+stdout_logfile_maxbytes={{ SUPERVISOR_LOGFILE_MAXBYTES }}
+stdout_logfile_backups={{ SUPERVISOR_LOGFILE_BACKUPS }}
