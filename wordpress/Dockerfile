@@ -10,7 +10,7 @@ RUN \
     \
     # install required packages
     apk add --update --no-cache --no-progress \
-        graphviz \
+        ghostscript-fonts \
         imagemagick \
         imagemagick-libs \
         php7-apcu \

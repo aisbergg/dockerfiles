@@ -3,7 +3,7 @@ FROM aisberg/nginx-php5
 RUN \
     # install required packages
     apk add --update --no-cache --no-progress \
-        graphviz \
+        ghostscript-fonts \
         imagemagick \
         imagemagick-libs \
         php5-gd \
