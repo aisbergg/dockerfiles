@@ -1,6 +1,6 @@
 USERNAME=aisberg
 NAME=wordpress
-VERSION=4.9.5
+VERSION=4.9.6
 
 DOCKER_BUILD_FLAGS?=
 
