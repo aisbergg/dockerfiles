@@ -3,14 +3,15 @@ FROM aisberg/nginx-php7
 RUN \
     # install required packages
     apk add --update --no-cache --no-progress \
-        ghostscript-fonts \
-        imagemagick \
-        imagemagick-libs \
         php7-fileinfo \
         php7-gd \
         php7-simplexml \
         php7-tokenizer \
-        php7-zlib \
+        php7-zlib &&\
+    apk add --update --no-cache --no-progress --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
+        ghostscript-fonts \
+        imagemagick \
+        imagemagick-libs \
         shared-mime-info &&\
     \
     # prepare working directories

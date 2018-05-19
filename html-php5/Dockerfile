@@ -3,11 +3,12 @@ FROM aisberg/nginx-php5
 RUN \
     # install required packages
     apk add --update --no-cache --no-progress \
+        php5-gd \
+        php5-zlib &&\
+    apk add --update --no-cache --no-progress --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
         ghostscript-fonts \
         imagemagick \
         imagemagick-libs \
-        php5-gd \
-        php5-zlib \
         shared-mime-info &&\
     \
     # prepare working directories

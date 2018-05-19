@@ -10,14 +10,15 @@ RUN \
     \
     # install required packages
     apk add --update --no-cache --no-progress \
-        ghostscript-fonts \
-        imagemagick \
-        imagemagick-libs \
         php7-apcu \
         php7-gd \
         php7-mysqli \
         php7-opcache \
-        php7-tokenizer \
+        php7-tokenizer &&\
+    apk add --update --no-cache --no-progress --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
+        ghostscript-fonts \
+        imagemagick \
+        imagemagick-libs \
         shared-mime-info &&\
     \
     # prepare working directories

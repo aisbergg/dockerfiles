@@ -17,10 +17,6 @@ RUN \
     # install required packages
     apk add --update --no-cache --no-progress \
         diffutils \
-        ghostscript-fonts \
-        graphviz \
-        imagemagick \
-        imagemagick-libs \
         php7-apcu \
         php7-curl \
         php7-fileinfo \
@@ -37,8 +33,13 @@ RUN \
         php7-tokenizer \
         php7-xml \
         php7-xmlwriter \
+        rsync &&\
+    apk add --update --no-cache --no-progress --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
+        ghostscript-fonts \
+        graphviz \
+        imagemagick \
+        imagemagick-libs \
         poppler-utils \
-        rsync \
         shared-mime-info &&\
     pear channel-update pear.php.net &&\
     pear install Net_SMTP mail Auth_SASL2-beta mail_mime &&\
