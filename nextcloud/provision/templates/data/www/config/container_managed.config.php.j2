@@ -20,67 +20,6 @@ array (
     {% endfor %}
   ),
 
-
-/**
- * Where user files are stored. The SQLite database is also stored here, when
- * you use SQLite.
- *
- * Default to ``data/`` in the Nextcloud directory.
- */
-'datadirectory' => '{{ NEXTCLOUD_DATADIRECTORY }}',
-
-{% if NEXTCLOUD_DATABASE_TYPE != "" -%}
-/**
- * Identifies the database used with this installation. See also config option
- * ``supportedDatabases``
- *
- * Available:
- * 	- sqlite (SQLite3)
- * 	- mysql (MySQL/MariaDB)
- * 	- pgsql (PostgreSQL)
- *
- * Defaults to ``sqlite``
- */
-'dbtype' => '{{ NEXTCLOUD_DATABASE_TYPE }}',
-{%- endif %}
-{% if NEXTCLOUD_DATABASE_HOST != "" -%}
-/**
- * Your host server name, for example ``localhost``, ``hostname``,
- * ``hostname.example.com``, or the IP address. To specify a port use
- * ``hostname:####``; to specify a Unix socket use
- * ``localhost:/path/to/socket``.
- */
-'dbhost' => '{{ NEXTCLOUD_DATABASE_HOST }}',
-{%- endif %}
-{% if NEXTCLOUD_DATABASE_NAME != "" -%}
-/**
- * The name of the Nextcloud database, which is set during installation. You
- * should not need to change this.
- */
-'dbname' => '{{ NEXTCLOUD_DATABASE_NAME }}',
-{%- endif %}
-{% if NEXTCLOUD_DATABASE_PASSWORD != "" -%}
-/**
- * The user that Nextcloud uses to write to the database. This must be unique
- * across Nextcloud instances using the same SQL database. This is set up during
- * installation, so you shouldn't need to change it.
- */
-'dbuser' => '{{ NEXTCLOUD_DATABASE_USER }}',
-{%- endif %}
-{% if NEXTCLOUD_DATABASE_PASSWORD != "" -%}
-/**
- * The password for the database user. This is set up during installation, so
- * you shouldn't need to change it.
- */
-'dbpassword' => '{{ NEXTCLOUD_DATABASE_PASSWORD }}',
-{%- endif %}
-/**
- * Prefix for the Nextcloud tables in the database.
- *
- * Default to ``oc_``
- */
-'dbtableprefix' => '{{ NEXTCLOUD_DATABASE_TABLE_PREFIX }}',
-
 /**
  * User Experience
  *
@@ -93,7 +32,11 @@ array (
  * language codes such as ``en`` for English, ``de`` for German, and ``fr`` for
  * French. It overrides automatic language detection on public pages like login
  * or shared items. User's language preferences configured under "personal ->
- * language" override this setting after they have logged in.
+ * language" override this setting after they have logged in. Nextcloud has two
+ * distinguished language codes for German, 'de' and 'de_DE'. 'de' is used for
+ * informal German and 'de_DE' for formal German. By setting this value to 'de_DE'
+ * you can enforce the formal version of German unless the user has chosen
+ * something different explicitly.
  *
  * Defaults to ``en``
  */
@@ -178,10 +121,13 @@ array (
  * The directory where the skeleton files are located. These files will be
  * copied to the data directory of new users. Leave empty to not copy any
  * skeleton files.
+ * ``{lang}`` can be used as a placeholder for the language of the user.
+ * If the directory does not exist, it falls back to non dialect (from ``de_DE``
+ * to ``de``). If that does not exist either, it falls back to ``default``
  *
  * Defaults to ``core/skeleton`` in the Nextcloud directory.
  */
-'skeletondirectory' => '/var/lib/nextcloud/skeleton',
+'skeletondirectory' => '/data/www/skeleton',
 
 /**
  * The ``user_backends`` app (which needs to be enabled first) allows you to
@@ -465,7 +411,7 @@ array (
  *
  * Defaults to ``[datadirectory]/nextcloud.log``
  */
-'logfile' => '/var/lib/nextcloud/nextcloud.log',
+'logfile' => '/data/log/nextcloud.log',
 
 /**
  * Loglevel to start logging at. Valid values are: 0 = Debug, 1 = Info, 2 =
@@ -523,13 +469,6 @@ array (
 'log_query' => {{ NEXTCLOUD_LOG_QUERY }},
 
 /**
- * Log successful cron runs.
- *
- * Defaults to ``true``
- */
-'cron_log' => {{ NEXTCLOUD_CRON_LOG }},
-
-/**
  * Enables log rotation and limits the total size of logfiles. The default is 0,
  * or no rotation. Specify a size in bytes, for example 104857600 (100 megabytes
  * = 100 * 1024 * 1024 bytes). A new logfile is created with a new name when the
@@ -585,9 +524,14 @@ array (
  * indicates if a Web server can write files to that folder.
  */
 'apps_paths' => array(
-	array(
-		'path'=> '/var/www/nextcloud/apps',
+  array(
+		'path'=> '/data/www/apps',
 		'url' => '/apps',
+		'writable' => false,
+	),
+  array(
+		'path'=> '/data/www/custom_apps',
+		'url' => '/custom_apps',
 		'writable' => true,
 	),
 ),
@@ -622,28 +566,19 @@ array (
  * The maximum width, in pixels, of a preview. A value of ``null`` means there
  * is no limit.
  *
- * Defaults to ``2048``
+ * Defaults to ``4096``
  */
 'preview_max_x' => {{ NEXTCLOUD_PREVIEW_MAX_X }},
 /**
  * The maximum height, in pixels, of a preview. A value of ``null`` means there
  * is no limit.
  *
- * Defaults to ``2048``
+ * Defaults to ``4096``
  */
 'preview_max_y' => {{ NEXTCLOUD_PREVIEW_MAX_Y }},
-/**
- * If a lot of small pictures are stored on the Nextcloud instance and the
- * preview system generates blurry previews, you might want to consider setting
- * a maximum scale factor. By default, pictures are upscaled to 10 times the
- * original size. A value of ``1`` or ``null`` disables scaling.
- *
- * Defaults to ``2``
- */
-'preview_max_scale_factor' => {{ NEXTCLOUD_PREVIEW_MAX_SCALE_FACTOR }},
 
 /**
- * max file size for generating image previews with imagegd (default behaviour)
+ * max file size for generating image previews with imagegd (default behavior)
  * If the image is bigger, it'll try other preview generators, but will most
  * likely show the default mimetype icon. Set to -1 for no limit.
  *
@@ -653,6 +588,7 @@ array (
 
 /**
  * custom path for LibreOffice/OpenOffice binary
+ *
  *
  * Defaults to ``''`` (empty string)
  */
@@ -704,9 +640,8 @@ array (
  *  - OC\Preview\TXT
  *  - OC\Preview\XBitmap
  */
-{%- set preview_providers = NEXTCLOUD_ENABLEDPREVIEWPROVIDERS.split(' ') %}
 'enabledPreviewProviders' => array(
-  {% for preview_provider in preview_providers %}'{{ preview_provider }}',
+  {% for preview_provider in NEXTCLOUD_ENABLEDPREVIEWPROVIDERS %}'{{ preview_provider }}',
   {% endfor %}
 ),
 
@@ -725,6 +660,13 @@ array (
  * Defaults to ``51`` minutes
  */
 'ldapUserCleanupInterval' => {{ NEXTCLOUD_LDAPUSERCLEANUPINTERVAL }},
+
+/**
+ * Sort groups in the user settings by name instead of the user count
+ *
+ * By enabling this the user count beside the group name is disabled as well.
+ */
+'sort_groups_by_name' => {{ NEXTCLOUD_SORT_GROUPS_BY_NAME|lower }},
 
 /**
  * Comments
@@ -749,13 +691,6 @@ array (
  * Defaults to ``\OC\SystemTag\ManagerFactory``
  */
 'systemtags.managerFactory' => '{{ NEXTCLOUD_SYSTEMTAGS_MANAGERFACTORY }}',
-
-/**
- * Replaces the default mail template layout. This can be utilized if the
- * options to modify the mail texts with the theming app is not enough.
- * The class must extend  ``\OC\Mail\EMailTemplate``
- */
-//'mail_template_class' => '\OC\Mail\EMailTemplate',
 
 /**
  * Maintenance
@@ -859,8 +794,8 @@ array (
  *
  * WARNING: FAILOVER_DISTRIBUTE is a not recommended setting and we strongly
  * suggest to not use it if you use Redis for file locking. Due to the way Redis
- * is synchronised it could happen, that the read for an existing lock is
- * scheduled to a slave that is not fully synchronised with the connected master
+ * is synchronized it could happen, that the read for an existing lock is
+ * scheduled to a slave that is not fully synchronized with the connected master
  * which then causes a FileLocked exception.
  *
  * See https://redis.io/topics/cluster-spec for details about the Redis cluster
@@ -884,7 +819,7 @@ array (
 	// hostname, port and optional weight. Also see:
 	// http://www.php.net/manual/en/memcached.addservers.php
 	// http://www.php.net/manual/en/memcached.addserver.php
-  {% for memcached_server in NEXTCLOUD_MEMCACHED_SERVERS %}array('{{ memcached_server[0] }}', {{ memcached_server[1] }}{% if len(memcached_server) > 2 %}, {{ memcached_server[2] }}{% endif %}),
+  {% for memcached_server_string in NEXTCLOUD_MEMCACHED_SERVERS %}{% set memcached_server = memcached_server_string.split(':') %} array('{{ memcached_server[0] }}', {{ memcached_server[1] }}{% if len(memcached_server) > 2 %}, {{ memcached_server[2] }}{% endif %}),
   {% endfor %}
 ),
 
@@ -1022,7 +957,8 @@ array (
  * encryption in MySQL or specify a custom wait timeout on a cheap hoster.
  */
 'dbdriveroptions' => array(
-  {% for dbdriveropt in NEXTCLOUD_DBDRIVEROPTIONS %}{{ dbdriveropt }}{{ ', ' if not loop.last else '' }}{% endfor %}
+  {% for dbdriveropt in NEXTCLOUD_DBDRIVEROPTIONS %}{{ dbdriveropt }},
+  {%- endfor %}
 ),
 
 /**
@@ -1185,7 +1121,7 @@ array (
  *
  * Defaults to ``data/mount.json`` in the Nextcloud directory.
  */
-'mount_file' => '/var/lib/nextcloud/data/mount.json',
+'mount_file' => '/data/www/data/mount.json',
 
 /**
  * When ``true``, prevent Nextcloud from changing the cache due to changes in
@@ -1202,9 +1138,8 @@ array (
  * otherwise defaults to `HTTP_X_FORWARDED_FOR` (the `X-Forwarded-For` header).
  * Defaults to an empty array.
  */
- {%- set trusted_proxies = NEXTCLOUD_TRUSTED_PROXIES.split(' ') %}
 'trusted_proxies' => array(
-  {% for trusted_proxy in trusted_proxies %}'{{ trusted_proxy }}',
+  {% for trusted_proxy in NEXTCLOUD_TRUSTED_PROXIES %}'{{ trusted_proxy }}',
   {% endfor %}
 ),
 
@@ -1218,9 +1153,8 @@ array (
  *
  * Defaults to ``'HTTP_X_FORWARED_FOR'``
  */
- {%- set forwarded_for_headers = NEXTCLOUD_FORWARDED_FOR_HEADERS.split(' ') %}
 'forwarded_for_headers' => array(
-  {% for header in forwarded_for_headers %}'{{ header }}',
+  {% for header in NEXTCLOUD_FORWARDED_FOR_HEADERS %}'{{ header }}',
   {% endfor %}
 ),
 

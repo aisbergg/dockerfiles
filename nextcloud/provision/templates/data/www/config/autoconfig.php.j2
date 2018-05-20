@@ -1,0 +1,26 @@
+<?php
+
+$AUTOCONFIG = array(
+  "directory"     => "{{ NEXTCLOUD_DATADIRECTORY }}",
+
+  {% if NEXTCLOUD_DATABASE_TYPE == "mysql" -%}
+  "dbtype"        => "mysql",
+  "dbname"        => "{{ NEXTCLOUD_DATABASE_NAME }}",
+  "dbuser"        => "{{ NEXTCLOUD_DATABASE_USER }}",
+  "dbpass"        => "{{ NEXTCLOUD_DATABASE_PASSWORD }}",
+  "dbhost"        => "{{ NEXTCLOUD_DATABASE_HOST }}",
+  "dbtableprefix" => "{{ NEXTCLOUD_DATABASE_TABLE_PREFIX }}",
+
+  {% elif NEXTCLOUD_DATABASE_TYPE == "pgsql" -%}
+  "dbtype"        => "pgsql",
+  "dbname"        => "{{ NEXTCLOUD_DATABASE_NAME }}",
+  "dbuser"        => "{{ NEXTCLOUD_DATABASE_USER }}",
+  "dbpass"        => "{{ NEXTCLOUD_DATABASE_PASSWORD }}",
+  "dbhost"        => "{{ NEXTCLOUD_DATABASE_HOST }}",
+  "dbtableprefix" => "{{ NEXTCLOUD_DATABASE_TABLE_PREFIX }}",
+
+  {% elif NEXTCLOUD_DATABASE_TYPE == "sqlite" -%}
+  "dbtype"        => "sqlite",
+  "dbname"        => "{{ NEXTCLOUD_DATABASE_NAME }}",
+  {%- endif %}
+);

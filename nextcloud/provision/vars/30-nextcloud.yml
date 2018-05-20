@@ -1,0 +1,275 @@
+---
+
+# Load Dynamic Nginx Modules
+NGINX_LOAD_NDK_HTTP_MODULE: {{ NGINX_REWRITE_HTTPS }}
+NGINX_LOAD_NGX_HTTP_LUA_MODULE: {{ NGINX_REWRITE_HTTPS }}
+NGINX_LOAD_NGX_HTTP_HEADERS_MORE_FILTER_MODULE: true
+NGINX_LOAD_NGX_HTTP_CACHE_PURGE_MODULE: true
+
+defaults:
+  ######################################
+  ## Nginx
+  ######################################
+  NGINX_REDIRECT_TO_FIRST_DOMAIN: false
+  NGINX_FASTCGI_READ_TIMEOUT: 3600
+  # infos on uploading big files: https://github.com/owncloud/core/issues/14166#issuecomment-74427889
+  NGINX_MAX_UPLOAD_FILESIZE: 5120M
+  NGINX_CLIENT_BODY_BUFFER_SIZE: 16384k
+  NGINX_REWRITE_HTTPS: true
+
+  ######################################
+  ## PHP
+  ######################################
+  PHP_MAX_CHILDREN: 50
+  PHP_MIN_SPARE_SERVERS: 1
+  PHP_MAX_SPARE_SERVERS: 3
+  PHP_MAX_EXECUTION_TIME: 1800
+  PHP_MAX_INPUT_TIME: 3600
+  PHP_MEMORY_LIMIT: "300M"
+  PHP_OUTPUT_BUFFERING: 0
+  # ignore `.user.ini` created by Nextcloud
+  PHP_USER_INI_ENABLED: false
+
+  # defaults for OPCache
+  OPCACHE_ENABLE: 1
+  OPCACHE_ENABLE_CLI: 1
+  OPCACHE_MEMORY_CONSUMPTION: 128
+  OPCACHE_INTERNED_STRINGS_BUFFER: 8
+  OPCACHE_MAX_ACCELERATED_FILES: 10000
+  OPCACHE_REVALIDATE_FREQ: 1
+  OPCACHE_SAVE_COMMENTS: 1
+
+  ######################################
+  ## Nextcloud
+  ######################################
+  NEXTCLOUD_DATADIRECTORY: "/data/www/data"
+  NEXTCLOUD_DATABASE_TYPE:
+    type: choice
+    default: mysql
+    choices:
+      - "mysql"
+      - "pgsql"
+      - "sqlite"
+  NEXTCLOUD_DATABASE_HOST: ""
+  NEXTCLOUD_DATABASE_NAME: ""
+  NEXTCLOUD_DATABASE_USER: ""
+  NEXTCLOUD_DATABASE_PASSWORD: ""
+  NEXTCLOUD_DATABASE_TABLE_PREFIX: "oc_"
+  NEXTCLOUD_DATABASE_MYSQL_CONNECT_TIMEOUT: 28800
+
+  # User Experience
+  # see https://www.transifex.com/explore/languages/ for supported language codes
+  NEXTCLOUD_DEFAULT_LANGUAGE: "en"
+  NEXTCLOUD_FORCE_LANGUAGE: "false"
+  NEXTCLOUD_DEFAULTAPP: "files"
+  NEXTCLOUD_KNOWLEDGEBASEENABLED: true
+  NEXTCLOUD_ALLOW_USER_TO_CHANGE_DISPLAY_NAME: true
+  NEXTCLOUD_REMEMBER_LOGIN_COOKIE_LIFETIME: "1296000"
+  NEXTCLOUD_SESSION_LIFETIME: "84400"
+  NEXTCLOUD_SESSION_KEEPALIVE: true
+  NEXTCLOUD_TOKEN_AUTH_ENFORCED: false
+  NEXTCLOUD_AUTH_BRUTEFORCE_PROTECTION_ENABLED: true
+  NEXTCLOUD_LOST_PASSWORD_LINK: ""
+
+  # Proxy Configurations
+  NEXTCLOUD_OVERWRITEHOST: ""
+  NEXTCLOUD_OVERWRITEPROTOCOL: "https"
+  NEXTCLOUD_OVERWRITEWEBROOT: ""
+  NEXTCLOUD_OVERWRITECONDADDR: ""
+  NEXTCLOUD_PROXY: ""
+  NEXTCLOUD_PROXYUSERPWD: ""
+
+  # Deleted Items and File versions
+  NEXTCLOUD_TRASHBIN_RETENTION_OBLIGATION: "auto"
+  NEXTCLOUD_VERSIONS_RETENTION_OBLIGATION: "auto"
+
+  # Nextcloud Verifications
+  NEXTCLOUD_APPCODECHECKER: true
+  NEXTCLOUD_UPDATECHECKER: false
+  NEXTCLOUD_UPDATER_SERVER_URL: "https://updates.nextcloud.com/updater_server/"
+  NEXTCLOUD_UPDATER_RELEASE_CHANNEL:
+    type: choice
+    default: stable
+    choices:
+      - "beta"
+      - "daily"
+      - "production"
+      - "stable"
+  NEXTCLOUD_HAS_INTERNET_CONNECTION: true
+  NEXTCLOUD_CHECK_FOR_WORKING_WEBDAV: true
+  NEXTCLOUD_CHECK_FOR_WORKING_WELLKNOWN_SETUP: true
+  NEXTCLOUD_CHECK_DATA_DIRECTORY_PERMISSIONS: true
+  NEXTCLOUD_CONFIG_IS_READ_ONLY: false
+
+  # Logging
+  NEXTCLOUD_LOG_TYPE:
+    type: choice
+    default: file
+    choices:
+      - "errorlog"
+      - "file"
+      - "syslog"
+  NEXTCLOUD_LOGLEVEL:
+    type: choice
+    default: "2"
+    choices:
+      - "0"
+      - "1"
+      - "2"
+      - "3"
+      - "4"
+  NEXTCLOUD_SYSLOG_TAG: "Nextcloud"
+  NEXTCLOUD_LOG_CONDITION: "[]"
+  NEXTCLOUD_LOGDATEFORMAT: "F d, Y H:i:s"
+  NEXTCLOUD_LOGTIMEZONE: "Europe/Berlin"
+  NEXTCLOUD_LOG_QUERY: false
+  NEXTCLOUD_LOG_ROTATE_SIZE: false
+
+  # Alternate Code Locations
+  NEXTCLOUD_CUSTOMCLIENT_DESKTOP: "https://nextcloud.com/install/#install-clients"
+  NEXTCLOUD_CUSTOMCLIENT_ANDROID: "https://play.google.com/store/apps/details?id=com.nextcloud.client"
+  NEXTCLOUD_CUSTOMCLIENT_IOS: "https://itunes.apple.com/us/app/nextcloud/id1125420102?mt=8"
+
+  # Apps
+  NEXTCLOUD_APPSTOREENABLED: true
+
+  # Previews
+  NEXTCLOUD_ENABLE_PREVIEWS: true
+  NEXTCLOUD_PREVIEW_MAX_X: 4096
+  NEXTCLOUD_PREVIEW_MAX_Y: 4096
+  NEXTCLOUD_PREVIEW_MAX_FILESIZE_IMAGE: 50
+  NEXTCLOUD_PREVIEW_OFFICE_CL_PARAMETERS: '--headless --nologo --nofirststartwizard --invisible --norestore --convert-to pdf --outdir'
+  NEXTCLOUD_ENABLEDPREVIEWPROVIDERS:
+    type: list
+    delimiter: ','
+    strip: true
+    default:
+      - 'OC\Preview\PNG'
+      - 'OC\Preview\JPEG'
+      - 'OC\Preview\GIF'
+      - 'OC\Preview\BMP'
+      - 'OC\Preview\XBitmap'
+      - 'OC\Preview\MP3'
+      - 'OC\Preview\TXT'
+      - 'OC\Preview\MarkDown'
+
+  # LDAP
+  NEXTCLOUD_LDAPUSERCLEANUPINTERVAL: 51
+  NEXTCLOUD_SORT_GROUPS_BY_NAME: false
+
+  # Comments
+  NEXTCLOUD_COMMENTS_MANAGERFACTORY: '\OC\Comments\ManagerFactory'
+  NEXTCLOUD_SYSTEMTAGS_MANAGERFACTORY: '\OC\SystemTag\ManagerFactory'
+
+  # Maintenance
+  NEXTCLOUD_MAINTENANCE: false
+
+  # Memory caching backend configuration
+  NEXTCLOUD_MEMCACHE_LOCAL:
+    type: choice
+    default: APCu
+    choices:
+      - "APC"
+      - "APCu"
+      - "ArrayCache"
+      - "Memcached"
+      - "Redis"
+      - "XCache"
+  # example: server1.example.com:11211, server2.example.com:11211,
+  NEXTCLOUD_MEMCACHED_SERVERS:
+    type: list
+    delimiter: ','
+    strip: true
+    default: []
+
+  NEXTCLOUD_MEMCACHE_DISTRIBUTED:
+    type: choice
+    default: APCu
+    choices:
+      - "APCu"
+      - "APC"
+      - "ArrayCache"
+      - "Memcached"
+      - "Redis"
+      - "XCache"
+  NEXTCLOUD_REDIS_HOST: ""
+  NEXTCLOUD_REDIS_PORT: 6379
+  NEXTCLOUD_REDIS_TIMEOUT: 0.0
+  NEXTCLOUD_REDIS_PASSWORD: ""
+  NEXTCLOUD_REDIS_DBINDEX: 0
+  NEXTCLOUD_MEMCACHED_OPT_CONNECT_TIMEOUT: 50
+  NEXTCLOUD_MEMCACHED_OPT_RETRY_TIMEOUT: 50
+  NEXTCLOUD_MEMCACHED_OPT_SEND_TIMEOUT: 50
+  NEXTCLOUD_MEMCACHED_OPT_RECV_TIMEOUT: 50
+  NEXTCLOUD_MEMCACHED_OPT_POLL_TIMEOUT: 50
+  NEXTCLOUD_MEMCACHED_OPT_COMPRESSION: true
+  NEXTCLOUD_MEMCACHED_OPT_LIBKETAMA_COMPATIBLE: true
+  NEXTCLOUD_MEMCACHED_OPT_BINARY_PROTOCOL: true
+  NEXTCLOUD_CACHE_PATH: ""
+  NEXTCLOUD_CACHE_CHUNK_GC_TTL: 86400
+
+  # Sharing
+  NEXTCLOUD_SHARING_MANAGERFACTORY: '\OC\Share20\ProviderFactory'
+  NEXTCLOUD_SHARING_MAXAUTOCOMPLETERESULTS: 0
+  NEXTCLOUD_SHARING_MINSEARCHSTRINGLENGTH: 0
+
+  # All other configuration options
+  NEXTCLOUD_SQLITE_JOURNAL_MODE:
+    type: choice
+    default: DELETE
+    choices:
+      - "DELETE"
+      - "WAL"
+  NEXTCLOUD_DBDRIVEROPTIONS:
+    type: list
+    delimiter: ','
+    strip: true
+    default: []
+  NEXTCLOUD_MYSQL_UTF8MB4: false
+  NEXTCLOUD_HASHINGCOST: 10
+  NEXTCLOUD_SHARE_FOLDER: "/"
+  NEXTCLOUD_THEME: ""
+  NEXTCLOUD_CIPHER:
+    type: choice
+    default: AES-256-CFB
+    choices:
+      - "AES-256-CFB"
+      - "AES-128-CFB"
+  NEXTCLOUD_MINIMUM_SUPPORTED_DESKTOP_VERSION: "2.0.0"
+  NEXTCLOUD_QUOTA_INCLUDE_EXTERNAL_STORAGE: false
+  NEXTCLOUD_FILESYSTEM_CHECK_CHANGES:
+    type: choice
+    default: 0
+    choices:
+      - "0"
+      - "1"
+  NEXTCLOUD_PART_FILE_IN_STORAGE: true
+  NEXTCLOUD_FILESYSTEM_CACHE_READONLY: false
+  NEXTCLOUD_TRUSTED_PROXIES:
+    type: list
+    delimiter: ','
+    strip: true
+    default: []
+  NEXTCLOUD_FORWARDED_FOR_HEADERS:
+    type: list
+    delimiter: ','
+    strip: true
+    default:
+      - "HTTP_X_FORWARDED"
+      - "HTTP_FORWARDED_FOR"
+  NEXTCLOUD_MAX_FILESIZE_ANIMATED_GIFS_PUBLIC_SHARING: 10
+  NEXTCLOUD_FILELOCKING_ENABLED: true
+  NEXTCLOUD_FILELOCKING_TTL: 3600
+  NEXTCLOUD_FILELOCKING_DEBUG: false
+  NEXTCLOUD_MEMCACHE_LOCKING_ENABLED: false
+  NEXTCLOUD_UPGRADE_DISABLE_WEB: true
+  NEXTCLOUD_DEBUG: false
+  NEXTCLOUD_DATA_FINGERPRINT: ""
+  NEXTCLOUD_LOOKUP_SERVER: "https://lookup.nextcloud.com"
+  NEXTCLOUD_GS_ENABLED: false
+  NEXTCLOUD_GS_FEDERATION:
+    type: choice
+    default: internal
+    choices:
+      - "internal"
+      - "global"

@@ -1,0 +1,9 @@
+[program:cron]
+command=/usr/bin/schedule_program --minutes 15 --wake-up 30 -- /usr/bin/php -f /data/www/cron.php
+autostart=true
+autorestart=unexpected
+directory=/data/www/
+redirect_stderr=true
+stdout_logfile=/data/log/nextcloud-cron.log
+stdout_logfile_maxbytes={{ SUPERVISOR_LOGFILE_MAXBYTES }}
+stdout_logfile_backups={{ SUPERVISOR_LOGFILE_BACKUPS }}
