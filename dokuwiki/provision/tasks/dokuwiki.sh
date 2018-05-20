@@ -22,7 +22,7 @@ if [[ ! -f '/data/www/doku.php' ]]; then
     # extract DokuWiki files
     tar xzf /usr/local/src/dokuwiki.tgz -C /data/www --strip-components=1
     shopt -s dotglob
-    chmod g+rwX -R /data/www/* &&\
+    chmod g+rwX,o-rwx -R /data/www/* &&\
     chgrp root -R /data/www/*
     shopt -u dotglob
 

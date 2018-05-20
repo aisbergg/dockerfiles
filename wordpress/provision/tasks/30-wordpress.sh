@@ -21,7 +21,7 @@ if [[ ! -d '/data/www/wp-content' ]]; then
 
     tar xfz /usr/local/src/wordpress.tar.gz -C /data/www --strip-components=1
     shopt -s dotglob
-    chmod g+rwX -R /data/www/* &&\
+    chmod g+rwX,o-rwx -R /data/www/* &&\
     chgrp root -R /data/www/*
     shopt -u dotglob
 

@@ -20,7 +20,7 @@ if [[ ! -f '/data/www/LocalSettings.php' ]]; then
     fi
     tar xfz /usr/local/src/mediawiki.tar.gz -C /data/www --strip-components=1
     shopt -s dotglob
-    chmod g+rwX -R /data/www/* &&\
+    chmod g+rwX,o-rwx -R /data/www/* &&\
     chgrp root -R /data/www/*
     shopt -u dotglob
 
@@ -56,7 +56,7 @@ elif [[ $(bool "$AUTO_UPDATE" true) == "true" ]]; then
         done
 
         shopt -s dotglob
-        chmod g+rwX -R /data/www/* &&\
+        chmod g+rwX,o-rwx -R /data/www/* &&\
         chgrp root -R /data/www/*
         shopt -u dotglob
 

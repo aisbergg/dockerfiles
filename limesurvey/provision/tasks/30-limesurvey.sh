@@ -22,7 +22,7 @@ if [[ ! -f '/data/www/admin/admin.php' ]]; then
     tar xfz /usr/local/src/limesurvey.tar.gz -C /data/www --strip-components=1
     shopt -s dotglob
     chgrp 0 -R /data/www/*
-    chmod g+rwX -R /data/www/*
+    chmod g+rwX,o-rwx -R /data/www/*
     shopt -u dotglob
 
 elif [[ $(bool "$AUTO_UPDATE" true) == "true" ]]; then
@@ -34,7 +34,7 @@ elif [[ $(bool "$AUTO_UPDATE" true) == "true" ]]; then
         tempdir="$(mktemp -d)"
         tar xfz /usr/local/src/limesurvey.tar.gz -C "$tempdir" --strip-components=1
         chgrp 0 -R "$tempdir"
-        chmod g+rwX -R "$tempdir"
+        chmod g+rwX,o-rwx -R "$tempdir"
 
         rsync -rlD --delete \
             --exclude /application/config/config.php \
@@ -48,7 +48,7 @@ elif [[ $(bool "$AUTO_UPDATE" true) == "true" ]]; then
         done
         shopt -s dotglob
         chgrp 0 -R /data/www/*
-        chmod g+rwX -R /data/www/*
+        chmod g+rwX,o-rwx -R /data/www/*
         shopt -u dotglob
 
         rm -rf "$tempdir"
