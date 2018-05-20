@@ -1,73 +1,34 @@
-# aisberg/etherpad aisberg/etherpad:1.6.2
-FROM aisberg/nginx
+FROM aisberg/nginx-node:10
 
-LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
-    Version=2.4 \
-    Comment="Etherpad is an open-source online editor providing collaborative editing in really real-time. (http://etherpad.org/)"
+ENV ETHERPAD_VERSION=1.6.6 \
+    ETHERPAD_SHA256_CHECKSUM=64d080b7e6ebeba9007b9cb557d7be3124e6373190f610bcaf5ea5c7abc6363e
 
-ENV ETHERPAD_VERSION=1.6.2 \
-    ETHERPAD_SHA256_CHECKSUM=77ecec465a172e0fb64c38c2deb1b088a6a1ebe3b88e67a9d0435310d3ffdb88
+RUN \
+    # download Etherpad sources
+    curl -fSL "https://github.com/ether/etherpad-lite/archive/${ETHERPAD_VERSION}.tar.gz" -o /usr/local/src/etherpad.tar.gz && \
+    echo "$ETHERPAD_SHA256_CHECKSUM  /usr/local/src/etherpad.tar.gz" | sha256sum -c && \
+    \
+    # install required packages
+    apk add --update --no-cache --no-progress \
+        rsync &&\
+    \
+    # prepare working directories
+    workdirs /data/etherpad
 
-# install node
-# code taken from official node repo: https://hub.docker.com/_/node/
-#-------------------------------------------------------------------------------
-RUN apt-get update && \
-    apt-get install -y \
-        curl \
-        gpgv2 \
-        xz-utils
+COPY provision /provision
+RUN find /provision -type f -exec chmod 0664 {} + &&\
+    find /provision -type d -exec chmod 0775 {} +
 
-RUN groupadd --gid 1000 node \
-  && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
+VOLUME /data/etherpad
 
-# gpg keys listed at https://github.com/nodejs/node#release-team
-RUN set -ex \
-  && for key in \
-    94AE36675C464D64BAFA68DD7434390BDBE9B9C5 \
-    FD3A5288F042B6850C66B31F09FE44734EB7990E \
-    71DCFD284A79C3B38668286BC97EC7A07EDE3FC1 \
-    DD8F2338BAE7501E3DD5AC78C273792F7D83545D \
-    C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8 \
-    B9AE9905FFD7803F25714661B63B535A4C206CA9 \
-    56730D5401028683275BD23C23EFEFE93C4CFFFE \
-    77984A986EBC2AA786BC0F66B01FBB92821C587A \
-  ; do \
-    gpg --keyserver pgp.mit.edu --recv-keys "$key" || \
-    gpg --keyserver keyserver.pgp.com --recv-keys "$key" || \
-    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" ; \
-  done
+USER 999
 
-ENV NODE_VERSION 6.12.3
-
-RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
-  && case "${dpkgArch##*-}" in \
-    amd64) ARCH='x64';; \
-    ppc64el) ARCH='ppc64le';; \
-    s390x) ARCH='s390x';; \
-    arm64) ARCH='arm64';; \
-    armhf) ARCH='armv7l';; \
-    i386) ARCH='x86';; \
-    *) echo "unsupported architecture"; exit 1 ;; \
-  esac \
-  && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-$ARCH.tar.xz" \
-  && curl -SLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
-  && gpg --batch --decrypt --output SHASUMS256.txt SHASUMS256.txt.asc \
-  && grep " node-v$NODE_VERSION-linux-$ARCH.tar.xz\$" SHASUMS256.txt | sha256sum -c - \
-  && tar -xJf "node-v$NODE_VERSION-linux-$ARCH.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
-  && rm "node-v$NODE_VERSION-linux-$ARCH.tar.xz" SHASUMS256.txt.asc SHASUMS256.txt \
-  && ln -s /usr/local/bin/node /usr/local/bin/nodejs
-#-------------------------------------------------------------------------------
-
-RUN wget -q "https://github.com/ether/etherpad-lite/archive/${ETHERPAD_VERSION}.zip" -O /usr/local/src/etherpad.zip && \
-    echo "$ETHERPAD_SHA256_CHECKSUM /usr/local/src/etherpad.zip" | sha256sum -c && \
-    apt-get install -y --no-install-recommends \
-        abiword \
-        git && \
-    rm -rf /var/lib/apt/lists/*
-
-COPY provision/ /provision
-
-RUN chmod 0755 /provision/templates/etc/supervisor/conf.d/start-etherpad.sh
-
-VOLUME /opt/etherpad \
-    /etc/nginx/conf.d/etherpad
+ARG CREATED
+LABEL org.opencontainers.image.title="Etherpad" \
+    org.opencontainers.image.version="$ETHERPAD_VERSION" \
+    org.opencontainers.image.description="Etherpad is an open-source online editor providing collaborative editing in really real-time." \
+    org.opencontainers.image.url="http://etherpad.org/" \
+    org.opencontainers.image.licenses="MIT" \
+    org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/etherpad" \
+    org.opencontainers.image.created="$CREATED"
