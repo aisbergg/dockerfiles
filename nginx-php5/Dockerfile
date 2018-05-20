@@ -31,6 +31,7 @@ RUN \
         php5-pdo_sqlite \
         php5-pgsql \
         php5-phar \
+        php5-posix \
         php5-soap \
         php5-sockets \
         php5-sqlite3 \

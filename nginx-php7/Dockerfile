@@ -35,6 +35,7 @@ RUN \
         php7-pdo_sqlite \
         php7-pgsql \
         php7-phar \
+        php7-posix \
         php7-session \
         php7-simplexml \
         php7-soap \
