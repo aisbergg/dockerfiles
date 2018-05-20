@@ -32,7 +32,7 @@ elif [[ $(bool "$DOKUWIKI_AUTO_UPDATE" "true") == "true" ]]; then
     INSTALLED_VERSION="$(head -n 1 /data/www/VERSION | grep -o '^[^\ ]*')"
     if version_greater "$DOKUWIKI_VERSION" "$INSTALLED_VERSION" ; then
         # upgrade installation without destroying the userdata
-        print_info "Upgrading DokuWiki installation from $INSTALLED_VERSION to ${DOKUWIKI_VERSION}"
+        print_info "Upgrading DokuWiki ($INSTALLED_VERSION --> $DOKUWIKI_VERSION)"
         cd /data/www
         tar xzf /usr/local/src/dokuwiki.tgz --strip-components=1
         grep -Ev '^($|#)' data/deleted.files | xargs -n 1 rm -vrf

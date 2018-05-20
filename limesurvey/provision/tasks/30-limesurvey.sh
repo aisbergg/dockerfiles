@@ -29,7 +29,7 @@ elif [[ $(bool "$AUTO_UPDATE" true) == "true" ]]; then
     INSTALLED_VERSION=$(php -r '$config = include "/data/www/application/config/version.php"; echo $config["versionnumber"];')
     # check if newer version is available to upgrade the current installation
     if version_greater "${LIMESURVEY_VERSION}" "$INSTALLED_VERSION" ; then
-        print_info "Upgrading Lime Survey installation from $INSTALLED_VERSION to ${LIMESURVEY_VERSION}"
+        print_info "Upgrading Lime Survey ($INSTALLED_VERSION --> ${LIMESURVEY_VERSION})"
 
         tempdir="$(mktemp -d)"
         tar xfz /usr/local/src/limesurvey.tar.gz -C "$tempdir" --strip-components=1

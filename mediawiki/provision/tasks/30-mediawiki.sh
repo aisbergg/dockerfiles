@@ -37,18 +37,18 @@ elif [[ $(bool "$AUTO_UPDATE" true) == "true" ]]; then
     INSTALLED_VERSION="$(cat /data/www/.version)"
     # check if newer version is available to upgrade the current installation
     if version_greater "${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR}" "$INSTALLED_VERSION" ; then
-        print_info "Upgrading MediaWiki installation from $INSTALLED_VERSION to ${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR}"
+        print_info "Upgrading MediaWiki ($INSTALLED_VERSION --> ${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR})"
 
         tempdir="$(mktemp -d)"
         tar xfz /usr/local/src/mediawiki.tar.gz -C "$tempdir" --strip-components=1
 
         rsync -rlD --delete \
-            --exclude /composer.local.json \
             --exclude /extensions/ \
-            --exclude /favicon.ico \
             --exclude /images/ \
-            --exclude /LocalSettings.php \
             --exclude /skins/ \
+            --exclude /composer.local.json \
+            --exclude /favicon.ico \
+            --exclude /LocalSettings.php \
             "$tempdir/" /data/www/
 
         for dir in extensions skins; do

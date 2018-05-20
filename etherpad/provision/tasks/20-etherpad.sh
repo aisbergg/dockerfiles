@@ -53,16 +53,16 @@ elif [[ $(bool "$AUTO_UPDATE" "true") == "true" ]]; then
 
     # check if newer version is available to upgrade the current installation
     if version_greater "$ETHERPAD_VERSION" "$INSTALLED_VERSION" ; then
-        print_info "Upgrading Etherpad installation from $INSTALLED_VERSION to $ETHERPAD_VERSION"
+        print_info "Upgrading Etherpad ($INSTALLED_VERSION --> $ETHERPAD_VERSION)"
 
         tempdir="$(mktemp -d)"
         tar xfz /usr/local/src/etherpad.tar.gz -C "$tempdir" --strip-components=1
 
         rsync -rlD --delete \
-            --exclude /favicon.ico \
             --exclude /node_modules/ \
-            --exclude /settings.json \
             --exclude /var/ \
+            --exclude /favicon.ico \
+            --exclude /settings.json \
             "$tempdir/" /data/etherpad/
 
         rm -rf "$tempdir"
