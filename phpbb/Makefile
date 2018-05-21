@@ -1,6 +1,6 @@
 USERNAME=aisberg
-NAME=nextcloud
-VERSION=13.0.2
+NAME=phpbb
+VERSION=3.2.2
 
 DOCKER_BUILD_FLAGS?=
 
