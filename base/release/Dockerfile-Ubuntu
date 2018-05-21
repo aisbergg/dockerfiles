@@ -27,6 +27,7 @@ COPY --from=build /usr/bin/remote_syslog /usr/bin/remote_syslog
 RUN \
     # add container user (cu)
     useradd -r -u 999 -G root cu &&\
+    chmod g+rwX /home/cu &&\
     \
     # configure apt
     { \
