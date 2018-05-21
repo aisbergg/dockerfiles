@@ -15,8 +15,8 @@ defaults:
       - "debug"
       - "trace"
       - "blather"
-  SUPERVISOR_LOGFILE_BACKUPS: 1
-  SUPERVISOR_LOGFILE_MAXBYTES: 5MB
+  SUPERVISOR_LOGFILE_BACKUPS: 5
+  SUPERVISOR_LOGFILE_MAXBYTES: 2MB
 
   SUPERVISOR_HTTP_SERVER:
     type: choice
