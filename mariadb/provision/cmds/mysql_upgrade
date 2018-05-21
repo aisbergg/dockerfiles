@@ -1,0 +1,30 @@
+#!/bin/bash
+set -e
+
+USAGE="Usage: mysql_upgrade [OPTIONS]
+
+Wrapper around MariaDB utility for upgrading databases to new MariaDB versions.
+
+Options:
+  -h, --help           Show this help message and exit
+"
+
+# parse cli args
+while [[ $# > 0 ]]; do
+    case "$1" in
+        -h|--help)
+            echo "$USAGE"
+            exit 0
+            ;;
+    esac
+done
+args=($@)
+shift $#
+
+# provision the container first
+if [[ ! /etc/mysql/my.cnf ]]; then
+    . /provision/cmds/provision
+fi
+
+# execute the given command
+exec /usr/bin/mysql_upgrade -u root -p"$MYSQL_ROOT_PASSWORD"
