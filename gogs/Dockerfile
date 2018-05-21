@@ -1,26 +1,61 @@
-# aisberg/gogs aisberg/gogs:0.11.34
+FROM golang:alpine as build
+
+ENV GOGS_VERSION=0.11.43 \
+    GOGS_SHA256_CHECKSUM=44ce25372fee4bf0cd3de54d7e7038ddc0079779c3ace7b4a0a53bb85853b14d
+
+RUN apk --no-cache --no-progress add build-base linux-pam-dev &&\
+    mkdir -p /usr/local/src /go/src/github.com/gogits/gogs /gogs &&\
+    wget -q -O /usr/local/src/gogs.tar.gz "https://github.com/gogits/gogs/archive/v${GOGS_VERSION}.tar.gz"  &&\
+    echo "$GOGS_SHA256_CHECKSUM  /usr/local/src/gogs.tar.gz" | sha256sum -c &&\
+    tar -xf /usr/local/src/gogs.tar.gz -C /go/src/github.com/gogits/gogs --strip-components=1 &&\
+    cd /go/src/github.com/gogits/gogs &&\
+    go build -v -tags 'sqlite cert pam' &&\
+    mv public scripts templates gogs /gogs &&\
+    rm -r /go/src/github.com /usr/local/src/gogs.tar.gz
+
+#-------------------------------------------------------------------------------
+
 FROM aisberg/nginx
 
-LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
-    Version=2.11 \
-    Comment="A self-hosted git service. (https://gogs.io/)"
+COPY --from=build /gogs /opt/gogs
 
-ENV GOGS_VERSION=0.11.34 \
-    GOGS_SHA256_CHECKSUM=bfcd85f00ade51d7554aa99c0c5cb21735bc33e3d6d4bbdd156ed72a5d37d91f
+RUN \
+    # install required packages
+    apk --update --no-cache --no-progress add \
+        ca-certificates \
+        git \
+        linux-pam \
+        openssh \
+        openssh-keygen \
+        shadow \
+        sqlite \
+        tzdata &&\
+    chmod +rwX /opt/gogs &&\
+    \
+    # prepare working directories
+    workdirs \
+        /etc/ssh \
+        /opt/gogs \
+        /data/gogs
 
-RUN wget -q "https://github.com/gogits/gogs/releases/download/v${GOGS_VERSION}/linux_amd64.tar.gz" -O /usr/local/src/gogs.tar.gz &&\
-    echo "$GOGS_SHA256_CHECKSUM /usr/local/src/gogs.tar.gz" | sha256sum -c &&\
-    groupadd -g 999 git &&\
-    useradd -p /home/git -m -g git -s /bin/bash -u 999 git &&\
-    apt-get update &&\
-    apt-get install -y git openssh-server sqlite3 &&\
-    mkdir -p /var/run/sshd &&\
-    tar -xf /usr/local/src/gogs.tar.gz -C /opt &&\
-    rm -rf /usr/local/src/gogs.tar.gz /var/lib/apt/lists/*
+COPY provision /provision
+COPY static /
+RUN find /provision -type f -exec chmod 0664 {} + &&\
+    find /provision -type d -exec chmod 0775 {} +
 
-COPY provision/ /provision
-
-VOLUME /var/lib/gogs
+VOLUME /data/gogs
 
 # port for SSH
-EXPOSE 22
+EXPOSE 2022
+
+USER 999
+
+ARG CREATED
+LABEL org.opencontainers.image.title="Gogs" \
+    org.opencontainers.image.version="$GOGS_VERSION" \
+    org.opencontainers.image.description="A self-hosted git service" \
+    org.opencontainers.image.url="https://gogs.io/" \
+    org.opencontainers.image.licenses="MIT" \
+    org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/gogs" \
+    org.opencontainers.image.created="$CREATED"
