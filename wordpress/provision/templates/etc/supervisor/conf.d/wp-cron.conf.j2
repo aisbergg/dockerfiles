@@ -1,0 +1,5 @@
+[program:wp-cron]
+command=/usr/bin/schedule_program --minutes 15 --wake-up 30 -- /usr/bin/php /data/www/wp-cron.php
+autostart=true
+autorestart=unexpected
+directory=/data/www/
