@@ -1,4 +1,4 @@
-[program:cron]
+[program:nextcloud-cron]
 command=/usr/bin/schedule_program --minutes 15 --wake-up 30 -- /usr/bin/php -f /data/www/cron.php
 autostart=true
 autorestart=unexpected
