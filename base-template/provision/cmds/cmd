@@ -7,9 +7,10 @@ Execute any linux command
 
 Options:
   -h, --help           Show this help message and exit
+  -p, --provision      Provision the container before running the command
 "
 
-provision=true
+provision=false
 
 # parse cli args
 while [[ $# > 0 ]]; do
@@ -18,8 +19,8 @@ while [[ $# > 0 ]]; do
             echo "$USAGE"
             exit 0
             ;;
-        --skip-provision)
-            provision=false
+        -p|--provision)
+            provision=true
             shift 1
             ;;
         --)
