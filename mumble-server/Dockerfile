@@ -6,7 +6,7 @@ RUN \
     # install required packages
     apk add --update --no-cache --no-progress \
         murmur \
-        openssl \
+        libressl \
         tzdata &&\
     \
     # prepare working directories
