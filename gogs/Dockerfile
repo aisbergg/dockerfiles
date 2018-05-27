@@ -32,6 +32,9 @@ RUN \
         tzdata &&\
     chmod +rwX /opt/gogs &&\
     \
+    # prepare git user
+    usermod -l git cu &&\
+    \
     # prepare working directories
     workdirs \
         /etc/ssh \

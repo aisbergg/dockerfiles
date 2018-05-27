@@ -10,6 +10,8 @@ PidFile /var/run/container/sshd.pid
 # Port to listen for incomming connections
 Port 2022
 
+AddressFamily any
+
 # Restrict sshd to only use specific interfaces/protocols
 Protocol 2
 
@@ -26,9 +28,6 @@ Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.
 # Message Authentication Codes (MACs)
 MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com
 
-# Turn on privilege separation
-UsePrivilegeSeparation sandbox
-
 # Logging
 SyslogFacility AUTH
 LogLevel INFO
@@ -37,17 +36,18 @@ LogLevel INFO
 AuthenticationMethods publickey
 LoginGraceTime 120
 PermitRootLogin no
-StrictModes yes
-AuthorizedKeysFile	/home/cu/.ssh/authorized_keys
+StrictModes no
+AuthorizedKeysFile /data/gogs/data/ssh/authorized_keys
+
+# Allow only user git to connect via SSH
+AllowUsers git
 
 # Disable forwarding
-AllowAgentForwarding no
-AllowStreamLocalForwarding no
-AllowTcpForwarding no
-X11Forwarding no
+DisableForwarding yes
 
 # Don't print anything when logging in
 PrintMotd no
+Banner none
 
 # Don't send keep alive messages on tcp layer, use ssh connection directly.
 # See: ClientAliveInterval
