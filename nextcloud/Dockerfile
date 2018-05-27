@@ -17,6 +17,7 @@ RUN \
         bzip2 \
         php7-apcu \
         php7-exif \
+        php7-fileinfo \
         php7-gd \
         php7-intl \
         php7-ldap \
