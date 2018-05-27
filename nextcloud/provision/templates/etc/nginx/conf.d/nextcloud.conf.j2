@@ -65,7 +65,8 @@ server {
 
     # add security headers
     more_set_headers "X-Frame-Options: SAMEORIGIN";
-    more_set_headers "X-XSS-Protection: 1; mode=block";
+    # already set in nginx.conf
+    # more_set_headers "X-XSS-Protection: 1; mode=block";
     more_set_headers "X-Robots-Tag: none";
     more_set_headers "X-Download-Options: noopen";
     more_set_headers "X-Permitted-Cross-Domain-Policies: none";
