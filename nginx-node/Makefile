@@ -3,6 +3,7 @@ NAME=nginx-node
 NODE_VERSIONS=10 9 8
 
 DOCKER_BUILD_FLAGS?=
+SHELL=/bin/bash
 
 build_targets=$(addprefix build-, $(NODE_VERSIONS))
 .PHONY: build push release
