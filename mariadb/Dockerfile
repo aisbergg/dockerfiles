@@ -16,15 +16,15 @@ RUN \
     rm -rf /etc/mysql/* &&\
     ln -sf /usr/share/mariadb /usr/share/mysql &&\
     workdirs \
-        /data/mysql \
-        /data/tls \
+        /container/mysql \
+        /container/tls \
         /etc/mysql
 
 COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} +
 
-VOLUME /data/mysql
+VOLUME /container/mysql
 
 USER 999
 

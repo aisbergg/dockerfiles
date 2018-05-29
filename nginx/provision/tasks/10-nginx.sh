@@ -5,9 +5,9 @@ print_info "Configuring Nginx"
 
 export NGINX_REWRITE_HTTPS=$(bool "$NGINX_REWRITE_HTTPS" true)
 export NGINX_TLS_TERMINATED=$(bool "$NGINX_TLS_TERMINATED" false)
-export NGINX_TLS_CERT=${NGINX_TLS_CERT:-"/data/tls/cert.pem"}
-export NGINX_TLS_KEY=${NGINX_TLS_KEY:-"/data/tls/key.pem"}
-export NGINX_TLS_DHPARAM=${NGINX_TLS_DHPARAM:-"/data/tls/dhparam.pem"}
+export NGINX_TLS_CERT=${NGINX_TLS_CERT:-"/container/tls/cert.pem"}
+export NGINX_TLS_KEY=${NGINX_TLS_KEY:-"/container/tls/key.pem"}
+export NGINX_TLS_DHPARAM=${NGINX_TLS_DHPARAM:-"/container/tls/dhparam.pem"}
 # !!! INSECURE, FOR TESTING ONLY !!!
 # !!! IN PRODUCTION USE 4096 !!!
 export NGINX_TLS_DHPARAM_SIZE=${NGINX_TLS_DHPARAM_SIZE:-"512"}

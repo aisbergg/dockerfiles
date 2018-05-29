@@ -144,7 +144,7 @@ defaults:
       - "file"
       - "memory"
       - "redis"
-  GOGS_SESSION_PROVIDER_CONFIG: "/var/lib/gogs/data/sessions"
+  GOGS_SESSION_PROVIDER_CONFIG: "/container/gogs/data/sessions"
   GOGS_SESSION_COOKIE_NAME: "gogs_session"
   GOGS_SESSION_ENABLE_SET_COOKIE: true
   GOGS_SESSION_GC_INTERVAL_TIME: 86400

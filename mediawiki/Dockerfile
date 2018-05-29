@@ -54,7 +54,7 @@ RUN \
     # prepare working directories
     workdirs \
         /etc/ImageMagick-7 \
-        /data/www
+        /container/www
 
 COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
@@ -62,7 +62,7 @@ RUN find /provision -type f -exec chmod 0664 {} + &&\
 
 USER 999
 
-VOLUME /data/www
+VOLUME /container/www
 
 ARG CREATED
 LABEL org.opencontainers.image.title="MediaWiki" \

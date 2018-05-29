@@ -12,36 +12,36 @@ fi
 if [[ $(bool "$CLEAN_INSTALLATION" false) == "true" ]]; then
     print_info "Removing all files in installation dir"
     shopt -s dotglob
-    rm -rf /data/www/*
+    rm -rf /container/www/*
     shopt -u dotglob
 fi
 
 # create a new Nextcloud installation
-if [[ ! -f "/data/www/version.php" ]]; then
-    if ! is_dir_empty /data/www; then
+if [[ ! -f "/container/www/version.php" ]]; then
+    if ! is_dir_empty /container/www; then
         print_error "Install dir is not empty! Make sure the target dir is empty before trying to install a new Nextcloud!"
         exit 1
     fi
     print_info "No previous Nextcloud installation found, creating a new one"
 
     # create files
-    tar xjf /usr/local/src/nextcloud.tar.bz2 -C /data/www --strip-components=1
-    rm -rf /data/www/updater
+    tar xjf /usr/local/src/nextcloud.tar.bz2 -C /container/www --strip-components=1
+    rm -rf /container/www/updater
     mkdir -p \
-        /data/www/custom_apps \
-        /data/www/data \
-        /data/www/skeleton
+        /container/www/custom_apps \
+        /container/www/data \
+        /container/www/skeleton
 
     # set permissions
     shopt -s dotglob
-    chmod g+rwX,o-rwx -R /data/www/* &&\
-    chgrp root -R /data/www/*
+    chmod g+rwX,o-rwx -R /container/www/* &&\
+    chgrp root -R /container/www/*
     shopt -u dotglob
-    chmod +x /data/www/occ
+    chmod +x /container/www/occ
 
 # check if the installed version can be upgraded
 elif [[ $(bool "$AUTO_UPDATE" "true") == "true" ]]; then
-    INSTALLED_VERSION="$(php -r 'require "/data/www/version.php"; echo $OC_VersionString;')"
+    INSTALLED_VERSION="$(php -r 'require "/container/www/version.php"; echo $OC_VersionString;')"
     if version_greater "$NEXTCLOUD_VERSION" "$INSTALLED_VERSION" ; then
         # upgrade installation without destroying the userdata
         print_info "Upgrading Nextcloud ($INSTALLED_VERSION --> $NEXTCLOUD_VERSION)"
@@ -57,16 +57,16 @@ elif [[ $(bool "$AUTO_UPDATE" "true") == "true" ]]; then
             --exclude /themes/ \
             --exclude /.user.ini \
             --exclude /favicon.ico \
-            "$tempdir/" /data/www/
+            "$tempdir/" /container/www/
 
-        rsync -rlD --include "/themes/" --exclude '/*' "$tempdir/"  /data/www/
+        rsync -rlD --include "/themes/" --exclude '/*' "$tempdir/"  /container/www/
 
         shopt -s dotglob
-        chmod g+rwX,o-rwx -R /data/www/* &&\
-        chgrp root -R /data/www/*
+        chmod g+rwX,o-rwx -R /container/www/* &&\
+        chgrp root -R /container/www/*
         shopt -u dotglob
 
-        touch /data/www/.needs-upgrade
+        touch /container/www/.needs-upgrade
 
         rm -r $tempdir
     fi

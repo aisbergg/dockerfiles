@@ -1,7 +1,7 @@
 [supervisord]
 pidfile = /var/run/container/supervisord.pid
 logfile = /dev/stdout
-childlogdir = /data/log
+childlogdir = /container/log
 logfile_backups = {{ SUPERVISOR_LOGFILE_BACKUPS }}
 logfile_maxbytes = {{ SUPERVISOR_LOGFILE_MAXBYTES }}
 loglevel = {{ SUPERVISOR_LOGLEVEL }}

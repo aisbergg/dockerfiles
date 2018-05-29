@@ -43,7 +43,7 @@ defaults:
   ######################################
   ## Nextcloud
   ######################################
-  NEXTCLOUD_DATADIRECTORY: "/data/www/data"
+  NEXTCLOUD_DATADIRECTORY: "/container/www/data"
   NEXTCLOUD_DATABASE_TYPE:
     type: choice
     default: mysql

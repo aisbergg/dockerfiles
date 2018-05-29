@@ -7,6 +7,6 @@ autorestart=unexpected
 startsecs=2
 stopwaitsecs=10
 redirect_stderr=true
-stdout_logfile=/data/log/gogs.log
+stdout_logfile=/container/log/gogs.log
 stdout_logfile_maxbytes={{ SUPERVISOR_LOGFILE_MAXBYTES }}
 stdout_logfile_backups={{ SUPERVISOR_LOGFILE_BACKUPS }}

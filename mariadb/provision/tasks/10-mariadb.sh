@@ -7,7 +7,7 @@ print_info "Configuring MariaDB"
 MYSQL_CONFIG=$(default "$MYSQL_CONFIG" SMALL MEDIUM LARGE)
 export MYSQL_CONFIG_${MYSQL_CONFIG}='activate'
 
-DATADIR=/data/mysql
+DATADIR=/container/mysql
 
 if [[ ! -d "$DATADIR/mysql" ]]; then
     # check if all keys were supplied

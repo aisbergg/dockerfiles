@@ -11,8 +11,8 @@ RUN \
     \
     # prepare working directories
     workdirs \
-        /data/mumble-server \
-        /data/tls
+        /container/mumble-server \
+        /container/tls
 
 COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\

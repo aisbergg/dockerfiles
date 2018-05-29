@@ -127,7 +127,7 @@ array (
  *
  * Defaults to ``core/skeleton`` in the Nextcloud directory.
  */
-'skeletondirectory' => '/data/www/skeleton',
+'skeletondirectory' => '/container/www/skeleton',
 
 /**
  * The ``user_backends`` app (which needs to be enabled first) allows you to
@@ -411,7 +411,7 @@ array (
  *
  * Defaults to ``[datadirectory]/nextcloud.log``
  */
-'logfile' => '/data/log/nextcloud.log',
+'logfile' => '/container/log/nextcloud.log',
 
 /**
  * Loglevel to start logging at. Valid values are: 0 = Debug, 1 = Info, 2 =
@@ -525,12 +525,12 @@ array (
  */
 'apps_paths' => array(
   array(
-		'path'=> '/data/www/apps',
+		'path'=> '/container/www/apps',
 		'url' => '/apps',
 		'writable' => false,
 	),
   array(
-		'path'=> '/data/www/custom_apps',
+		'path'=> '/container/www/custom_apps',
 		'url' => '/custom_apps',
 		'writable' => true,
 	),
@@ -1121,7 +1121,7 @@ array (
  *
  * Defaults to ``data/mount.json`` in the Nextcloud directory.
  */
-'mount_file' => '/data/www/data/mount.json',
+'mount_file' => '/container/www/data/mount.json',
 
 /**
  * When ``true``, prevent Nextcloud from changing the cache due to changes in

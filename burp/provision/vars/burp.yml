@@ -73,11 +73,11 @@ defaults:
   BURP_SERVER_CA_NAME: burpCA
   BURP_SERVER_CA_SERVER_NAME: burpserver
   BURP_SERVER_CA_CRL_CHECK: true
-  BURP_SERVER_SSL_CERT_CA: /data/tls/cert-ca.pem
-  BURP_SERVER_SSL_CERT: /data/tls/cert-server.pem
-  BURP_SERVER_SSL_KEY: /data/tls/cert-server.key
+  BURP_SERVER_SSL_CERT_CA: /container/tls/cert-ca.pem
+  BURP_SERVER_SSL_CERT: /container/tls/cert-server.pem
+  BURP_SERVER_SSL_KEY: /container/tls/cert-server.key
   BURP_SERVER_SSL_KEY_PASSWORD: ""
-  BURP_SERVER_SSL_DHFILE: /data/tls/dhfile.pem
+  BURP_SERVER_SSL_DHFILE: /container/tls/dhfile.pem
 
   # Timer and Timestamp format
   BURP_SERVER_TIMESTAMP_FORMAT: "%Y-%m-%d %H:%M:%S %z"
@@ -143,15 +143,15 @@ defaults:
   BURP_CLIENT_ENCRYPTION_PASSWORD: ""
 
   # TLS
-  BURP_CLIENT_SSL_CERT_CA: /data/tls/cert-ca.pem
-  BURP_CLIENT_SSL_CERT: /data/tls/cert-client.pem
-  BURP_CLIENT_SSL_KEY: /data/tls/cert-client.key
+  BURP_CLIENT_SSL_CERT_CA: /container/tls/cert-ca.pem
+  BURP_CLIENT_SSL_CERT: /container/tls/cert-client.pem
+  BURP_CLIENT_SSL_KEY: /container/tls/cert-client.key
   BURP_CLIENT_SSL_KEY_PASSWORD: ""
   BURP_CLIENT_SSL_PEER_CN: {{ BURP_CLIENT_SERVER_HOST|default('burp-server') }}
 
   # Scripts
-  BURP_CLIENT_BACKUP_SCRIPT_PRE: "/data/burp/pre-backup.sh"
-  BURP_CLIENT_BACKUP_SCRIPT_POST: "/data/burp/post-backup.sh"
+  BURP_CLIENT_BACKUP_SCRIPT_PRE: "/container/burp/pre-backup.sh"
+  BURP_CLIENT_BACKUP_SCRIPT_POST: "/container/burp/post-backup.sh"
   BURP_CLIENT_RESTORE_SCRIPT_PRE: ""
   BURP_CLIENT_RESTORE_SCRIPT_POST: "/tmp/backup/post-restore.sh"
 

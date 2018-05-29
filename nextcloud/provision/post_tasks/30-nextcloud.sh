@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
-if [[ -f /data/www/.needs-upgrade ]]; then
+if [[ -f /container/www/.needs-upgrade ]]; then
     # call upgrade routine
-    cd /data/www
+    cd /container/www
     php occ upgrade --no-app-disable
 
     # remove upgrade indicator if upgrade succeeded
-    rm /data/www/.needs-upgrade
+    rm /container/www/.needs-upgrade
 fi

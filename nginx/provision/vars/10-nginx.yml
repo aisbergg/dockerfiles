@@ -50,9 +50,9 @@ defaults:
   NGINX_REWRITE_HTTPS: true
   NGINX_BEHIND_PROXY: false
   # following variables are defined in 'tasks/10-nginx.sh' and not needed here
-  # NGINX_TLS_KEY: "/data/tls/key.pem"
-  # NGINX_TLS_CERT: "/data/tls/cert.pem"
-  # NGINX_TLS_DHPARAM: "/data/tls/dhparam.pem"
+  # NGINX_TLS_KEY: "/container/tls/key.pem"
+  # NGINX_TLS_CERT: "/container/tls/cert.pem"
+  # NGINX_TLS_DHPARAM: "/container/tls/dhparam.pem"
   # NGINX_TLS_DHPARAM_SIZE: 512
 
   # Modules

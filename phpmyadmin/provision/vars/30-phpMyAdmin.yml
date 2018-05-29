@@ -63,8 +63,8 @@ defaults:
   PHPMYADMIN_ENABLE_EXPORT_TEMPLATES: False
 
   # global config
-  PHPMYADMIN_UPLOADDIR: "/data/mysql_dumps"
-  PHPMYADMIN_SAVEDIR: "/data/mysql_dumps"
+  PHPMYADMIN_UPLOADDIR: "/container/mysql_dumps"
+  PHPMYADMIN_SAVEDIR: "/container/mysql_dumps"
   PHPMYADMIN_DEFAULTCONNECTIONCOLLATION: "utf8_unicode_ci"
   PHPMYADMIN_ROWACTIONTYPE:
     type: choice

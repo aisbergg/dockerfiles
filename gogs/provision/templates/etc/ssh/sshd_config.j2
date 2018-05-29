@@ -16,8 +16,8 @@ AddressFamily any
 Protocol 2
 
 # HostKeys for protocol version 2 (in order of preference)
-HostKey /data/gogs/data/ssh/ssh_host_rsa_key
-HostKey /data/gogs/data/ssh/ssh_host_ed25519_key
+HostKey /container/gogs/data/ssh/ssh_host_rsa_key
+HostKey /container/gogs/data/ssh/ssh_host_ed25519_key
 
 # Algorithms for initial key exchange
 KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
@@ -37,7 +37,7 @@ AuthenticationMethods publickey
 LoginGraceTime 120
 PermitRootLogin no
 StrictModes no
-AuthorizedKeysFile /data/gogs/data/ssh/authorized_keys
+AuthorizedKeysFile /container/gogs/data/ssh/authorized_keys
 
 # Allow only user git to connect via SSH
 AllowUsers git

@@ -90,7 +90,7 @@ RUN chmod 0755 /entrypoint /usr/bin/workdirs /usr/bin/schedule_program &&\
     \
     # prepare working directories
     workdirs \
-        /data/log \
+        /container/log \
         /etc/supervisor \
         /usr/local/src \
         /var/run/container

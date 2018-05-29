@@ -1,9 +1,9 @@
 [program:burp-dedup]
-command=/usr/bin/schedule_program --wake-up 3600 {% for time in BURP_SERVER_DEDUP_TIME %}--time '{{ time }}' {% endfor %} -- /usr/sbin/bedup -l -c /data/burp/burp.conf
+command=/usr/bin/schedule_program --wake-up 3600 {% for time in BURP_SERVER_DEDUP_TIME %}--time '{{ time }}' {% endfor %} -- /usr/sbin/bedup -l -c /container/burp/burp.conf
 autostart={{ 'true' if BURP_MODE|lower == 'server' else 'false' }}
 autorestart=unexpected
-directory=/data/burp
+directory=/container/burp
 redirect_stderr=true
-stdout_logfile=/data/log/burp-dedub.log
+stdout_logfile=/container/log/burp-dedub.log
 stdout_logfile_maxbytes={{ SUPERVISOR_LOGFILE_MAXBYTES }}
 stdout_logfile_backups={{ SUPERVISOR_LOGFILE_BACKUPS }}

@@ -1,9 +1,9 @@
 [program:process_queue]
-command=/usr/bin/schedule_program --minutes 15 --wake-up 30 -- /usr/bin/php /data/www/admin/index.php -pprocessqueue -c /data/www/config/config.php
+command=/usr/bin/schedule_program --minutes 15 --wake-up 30 -- /usr/bin/php /container/www/admin/index.php -pprocessqueue -c /container/www/config/config.php
 autostart=true
 autorestart=unexpected
-directory=/data/www/
+directory=/container/www/
 redirect_stderr=true
-stdout_logfile=/data/log/process_queue.log
+stdout_logfile=/container/log/process_queue.log
 stdout_logfile_maxbytes={{ SUPERVISOR_LOGFILE_MAXBYTES }}
 stdout_logfile_backups={{ SUPERVISOR_LOGFILE_BACKUPS }}

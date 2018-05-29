@@ -37,7 +37,7 @@ RUN \
     \
     # prepare working directories
     workdirs \
-        /data/www \
+        /container/www \
         /tmp/nextcloudtemp \
         /var/cache/nginx
 
@@ -45,7 +45,7 @@ COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} +
 
-VOLUME /data/www
+VOLUME /container/www
 
 USER 999
 

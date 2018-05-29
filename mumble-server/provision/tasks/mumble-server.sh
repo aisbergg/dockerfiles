@@ -3,9 +3,9 @@ set -e
 
 print_info "Configuring Mumble-Server (Murmur)"
 
-export MUMBLE_TLS_CERT=${MUMBLE_TLS_CERT:-"/data/tls/cert.pem"}
-export MUMBLE_TLS_KEY=${MUMBLE_TLS_KEY:-"/data/tls/key.pem"}
-export MUMBLE_TLS_DHPARAMS=${MUMBLE_TLS_DHPARAMS:-"/data/tls/dhparam.pem"}
+export MUMBLE_TLS_CERT=${MUMBLE_TLS_CERT:-"/container/tls/cert.pem"}
+export MUMBLE_TLS_KEY=${MUMBLE_TLS_KEY:-"/container/tls/key.pem"}
+export MUMBLE_TLS_DHPARAMS=${MUMBLE_TLS_DHPARAMS:-"/container/tls/dhparam.pem"}
 
 # if no TLS certificate is specified, then generate a self-signed one
 if [[ -z "$MUMBLE_TLS_CERT" ]]; then

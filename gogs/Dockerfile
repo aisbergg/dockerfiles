@@ -39,14 +39,14 @@ RUN \
     workdirs \
         /etc/ssh \
         /opt/gogs \
-        /data/gogs
+        /container/gogs
 
 COPY provision /provision
 COPY static /
 RUN find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} +
 
-VOLUME /data/gogs
+VOLUME /container/gogs
 
 # port for SSH
 EXPOSE 2022

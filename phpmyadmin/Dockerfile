@@ -11,12 +11,12 @@ RUN \
         || gpg --keyserver pgp.mit.edu --keyserver-options timeout=10 --recv-keys "$PHPMYADMIN_PGP_KEY_ID" \
         || gpg --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$PHPMYADMIN_PGP_KEY_ID" ) &&\
     gpg --verify /usr/local/src/phpmyadmin.tar.gz.asc /usr/local/src/phpmyadmin.tar.gz &&\
-    mkdir -p /data/www &&\
-    tar xf /usr/local/src/phpmyadmin.tar.gz --strip-components=1 -C /data/www &&\
+    mkdir -p /container/www &&\
+    tar xf /usr/local/src/phpmyadmin.tar.gz --strip-components=1 -C /container/www &&\
     rm -rf \
         /usr/local/src/phpmyadmin.tar.gz \
-        /data/www/examples \
-        /data/www/setup &&\
+        /container/www/examples \
+        /container/www/setup &&\
     \
     # install required packages
     apk add --update --no-cache --no-progress \
@@ -30,14 +30,14 @@ RUN \
     \
     # prepare working directories
     workdirs \
-        /data/www \
-        /data/mysql_dumps
+        /container/www \
+        /container/mysql_dumps
 
 COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} +
 
-VOLUME /data/mysql_dumps
+VOLUME /container/mysql_dumps
 
 USER 999
 

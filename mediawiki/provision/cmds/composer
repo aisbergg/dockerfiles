@@ -1,5 +1,5 @@
 #!/bin/bash
 set -e
 
-cd /data/www
+cd /container/www
 exec composer $@

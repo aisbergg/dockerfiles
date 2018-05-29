@@ -13,13 +13,13 @@ RUN \
         rsync &&\
     \
     # prepare working directories
-    workdirs /data/etherpad
+    workdirs /container/etherpad
 
 COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} +
 
-VOLUME /data/etherpad
+VOLUME /container/etherpad
 
 USER 999
 

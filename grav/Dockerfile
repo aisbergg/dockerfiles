@@ -22,13 +22,13 @@ RUN \
         php7-zip &&\
     \
     # prepare working directory
-    workdirs /data/www
+    workdirs /container/www
 
 COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} +
 
-VOLUME /data/www
+VOLUME /container/www
 
 USER 999
 

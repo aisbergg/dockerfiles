@@ -7,25 +7,25 @@ print_info "Configuring Etherpad"
 if [[ $(bool "$CLEAN_INSTALLATION" false) == "true" ]]; then
     print_info "Removing all files in installation dir"
     shopt -s dotglob
-    rm -rf /data/etherpad/*
+    rm -rf /container/etherpad/*
     shopt -u dotglob
 fi
 
 # check if an valid Etherpad installation is present, else create a new one
-if [[ ! -f '/data/etherpad/src/package.json' ]]; then
+if [[ ! -f '/container/etherpad/src/package.json' ]]; then
     print_info "No previous Etherpad installation found, creating a new one"
-    if ! is_dir_empty /data/etherpad; then
+    if ! is_dir_empty /container/etherpad; then
         print_error "Install dir is not empty! Make sure the target dir is empty before trying to install a new Etherpad!"
         exit 1
     fi
 
-    tar xfz /usr/local/src/etherpad.tar.gz -C /data/etherpad --strip-components=1
+    tar xfz /usr/local/src/etherpad.tar.gz -C /container/etherpad --strip-components=1
     shopt -s dotglob
-    chmod g+rwX,o-rwx -R /data/etherpad/* &&\
-    chgrp root -R /data/etherpad/*
+    chmod g+rwX,o-rwx -R /container/etherpad/* &&\
+    chgrp root -R /container/etherpad/*
     shopt -u dotglob
 
-    pushd /data/etherpad >/dev/null
+    pushd /container/etherpad >/dev/null
 
     # make sure dependencies are met
     bin/installDeps.sh
@@ -49,7 +49,7 @@ if [[ ! -f '/data/etherpad/src/package.json' ]]; then
 
 # check if the installed version can be upgraded
 elif [[ $(bool "$AUTO_UPDATE" "true") == "true" ]]; then
-    INSTALLED_VERSION="$(grep '"version"' /data/etherpad/src/package.json | grep -Eo '[1-9\.]+')"
+    INSTALLED_VERSION="$(grep '"version"' /container/etherpad/src/package.json | grep -Eo '[1-9\.]+')"
 
     # check if newer version is available to upgrade the current installation
     if version_greater "$ETHERPAD_VERSION" "$INSTALLED_VERSION" ; then
@@ -63,7 +63,7 @@ elif [[ $(bool "$AUTO_UPDATE" "true") == "true" ]]; then
             --exclude /var/ \
             --exclude /favicon.ico \
             --exclude /settings.json \
-            "$tempdir/" /data/etherpad/
+            "$tempdir/" /container/etherpad/
 
         rm -rf "$tempdir"
     fi

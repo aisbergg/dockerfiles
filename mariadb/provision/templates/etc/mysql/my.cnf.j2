@@ -16,7 +16,7 @@ pid_file                        = /var/run/container/mysqld.pid
 socket                          = /var/run/container/mysqld.sock
 port                            = 3306
 basedir                         = /usr
-datadir                         = /data/mysql
+datadir                         = /container/mysql
 tmpdir                          = /tmp
 lc_messages_dir                 = /usr/share/mysql
 lc_messages                     = en_US
@@ -30,7 +30,7 @@ bind-address                    = 0.0.0.0
 #log-error                       = /var/log/mysql/error.log
 
 # Slow Query Log
-slow_query_log_file             = /data/log/mysql-slow.log
+slow_query_log_file             = /container/log/mysql-slow.log
 slow_query_log                  = {{ bool(MYSQL_SLOW_QUERY_LOG) }}
 log_queries_not_using_indexes   = {{ MYSQL_LOG_QUERIES_NOT_USING_INDEXES }}
 long_query_time                 = {{ MYSQL_LONG_QUERY_TIME }}
@@ -94,9 +94,9 @@ query_cache_type                = {{ MYSQL_QUERY_CACHE_TYPE }}
 ##
 ## InnoDB
 ##
-innodb_data_home_dir            = /data/mysql
+innodb_data_home_dir            = /container/mysql
 innodb_data_file_path           = {{ MYSQL_INNODB_DATA_FILE_PATH }}
-innodb_log_group_home_dir       = /data/mysql
+innodb_log_group_home_dir       = /container/mysql
 innodb_buffer_pool_size         = {{ MYSQL_INNODB_BUFFER_POOL_SIZE }}
 innodb_log_file_size            = {{ MYSQL_INNODB_LOG_FILE_SIZE }}
 innodb_log_buffer_size          = {{ MYSQL_INNODB_LOG_BUFFER_SIZE }}

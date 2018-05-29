@@ -43,7 +43,7 @@ server {
     server_name                 {% if NGINX_REDIRECT_TO_FIRST_DOMAIN %}{{ DOMAINNAMES[0] }}{% else %}{% for domain in DOMAINNAMES %}{{ domain }} {% endfor %}{% endif %};
     {%- endif %}
 
-    root                        /data/www;
+    root                        /container/www;
     index                       index.php;
 
     {% if NGINX_REWRITE_HTTPS -%}

@@ -56,7 +56,7 @@ encryption_password = {{ BURP_CLIENT_ENCRYPTION_PASSWORD }}
 # Uncomment the following lines to automatically generate a certificate signing
 # request and send it to the server.
 ca_burp_ca = /usr/sbin/burp_ca
-ca_csr_dir = /data/tls/CA-client
+ca_csr_dir = /container/tls/CA-client
 
 # SSL certificate authority - same file on both server and client
 ssl_cert_ca = {{ BURP_CLIENT_SSL_CERT_CA }}
@@ -100,7 +100,7 @@ restore_script_post = {{ BURP_CLIENT_RESTORE_SCRIPT_POST }}
 # the server side and 'server_can_override_includes=1'.
 
 # Includes
-{% if BURP_CLIENT_BACKUP_SCRIPT_PRE == "/data/burp/pre-backup.sh" -%}
+{% if BURP_CLIENT_BACKUP_SCRIPT_PRE == "/container/burp/pre-backup.sh" -%}
 include = /tmp/backup
 {%- endif %}
 {% for path in BURP_CLIENT_INCLUDE %}

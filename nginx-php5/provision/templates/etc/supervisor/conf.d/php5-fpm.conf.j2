@@ -3,6 +3,6 @@ command=/usr/bin/php-fpm5 --nodaemonize
 autostart=true
 autorestart=unexpected
 redirect_stderr=true
-stdout_logfile=/data/log/php5.log
+stdout_logfile=/container/log/php5.log
 stdout_logfile_maxbytes={{ SUPERVISOR_LOGFILE_MAXBYTES }}
 stdout_logfile_backups={{ SUPERVISOR_LOGFILE_BACKUPS }}

@@ -25,7 +25,7 @@ RUN \
     # prepare directories and files
     rm -rf /var/www/* /etc/nginx/conf.d/* &&\
     workdirs \
-        /data/tls \
+        /container/tls \
         /etc/nginx \
         /var/lib/nginx \
         /var/lib/nginx/client_body_temp \

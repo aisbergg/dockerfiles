@@ -24,7 +24,7 @@ RUN apt-get update &&\
     tar xzf /usr/local/src/burp.tar.gz -C "$tempdir" --strip-components=1 &&\
     cd "$tempdir" &&\
     autoreconf -vif &&\
-    ./configure --prefix=/usr --sysconfdir=/data/burp --localstatedir=/var &&\
+    ./configure --prefix=/usr --sysconfdir=/container/burp --localstatedir=/var &&\
     make && DESTDIR=/burp make install && DESTDIR=/burp make install-configs &&\
     rm -rf $tempdir
 
@@ -54,9 +54,9 @@ RUN \
     chgrp 0 /etc/msmtprc &&\
     chmod g+rw /etc/msmtprc &&\
     workdirs \
-        /data/burp \
-        /data/backup \
-        /data/tls
+        /container/burp \
+        /container/backup \
+        /container/tls
 
 COPY provision /provision
 COPY static /

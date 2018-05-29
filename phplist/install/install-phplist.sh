@@ -14,15 +14,15 @@ echo "$CKEDITOR_SHA256_CHECKSUM  $tempdir/ckeditor.zip" | sha256sum -c >/dev/nul
 
 # install phpList
 tar xzf $tempdir/phplist.tgz -C "$tempdir"
-rsync -rlD --exclude '*.htaccess' $tempdir/phplist-$PHPLIST_VERSION/public_html/lists/ /data/www/
-mkdir -p /data/www/uploadimages
-rm /data/www/config/*
+rsync -rlD --exclude '*.htaccess' $tempdir/phplist-$PHPLIST_VERSION/public_html/lists/ /container/www/
+mkdir -p /container/www/uploadimages
+rm /container/www/config/*
 # remove phplist.org rssfeeds (those slow down the page loading)
-( cd /data/www/admin/ui && patch -p1 < /install/no-newsfeed.patch >/dev/null )
+( cd /container/www/admin/ui && patch -p1 < /install/no-newsfeed.patch >/dev/null )
 
 # install CKEditor
-unzip -qq -d /data/www/admin/plugins/CKEditorPlugin/ $tempdir/ckeditor.zip
-cp -f /install/ckeditor-config.js /data/www/admin/plugins/CKEditorPlugin/ckeditor/config.js
+unzip -qq -d /container/www/admin/plugins/CKEditorPlugin/ $tempdir/ckeditor.zip
+cp -f /install/ckeditor-config.js /container/www/admin/plugins/CKEditorPlugin/ckeditor/config.js
 
 # cleanup
 rm -rf "$tempdir"

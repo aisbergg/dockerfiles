@@ -13,13 +13,13 @@ RUN find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} + &&\
     \
     # prepare working directories
-    ln -sf /data/nginx /etc/nginx/conf.d &&\
+    ln -sf /container/nginx /etc/nginx/conf.d &&\
     workdirs \
-        /data/www \
-        /data/nginx \
+        /container/www \
+        /container/nginx \
         /etc/ImageMagick-7
 
-VOLUME /data/www \
-    /data/nginx
+VOLUME /container/www \
+    /container/nginx
 
 USER 999

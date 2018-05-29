@@ -8,14 +8,14 @@ RUN \
     \
     # prepare working directories
     workdirs \
-        /data/redis \
+        /container/redis \
         /etc/redis
 
 COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
     find /provision -type d -exec chmod 0775 {} +
 
-VOLUME /data/redis
+VOLUME /container/redis
 
 EXPOSE 6379/tcp
 
