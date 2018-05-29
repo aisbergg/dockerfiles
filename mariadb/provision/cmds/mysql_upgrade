@@ -27,4 +27,4 @@ if [[ ! /etc/mysql/my.cnf ]]; then
 fi
 
 # execute the given command
-exec /usr/bin/mysql_upgrade -u root -p"$MYSQL_ROOT_PASSWORD"
+exec /usr/bin/mysql_upgrade -u root -p"$MYSQL_ROOT_PASSWORD" ${args[@]}
