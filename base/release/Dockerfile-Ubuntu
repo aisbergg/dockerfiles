@@ -23,8 +23,8 @@ COPY --from=build /usr/bin/supervisord /usr/bin/supervisord
 
 RUN \
     # add container user (cu)
-    useradd -r -u 999 --shell /bin/bash -G root cu &&\
-    chmod g+rwX /home/cu &&\
+    useradd -r -u 999 -m --shell /bin/bash -G root cu &&\
+    chmod g+rwX,o-rwx /home/cu &&\
     \
     # configure apt
     { \
