@@ -19,7 +19,7 @@ if [[ ! -f '/container/www/admin/admin.php' ]]; then
         exit 1
     fi
 
-    tar xfz /usr/local/src/limesurvey.tar.gz -C /container/www --strip-components=1
+    tar xzf /usr/local/src/limesurvey.tar.gz -C /container/www --strip-components=1
     shopt -s dotglob
     chgrp 0 -R /container/www/*
     chmod g+rwX,o-rwx -R /container/www/*
@@ -32,7 +32,7 @@ elif [[ $(bool "$AUTO_UPDATE" true) == "true" ]]; then
         print_info "Upgrading Lime Survey ($INSTALLED_VERSION --> ${LIMESURVEY_VERSION})"
 
         tempdir="$(mktemp -d)"
-        tar xfz /usr/local/src/limesurvey.tar.gz -C "$tempdir" --strip-components=1
+        tar xzf /usr/local/src/limesurvey.tar.gz -C "$tempdir" --strip-components=1
         chgrp 0 -R "$tempdir"
         chmod g+rwX,o-rwx -R "$tempdir"
 

@@ -19,7 +19,7 @@ if [[ ! -f '/container/etherpad/src/package.json' ]]; then
         exit 1
     fi
 
-    tar xfz /usr/local/src/etherpad.tar.gz -C /container/etherpad --strip-components=1
+    tar xzf /usr/local/src/etherpad.tar.gz -C /container/etherpad --strip-components=1
     shopt -s dotglob
     chmod g+rwX,o-rwx -R /container/etherpad/* &&\
     chgrp root -R /container/etherpad/*
@@ -56,7 +56,7 @@ elif [[ $(bool "$AUTO_UPDATE" "true") == "true" ]]; then
         print_info "Upgrading Etherpad ($INSTALLED_VERSION --> $ETHERPAD_VERSION)"
 
         tempdir="$(mktemp -d)"
-        tar xfz /usr/local/src/etherpad.tar.gz -C "$tempdir" --strip-components=1
+        tar xzf /usr/local/src/etherpad.tar.gz -C "$tempdir" --strip-components=1
 
         rsync -rlD --delete \
             --exclude /node_modules/ \

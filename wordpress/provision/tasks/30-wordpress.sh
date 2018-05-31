@@ -19,7 +19,7 @@ if [[ ! -d '/container/www/wp-content' ]]; then
         exit 1
     fi
 
-    tar xfz /usr/local/src/wordpress.tar.gz -C /container/www --strip-components=1
+    tar xzf /usr/local/src/wordpress.tar.gz -C /container/www --strip-components=1
     shopt -s dotglob
     chmod g+rwX,o-rwx -R /container/www/* &&\
     chgrp root -R /container/www/*
