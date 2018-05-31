@@ -16,8 +16,7 @@ RUN find /provision -type f -exec chmod 0664 {} + &&\
     ln -sf /container/nginx /etc/nginx/conf.d &&\
     workdirs \
         /container/www \
-        /container/nginx \
-        /etc/ImageMagick-7
+        /container/nginx
 
 VOLUME /container/www \
     /container/nginx
