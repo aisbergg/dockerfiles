@@ -30,7 +30,7 @@ elif [[ $(bool "$AUTO_UPDATE" "true") == "true" ]]; then
     # information about upgrading phpbb can be found here: https://www.siteground.com/tutorials/phpbb2/phpbb_upgrade.htm
     # or here: https://www.phpbb.com/support/docs/en/3.2/ug/upgradeguide/
 
-    INSTALLED_VERSION="$(grep 'PHPBB_VERSION' /container/www/includes/constants.php | grep -Eo '[1-9\.]+')"
+    INSTALLED_VERSION="$(grep 'PHPBB_VERSION' /container/www/includes/constants.php | grep -Eo '[0-9\.]+')"
     # check if newer version is available to upgrade the current installation
     if version_greater "$PHPBB_VERSION" "$INSTALLED_VERSION" ; then
         print_info "Upgrading phpBB ($INSTALLED_VERSION --> $PHPBB_VERSION)"
