@@ -55,7 +55,7 @@ dbOpts={{ MUMBLE_DATABASE_MYSQL_OPTS }}
 {%- else %}
 ; Path to database. If blank, will search for
 ; murmur.sqlite in default locations or create it if not found.
-database=/data/mumble-server/mumble-server.sqlite
+database=/container/mumble-server/mumble-server.sqlite
 {%- endif %}
 
 ; If you want to use ZeroC Ice to communicate with Murmur, you need
