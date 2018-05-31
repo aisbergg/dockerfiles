@@ -5,6 +5,6 @@ autorestart=unexpected
 startsecs=7
 stopsecs=30
 redirect_stderr=true
-stdout_logfile=/container/log/mysql.log
+stdout_logfile={{ '/container/log/mysql.log' if SUPERVISOR_LOGTYPE == 'file' else 'syslog @' + SUPERVISOR_SYSLOG_PROTOCOL + ':' + SUPERVISOR_SYSLOG_HOST + ':' + SUPERVISOR_SYSLOG_PORT|string }}
 stdout_logfile_maxbytes={{ SUPERVISOR_LOGFILE_MAXBYTES }}
 stdout_logfile_backups={{ SUPERVISOR_LOGFILE_BACKUPS }}
