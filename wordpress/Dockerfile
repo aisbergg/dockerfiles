@@ -15,7 +15,7 @@ RUN \
         php7-mysqli \
         php7-opcache \
         php7-tokenizer &&\
-    apk add --update --no-cache --no-progress --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
+    apk add --update --no-cache --no-progress --repository ${ALPINE_MIRROR}edge/main/ \
         ghostscript-fonts \
         imagemagick \
         imagemagick-libs \

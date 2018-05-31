@@ -4,7 +4,7 @@ ENV INIT=supervisor
 
 RUN \
     # install required packages
-    apk add --update --no-cache --no-progress --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
+    apk add --update --no-cache --no-progress --repository ${ALPINE_MIRROR}edge/main/ \
         libressl \
         ca-certificates \
         mariadb \

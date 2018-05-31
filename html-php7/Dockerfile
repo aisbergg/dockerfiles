@@ -8,7 +8,7 @@ RUN \
         php7-simplexml \
         php7-tokenizer \
         php7-zlib &&\
-    apk add --update --no-cache --no-progress --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
+    apk add --update --no-cache --no-progress --repository ${ALPINE_MIRROR}edge/main/ \
         ghostscript-fonts \
         imagemagick \
         imagemagick-libs \

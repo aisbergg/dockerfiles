@@ -2,7 +2,7 @@ USERNAME=aisberg
 VERSION_ALPINE=3.7
 VERSION_UBUNTU=18.04
 UBUNTU_MIRROR=http://ftp.halifax.rwth-aachen.de/ubuntu/
-ALPINE_MIRROR=http://ftp.halifax.rwth-aachen.de/alpine/v3.7/
+ALPINE_MIRROR=http://ftp.halifax.rwth-aachen.de/alpine/
 
 DOCKER_BUILD_FLAGS?=
 

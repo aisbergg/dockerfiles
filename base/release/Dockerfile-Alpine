@@ -9,10 +9,11 @@ RUN apk add --update --no-cache --no-progress git &&\
 FROM alpine:3.7
 
 ARG LANG=en_US.UTF-8
-ARG ALPINE_MIRROR=http://dl-cdn.alpinelinux.org/alpine/v3.7/
+ARG ALPINE_MIRROR=http://dl-cdn.alpinelinux.org/alpine/
 ENV LANG=$LANG \
     LANGUAGE=$LANG \
     LC_ALL=$LANG \
+    ALPINE_MIRROR=$ALPINE_MIRROR \
     TZ=:/etc/localtime
 
 COPY --from=build /usr/bin/supervisord /usr/bin/supervisord
@@ -24,8 +25,8 @@ RUN \
     \
     # install software
     { \
-        echo "${ALPINE_MIRROR}main"; \
-        echo "${ALPINE_MIRROR}community"; \
+        echo "${ALPINE_MIRROR}v3.7/main"; \
+        echo "${ALPINE_MIRROR}v3.7/community"; \
     } > /etc/apk/repositories &&\
     apk update && apk upgrade &&\
     apk add --update --no-cache --no-progress  \

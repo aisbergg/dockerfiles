@@ -17,7 +17,7 @@ RUN \
         php5-opcache \
         php5-xml \
         rsync &&\
-    apk add --update --no-cache --no-progress --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
+    apk add --update --no-cache --no-progress --repository ${ALPINE_MIRROR}edge/main/ \
         ghostscript-fonts \
         imagemagick \
         imagemagick-libs \
