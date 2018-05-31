@@ -4,6 +4,6 @@ autostart={{ 'true' if BURP_MODE|lower == 'server' else 'false' }}
 autorestart=unexpected
 directory=/container/burp
 redirect_stderr=true
-stdout_logfile=/container/log/burp-server.log
+stdout_logfile={{ '/container/log/burp-server.log' if SUPERVISOR_LOGTYPE == 'file' else 'syslog @' + SUPERVISOR_SYSLOG_PROTOCOL + ':' + SUPERVISOR_SYSLOG_HOST + ':' + SUPERVISOR_SYSLOG_PORT|string }}
 stdout_logfile_maxbytes={{ SUPERVISOR_LOGFILE_MAXBYTES }}
 stdout_logfile_backups={{ SUPERVISOR_LOGFILE_BACKUPS }}

@@ -4,6 +4,12 @@ defaults:
   ######################################
   ## Supervisor
   ######################################
+  SUPERVISOR_LOGTYPE:
+    type: choice
+    default: file
+    choices:
+      - "file"
+      - "syslog"
   SUPERVISOR_LOGLEVEL:
     type: choice
     default: error
@@ -17,6 +23,14 @@ defaults:
       - "blather"
   SUPERVISOR_LOGFILE_BACKUPS: 5
   SUPERVISOR_LOGFILE_MAXBYTES: 2MB
+  SUPERVISOR_SYSLOG_HOST: "syslog"
+  SUPERVISOR_SYSLOG_PORT: 514
+  SUPERVISOR_SYSLOG_PROTOCOL:
+    type: choice
+    default: tcp
+    choices:
+      - "tcp"
+      - "udp"
 
   SUPERVISOR_HTTP_SERVER:
     type: choice
