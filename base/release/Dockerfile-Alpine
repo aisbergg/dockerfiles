@@ -29,7 +29,7 @@ RUN \
         echo "${ALPINE_MIRROR}v3.7/community"; \
     } > /etc/apk/repositories &&\
     apk update && apk upgrade &&\
-    apk add --update --no-cache --no-progress  \
+    apk add --no-cache --no-progress  \
         bash \
         ca-certificates \
         curl \
@@ -43,7 +43,8 @@ RUN \
     pip3 install wheel &&\
     pip3 install schedule &&\
     pip3 install git+https://github.com/Aisbergg/python-templer.git@v1.1.4 &&\
-    pip3 install git+https://github.com/Aisbergg/python-confmerge.git@v0.2.0
+    pip3 install git+https://github.com/Aisbergg/python-confmerge.git@v0.2.0 &&\
+    rm -rf /var/cache/apk/*
 
 COPY provision /provision
 COPY static /
