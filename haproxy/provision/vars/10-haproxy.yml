@@ -1,0 +1,4 @@
+---
+
+defaults:
+  HAPROXY_CONFIG_FILE: "/container/cfg/haproxy.cfg"
