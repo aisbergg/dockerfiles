@@ -23,7 +23,7 @@ RUN \
         nginx-mod-stream &&\
     \
     # prepare directories and files
-    rm -rf /var/www/* /etc/nginx/conf.d/* &&\
+    rm -rf /var/www/* /etc/nginx/conf.d/* /var/cache/apk/* &&\
     workdirs \
         /container/tls \
         /etc/nginx \
