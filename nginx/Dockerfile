@@ -39,7 +39,7 @@ EXPOSE 8080 8443
 
 ARG CREATED
 LABEL org.opencontainers.image.title="Nginx" \
-    org.opencontainers.image.version="1.12.2" \
+    org.opencontainers.image.version="1.14.0" \
     org.opencontainers.image.description="Nginx is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server" \
     org.opencontainers.image.url="http://nginx.org" \
     org.opencontainers.image.licenses="MIT" \
