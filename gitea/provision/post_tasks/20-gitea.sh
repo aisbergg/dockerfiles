@@ -1,0 +1,4 @@
+#!/bin/bash
+
+unset GITEA_SECURITY_SECRET_KEY
+unset SERVER_LFS_JWT_SECRET

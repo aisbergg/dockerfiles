@@ -1,0 +1,597 @@
+; This file lists the default values used by Gitea
+; Copy required sections to your own app.ini (default is custom/conf/app.ini)
+; and modify as needed.
+
+; see https://docs.gitea.io/en-us/config-cheat-sheet/ for additional documentation.
+
+; App name that shows in every page title
+APP_NAME = {{ GITEA_APP_NAME }}
+; Change it if you run locally
+RUN_USER = git
+; Either "dev", "prod" or "test", default is "dev"
+RUN_MODE = {{ GITEA_RUN_MODE }}
+
+[repository]
+ROOT = /container/gitea/repositories
+SCRIPT_TYPE = bash
+; Default ANSI charset
+ANSI_CHARSET =
+; Force every new repository to be private
+FORCE_PRIVATE = {{ GITEA_REPOSITORY_FORCE_PRIVATE }}
+; Default privacy setting when creating a new repository, allowed values: last, private, public. Default is last which means the last setting used.
+DEFAULT_PRIVATE = {{ GITEA_REPOSITORY_DEFAULT_PRIVATE }}
+; Global limit of repositories per user, applied at creation time. -1 means no limit
+MAX_CREATION_LIMIT = {{ GITEA_REPOSITORY_MAX_CREATION_LIMIT }}
+; Mirror sync queue length, increase if mirror syncing starts hanging
+MIRROR_QUEUE_LENGTH = {{ GITEA_REPOSITORY_MIRROR_QUEUE_LENGTH }}
+; Patch test queue length, increase if pull request patch testing starts hanging
+PULL_REQUEST_QUEUE_LENGTH = {{ GITEA_REPOSITORY_PULL_REQUEST_QUEUE_LENGTH }}
+; Preferred Licenses to place at the top of the List
+; The name here must match the filename in conf/license or custom/conf/license
+PREFERRED_LICENSES = {{ GITEA_REPOSITORY_PREFERRED_LICENSES }}
+; Disable the ability to interact with repositories using the HTTP protocol
+DISABLE_HTTP_GIT = {{ GITEA_REPOSITORY_DISABLE_HTTP_GIT }}
+; Force ssh:// clone url instead of scp-style uri when default SSH port is used
+USE_COMPAT_SSH_URI = {{ GITEA_REPOSITORY_USE_COMPAT_SSH_URI }}
+
+[repository.editor]
+; List of file extensions for which lines should be wrapped in the CodeMirror editor
+; Separate extensions with a comma. To line wrap files without an extension, just put a comma
+LINE_WRAP_EXTENSIONS = {{ GITEA_REPOSITORY_EDITOR_LINE_WRAP_EXTENSIONS }}
+; Valid file modes that have a preview API associated with them, such as api/v1/markdown
+; Separate the values by commas. The preview tab in edit mode won't be displayed if the file extension doesn't match
+PREVIEWABLE_FILE_MODES = {{ GITEA_REPOSITORY_EDITOR_PREVIEWABLE_FILE_MODES }}
+
+[repository.local]
+; Path for local repository copy. Defaults to `tmp/local-repo`
+LOCAL_COPY_PATH = tmp/local-repo
+; Path for local wiki copy. Defaults to `tmp/local-wiki`
+LOCAL_WIKI_PATH = tmp/local-wiki
+
+[repository.upload]
+; Whether repository file uploads are enabled. Defaults to `true`
+ENABLED = {{ GITEA_REPOSITORY_UPLOAD_ENABLED }}
+; Path for uploads. Defaults to `data/tmp/uploads` (tmp gets deleted on gitea restart)
+TEMP_PATH = /container/gitea/uploads
+; One or more allowed types, e.g. image/jpeg|image/png. Nothing means any file type
+ALLOWED_TYPES = {{ GITEA_REPOSITORY_UPLOAD_ALLOWED_TYPES }}
+; Max size of each file in megabytes. Defaults to 3MB
+FILE_MAX_SIZE = {{ GITEA_REPOSITORY_UPLOAD_FILE_MAX_SIZE }}
+; Max number of files per upload. Defaults to 5
+MAX_FILES = {{ GITEA_REPOSITORY_UPLOAD_MAX_FILES }}
+
+[ui]
+; Number of repositories that are displayed on one explore page
+EXPLORE_PAGING_NUM = {{ GITEA_UI_EXPLORE_PAGING_NUM }}
+; Number of issues that are displayed on one page
+ISSUE_PAGING_NUM = {{ GITEA_UI_ISSUE_PAGING_NUM }}
+; Number of maximum commits displayed in one activity feed
+FEED_MAX_COMMIT_NUM = {{ GITEA_UI_FEED_MAX_COMMIT_NUM }}
+; Value of `theme-color` meta tag, used by Android >= 5.0
+; An invalid color like "none" or "disable" will have the default style
+; More info: https://developers.google.com/web/updates/2014/11/Support-for-theme-color-in-Chrome-39-for-Android
+THEME_COLOR_META_TAG = `{{ GITEA_UI_THEME_COLOR_META_TAG }}`#6cc644
+; Max size of files to be displayed (default is 8MiB)
+MAX_DISPLAY_FILE_SIZE = {{ GITEA_UI_MAX_DISPLAY_FILE_SIZE }}
+; Whether the email of the user should be shown in the Explore Users page
+SHOW_USER_EMAIL = {{ GITEA_UI_SHOW_USER_EMAIL }}
+
+[ui.admin]
+; Number of users that are displayed on one page
+USER_PAGING_NUM = {{ GITEA_UI_ADMIN_USER_PAGING_NUM }}
+; Number of repos that are displayed on one page
+REPO_PAGING_NUM = {{ GITEA_UI_ADMIN_REPO_PAGING_NUM }}
+; Number of notices that are displayed on in one page
+NOTICE_PAGING_NUM = {{ GITEA_UI_ADMIN_NOTICE_PAGING_NUM }}
+; Number of organizations that are displayed on one page
+ORG_PAGING_NUM = {{ GITEA_UI_ADMIN_ORG_PAGING_NUM }}
+
+[ui.user]
+; Number of repos that are displayed on one page
+REPO_PAGING_NUM = {{ GITEA_UI_USER_REPO_PAGING_NUM }}
+
+[ui.meta]
+AUTHOR = {{ GITEA_UI_META_AUTHOR }}
+DESCRIPTION = {{ GITEA_UI_META_DESCRIPTION }}
+KEYWORDS = {{ GITEA_UI_META_KEYWORDS }}
+
+[markdown]
+; Enable hard line break extension
+ENABLE_HARD_LINE_BREAK = {{ GITEA_MARKDOWN_ENABLE_HARD_LINE_BREAK }}
+; List of custom URL-Schemes that are allowed as links when rendering Markdown
+; for example git,magnet
+CUSTOM_URL_SCHEMES = {{ GITEA_MARKDOWN_CUSTOM_URL_SCHEMES }}
+; List of file extensions that should be rendered/edited as Markdown
+; Separate the extensions with a comma. To render files without any extension as markdown, just put a comma
+FILE_EXTENSIONS = {{ GITEA_MARKDOWN_FILE_EXTENSIONS }}
+
+[server]
+; The protocol the server listens on. One of 'http', 'https', 'unix' or 'fcgi'.
+PROTOCOL = unix
+DOMAIN = {{ DOMAINNAMES[0] }}
+ROOT_URL = https://%(DOMAIN)s/
+; The address to listen on. Either a IPv4/IPv6 address or the path to a unix socket.
+HTTP_ADDR = /var/run/container/gitea.sock
+; If REDIRECT_OTHER_PORT is true, and PROTOCOL is set to https an http server
+; will be started on PORT_TO_REDIRECT and it will redirect plain, non-secure http requests to the main
+; ROOT_URL.  Defaults are false for REDIRECT_OTHER_PORT and 80 for
+; PORT_TO_REDIRECT.
+REDIRECT_OTHER_PORT = false
+; Permission for unix socket
+UNIX_SOCKET_PERMISSION = 660
+; Local (DMZ) URL for Gitea workers (such as SSH update) accessing web service.
+; In most cases you do not need to change the default value.
+; Alter it only if your SSH server node is not the same as HTTP node.
+; Do not set this variable if PROTOCOL is set to 'unix'.
+LOCAL_ROOT_URL =
+; Disable SSH feature when not available
+DISABLE_SSH = {{ GITEA_SERVER_DISABLE_SSH }}
+; Whether to use the builtin SSH server or not.
+START_SSH_SERVER = false
+; Domain name to be exposed in clone URL
+SSH_DOMAIN = %(DOMAIN)s
+; Port number to be exposed in clone URL
+SSH_PORT = {{ GITEA_SERVER_SSH_PORT }}
+; Root path of SSH directory, default is '~/.ssh', but you have to use '/home/git/.ssh'.
+SSH_ROOT_PATH = /container/gitea/ssh
+; Enable SSH Authorized Key Backup when rewriting all keys, default is true
+SSH_BACKUP_AUTHORIZED_KEYS = false
+; Enable exposure of SSH clone URL to anonymous visitors, default is false
+SSH_EXPOSE_ANONYMOUS = false
+; Disable CDN even in "prod" mode
+OFFLINE_MODE = {{ GITEA_SERVER_OFFLINE_MODE }}
+DISABLE_ROUTER_LOG = {{ GITEA_SERVER_DISABLE_ROUTER_LOG }}
+; Default path for App data
+APP_DATA_PATH = /container/gitea
+; Application level GZIP support
+ENABLE_GZIP = {{ GITEA_SERVER_ENABLE_GZIP }}
+; Landing page, can be "home", "explore", or "organizations"
+LANDING_PAGE = {{ GITEA_SERVER_LANDING_PAGE }}
+; Enables git-lfs support. true or false, default is false.
+LFS_START_SERVER = {{ GITEA_SERVER_LFS_START_SERVER }}
+; Where your lfs files reside, default is data/lfs.
+LFS_CONTENT_PATH = /container/gitea/data/lfs
+; LFS authentication secret, change this yourself
+LFS_JWT_SECRET = {{ GITEA_SERVER_LFS_JWT_SECRET }}
+; LFS authentication validity period (in time.Duration), pushes taking longer than this may fail.
+LFS_HTTP_AUTH_EXPIRY = {{ GITEA_SERVER_LFS_HTTP_AUTH_EXPIRY }}
+
+; Define allowed algorithms and their minimum key length (use -1 to disable a type)
+[ssh.minimum_key_sizes]
+ED25519 = 256
+ECDSA = 256
+RSA = 2048
+DSA = -1
+
+[database]
+; Either "mysql", "postgres", "mssql" or "sqlite3", it's your choice
+{%- if GITEA_DATABASE_TYPE == 'sqlite3' %}
+DB_TYPE  = {{ GITEA_DATABASE_TYPE }}
+PATH     = /container/gitea/gitea.db
+; For "sqlite3" only. Query timeout
+SQLITE_TIMEOUT = {{ GITEA_DATABASE_SQLITE_TIMEOUT }}
+{% elif GITEA_DATABASE_TYPE == 'mysql' or GITEA_DATABASE_TYPE == 'postgres' or GITEA_DATABASE_TYPE == 'mssql' %}
+DB_TYPE = {{ GITEA_DATABASE_TYPE }}
+HOST = {{ GITEA_DATABASE_HOST }}
+NAME = {{ GITEA_DATABASE_NAME }}
+USER = {{ GITEA_DATABASE_USER }}
+PASSWD = {{ GITEA_DATABASE_PASSWORD }}
+{%- if GITEA_DATABASE_TYPE == 'postgres' %}
+; For "postgres" only, either "disable", "require" or "verify-full"
+SSL_MODE = {{ GITEA_DATABASE_PGSQL_SSL_MODE }}
+{%- endif %}
+{%- endif %}
+
+; For iterate buffer, default is 50
+ITERATE_BUFFER_SIZE = {{ GITEA_DATABASE_ITERATE_BUFFER_SIZE }}
+; Show the database generated SQL
+LOG_SQL = {{ GITEA_DATABASE_LOG_SQL }}
+
+[indexer]
+ISSUE_INDEXER_PATH = /container/gitea/indexers/issues.bleve
+; repo indexer by default disabled, since it uses a lot of disk space
+REPO_INDEXER_ENABLED = {{ GITEA_INDEXER_REPO_INDEXER_ENABLED }}
+REPO_INDEXER_PATH = /container/gitea/indexers/repos.bleve
+UPDATE_BUFFER_LEN = {{ GITEA_INDEXER_UPDATE_BUFFER_LEN }}
+MAX_FILE_SIZE = {{ GITEA_INDEXER_MAX_FILE_SIZE }}
+
+[admin]
+; Disallow regular (non-admin) users from creating organizations.
+DISABLE_REGULAR_ORG_CREATION = {{ GITEA_ADMIN_DISABLE_REGULAR_ORG_CREATION }}
+
+[security]
+; Whether the installer is disabled
+INSTALL_LOCK = true
+; !!CHANGE THIS TO KEEP YOUR USER DATA SAFE!!
+SECRET_KEY = {{ GITEA_SECURITY_SECRET_KEY }}
+; How long to remember that an user is logged in before requiring relogin (in days)
+LOGIN_REMEMBER_DAYS = {{ GITEA_SECURITY_LOGIN_REMEMBER_DAYS }}
+COOKIE_USERNAME = {{ GITEA_SECURITY_COOKIE_USERNAME }}
+COOKIE_REMEMBER_NAME = {{ GITEA_SECURITY_COOKIE_REMEMBER_NAME }}
+; Reverse proxy authentication header name of user name
+REVERSE_PROXY_AUTHENTICATION_USER = {{ GITEA_SECURITY_REVERSE_PROXY_AUTHENTICATION_USER }}
+; The minimum password length for new Users
+MIN_PASSWORD_LENGTH = {{ GITEA_SECURITY_MIN_PASSWORD_LENGTH }}
+; True when users are allowed to import local server paths
+IMPORT_LOCAL_PATHS = {{ GITEA_SECURITY_IMPORT_LOCAL_PATHS }}
+; Prevent all users (including admin) from creating custom git hooks
+DISABLE_GIT_HOOKS = {{ GITEA_SECURITY_DISABLE_GIT_HOOKS }}
+
+[openid]
+;
+; OpenID is an open, standard and decentralized authentication protocol.
+; Your identity is the address of a webpage you provide, which describes
+; how to prove you are in control of that page.
+;
+; For more info: https://en.wikipedia.org/wiki/OpenID
+;
+; Current implementation supports OpenID-2.0
+;
+; Tested to work providers at the time of writing:
+;  - Any GNUSocial node (your.hostname.tld/username)
+;  - Any SimpleID provider (http://simpleid.koinic.net)
+;  - http://openid.org.cn/
+;  - openid.stackexchange.com
+;  - login.launchpad.net
+;  - <username>.livejournal.com
+;
+; Whether to allow signin in via OpenID
+ENABLE_OPENID_SIGNIN = {{ GITEA_OPENID_ENABLE_OPENID_SIGNIN }}
+; Whether to allow registering via OpenID
+; Do not include to rely on rhw DISABLE_REGISTRATION setting
+;ENABLE_OPENID_SIGNUP =
+; Allowed URI patterns (POSIX regexp).
+; Space separated.
+; Only these would be allowed if non-blank.
+; Example value: trusted.domain.org trusted.domain.net
+WHITELISTED_URIS = {{ GITEA_OPENID_WHITELISTED_URIS }}
+; Forbidden URI patterns (POSIX regexp).
+; Space separated.
+; Only used if WHITELISTED_URIS is blank.
+; Example value: loadaverage.org/badguy stackexchange.com/.*spammer
+BLACKLISTED_URIS = {{ GITEA_OPENID_BLACKLISTED_URIS }}
+
+[service]
+; Time limit to confirm account/email registration
+ACTIVE_CODE_LIVE_MINUTES = {{ GITEA_SERVICE_ACTIVE_CODE_LIVE_MINUTES }}
+; Time limit to perform the reset of a forgotten password
+RESET_PASSWD_CODE_LIVE_MINUTES = {{ GITEA_SERVICE_RESET_PASSWD_CODE_LIVE_MINUTES }}
+; Whether a new user needs to confirm their email when registering.
+REGISTER_EMAIL_CONFIRM = {{ GITEA_SERVICE_REGISTER_EMAIL_CONFIRM }}
+; Disallow registration, only allow admins to create accounts.
+DISABLE_REGISTRATION = {{ GITEA_SERVICE_DISABLE_REGISTRATION }}
+; Allow registration only using third part services, it works only when DISABLE_REGISTRATION is false
+ALLOW_ONLY_EXTERNAL_REGISTRATION = {{ GITEA_SERVICE_ALLOW_ONLY_EXTERNAL_REGISTRATION }}
+; User must sign in to view anything.
+REQUIRE_SIGNIN_VIEW = {{ GITEA_SERVICE_REQUIRE_SIGNIN_VIEW }}
+; Mail notification
+ENABLE_NOTIFY_MAIL = {{ GITEA_SERVICE_ENABLE_NOTIFY_MAIL }}
+; More detail: https://github.com/gogits/gogs/issues/165
+ENABLE_REVERSE_PROXY_AUTHENTICATION = {{ GITEA_SERVICE_ENABLE_REVERSE_PROXY_AUTHENTICATION }}
+ENABLE_REVERSE_PROXY_AUTO_REGISTRATION = {{ GITEA_SERVICE_ENABLE_REVERSE_PROXY_AUTO_REGISTRATION }}
+; Enable captcha validation for registration
+ENABLE_CAPTCHA = {{ GITEA_SERVICE_ENABLE_CAPTCHA }}
+; Default value for KeepEmailPrivate
+; Each new user will get the value of this setting copied into their profile
+DEFAULT_KEEP_EMAIL_PRIVATE = {{ GITEA_SERVICE_DEFAULT_KEEP_EMAIL_PRIVATE }}
+; Default value for AllowCreateOrganization
+; Every new user will have rights set to create organizations depending on this setting
+DEFAULT_ALLOW_CREATE_ORGANIZATION = {{ GITEA_SERVICE_DEFAULT_ALLOW_CREATE_ORGANIZATION }}
+; Enable Timetracking
+ENABLE_TIMETRACKING = {{ GITEA_SERVICE_ENABLE_TIMETRACKING }}
+; Default value for EnableTimetracking
+; Repositories will use timetracking by default depending on this setting
+DEFAULT_ENABLE_TIMETRACKING = {{ GITEA_SERVICE_DEFAULT_ENABLE_TIMETRACKING }}
+; Default value for AllowOnlyContributorsToTrackTime
+; Only users with write permissions can track time if this is true
+DEFAULT_ALLOW_ONLY_CONTRIBUTORS_TO_TRACK_TIME = {{ GITEA_SERVICE_DEFAULT_ALLOW_ONLY_CONTRIBUTORS_TO_TRACK_TIME }}
+; Default value for the domain part of the user's email address in the git log
+; if he has set KeepEmailPrivate to true. The user's email will be replaced with a
+; concatenation of the user name in lower case, "@" and NO_REPLY_ADDRESS.
+NO_REPLY_ADDRESS = {{ GITEA_SERVICE_NO_REPLY_ADDRESS }}
+
+[webhook]
+; Hook task queue length, increase if webhook shooting starts hanging
+QUEUE_LENGTH = {{ GITEA_WEBHOOK_QUEUE_LENGTH }}
+; Deliver timeout in seconds
+DELIVER_TIMEOUT = {{ GITEA_WEBHOOK_DELIVER_TIMEOUT }}
+; Allow insecure certification
+SKIP_TLS_VERIFY = {{ GITEA_WEBHOOK_SKIP_TLS_VERIFY }}
+; Number of history information in each page
+PAGING_NUM = {{ GITEA_WEBHOOK_PAGING_NUM }}
+
+[mailer]
+ENABLED = {{ GITEA_MAILER_ENABLED }}
+; Buffer length of channel, keep it as it is if you don't know what it is.
+SEND_BUFFER_LEN = {{ GITEA_MAILER_SEND_BUFFER_LEN }}
+; Name displayed in mail title
+SUBJECT = `{{ GITEA_MAILER_SUBJECT }}%(APP_NAME)s`
+; Mail server
+; Gmail: smtp.gmail.com:587
+; QQ: smtp.qq.com:465
+; Note, if the port ends with "465", SMTPS will be used. Using STARTTLS on port 587 is recommended per RFC 6409. If the server supports STARTTLS it will always be used.
+HOST = {% if GITEA_MAILER_ENABLED %}{{ GITEA_MAILER_HOST | mandatory('You need to specify a smtp host') }}{% endif %}
+; Disable HELO operation when hostnames are different.
+DISABLE_HELO = {{ GITEA_MAILER_DISABLE_HELO }}
+; Custom hostname for HELO operation, if no value is provided, one is retrieved from system.
+HELO_HOSTNAME = {{ GITEA_MAILER_HELO_HOSTNAME }}
+; Do not verify the certificate of the server. Only use this for self-signed certificates
+SKIP_VERIFY = {{ GITEA_MAILER_SKIP_VERIFY }}
+; Use client certificate
+USE_CERTIFICATE = {{ GITEA_MAILER_USE_CERTIFICATE }}
+CERT_FILE = {{ GITEA_MAILER_CERT_FILE }}
+KEY_FILE = {{ GITEA_MAILER_KEY_FILE }}
+; Mail from address, RFC 5322. This can be just an email address, or the `"Name" <email@example.com>` format
+FROM = `{{ GITEA_MAILER_FROM }}`
+; Mailer user name and password
+USER = {% if GITEA_MAILER_ENABLED %}{{ GITEA_MAILER_USER | mandatory('You need to specify a user for smtp') }}{% endif %}
+; Use PASSWD = `your password` for quoting if you use special characters in the password.
+PASSWD = `{% if GITEA_MAILER_ENABLED %}{{ GITEA_MAILER_PASSWD | mandatory('You need to specify a password for smtp') }}{% endif %}`
+; Send mails as plain text
+SEND_AS_PLAIN_TEXT = {{ GITEA_MAILER_SEND_AS_PLAIN_TEXT }}
+
+[cache]
+; Either "memory", "redis", or "memcache", default is "memory"
+ADAPTER = {{ GITEA_CACHE_ADAPTER }}
+{%- if GITEA_CACHE_ADAPTER == 'memory' %}
+; For "memory" only, GC interval in seconds, default is 60
+INTERVAL = {{GITEA_CACHE_INTERVAL }}60
+{%- else %}
+; For "redis" and "memcache", connection host address
+; redis: network=tcp,addr=:6379,password=macaron,db=0,pool_size=100,idle_timeout=180
+; memcache: `127.0.0.1:11211`
+HOST = `{{GITEA_CACHE_HOST }}`
+{%- endif %}
+; Time to keep items in cache if not used, default is 16 hours.
+; Setting it to 0 disables caching
+ITEM_TTL = {{ GITEA_CACHE_ITEM_TTL }}
+
+[session]
+; Either "memory", "file", or "redis", default is "memory"
+PROVIDER = {{ GITEA_SESSION_PROVIDER }}
+{% if GITEA_SESSION_PROVIDER == 'memory' -%}
+PROVIDER_CONFIG = /container/gitea/sessions
+{%- else %}
+PROVIDER_CONFIG = `{{ GITEA_SESSION_PROVIDER_CONFIG }}`
+{%- endif %}
+; Provider config options
+; memory: doesn't have any config yet
+; file: session file path, e.g. `data/sessions`
+; redis: network=tcp,addr=:6379,password=macaron,db=0,pool_size=100,idle_timeout=180
+; mysql: go-sql-driver/mysql dsn config string, e.g. `root:password@/session_table`
+PROVIDER_CONFIG = /container/gitea/sessions
+; Session cookie name
+COOKIE_NAME = {{ GITEA_SESSION_COOKIE_NAME }}
+; If you use session in https only, default is false
+COOKIE_SECURE = {{ GITEA_SESSION_COOKIE_SECURE }}
+; Enable set cookie, default is true
+ENABLE_SET_COOKIE = {{ GITEA_SESSION_ENABLE_SET_COOKIE }}
+; Session GC time interval in seconds, default is 86400 (1 day)
+GC_INTERVAL_TIME = {{ GITEA_SESSION_GC_INTERVAL_TIME }}
+; Session life time in seconds, default is 86400 (1 day)
+SESSION_LIFE_TIME = {{ GITEA_SESSION_SESSION_LIFE_TIME }}
+
+[picture]
+AVATAR_UPLOAD_PATH = /container/gitea/avatars
+; Chinese users can choose "duoshuo"
+; or a custom avatar source, like: http://cn.gravatar.com/avatar/
+GRAVATAR_SOURCE = {{ GITEA_PICTURE_GRAVATAR_SOURCE }}
+; This value will always be true in offline mode.
+DISABLE_GRAVATAR = {{ GITEA_PICTURE_DISABLE_GRAVATAR }}
+; Federated avatar lookup uses DNS to discover avatar associated
+; with emails, see https://www.libravatar.org
+; This value will always be false in offline mode or when Gravatar is disabled.
+ENABLE_FEDERATED_AVATAR = {{ GITEA_PICTURE_ENABLE_FEDERATED_AVATAR }}
+
+[attachment]
+; Whether attachments are enabled. Defaults to `true`
+ENABLED = {{ GITEA_ATTACHMENT_ENABLED }}
+; Path for attachments. Defaults to `data/attachments`
+PATH = /container/gitea/attachments
+; One or more allowed types, e.g. image/jpeg|image/png
+ALLOWED_TYPES = {{ GITEA_ATTACHMENT_ALLOWED_TYPES }}
+; Max size of each file. Defaults to 4MB
+MAX_SIZE = {{ GITEA_ATTACHMENT_MAX_SIZE }}
+; Max number of files per upload. Defaults to 5
+MAX_FILES = {{ GITEA_ATTACHMENT_MAX_FILES }}
+
+[time]
+; Specifies the format for fully outputted dates. Defaults to RFC1123
+; Special supported values are ANSIC, UnixDate, RubyDate, RFC822, RFC822Z, RFC850, RFC1123, RFC1123Z, RFC3339, RFC3339Nano, Kitchen, Stamp, StampMilli, StampMicro and StampNano
+; For more information about the format see http://golang.org/pkg/time/#pkg-constants
+FORMAT = {{ GITEA_TIME_FORMAT }}
+
+[log]
+ROOT_PATH = /container/log
+; Either "console", "file", "conn", "smtp" or "database", default is "console"
+; Use comma to separate multiple modes, e.g. "console, file"
+MODE = {{ GITEA_LOG_MODE }}
+; Buffer length of the channel, keep it as it is if you don't know what it is.
+BUFFER_LEN = {{ GITEA_LOG_BUFFER_LEN }}
+; Either "Trace", "Debug", "Info", "Warn", "Error", "Critical", default is "Trace"
+LEVEL = {{ GITEA_LOG_LEVEL }}
+
+; For "console" mode only
+[log.console]
+LEVEL = {{ GITEA_LOG_LEVEL }}
+
+; For "file" mode only
+[log.file]
+LEVEL = {{ GITEA_LOG_LEVEL }}
+; This enables automated log rotate(switch of following options), default is true
+LOG_ROTATE = {{ GITEA_LOG_FILE_LOG_ROTATE }}
+; Max number of lines in a single file, default is 1000000
+MAX_LINES = {{ GITEA_LOG_FILE_MAX_LINES }}
+; Max size shift of a single file, default is 28 means 1 << 28, 256MB
+MAX_SIZE_SHIFT = {{ GITEA_LOG_FILE_MAX_SIZE_SHIFT }}
+; Segment log daily, default is true
+DAILY_ROTATE = {{ GITEA_LOG_FILE_DAILY_ROTATE }}
+; delete the log file after n days, default is 7
+MAX_DAYS = {{ GITEA_LOG_FILE_MAX_DAYS }}
+
+; For "conn" mode only
+[log.conn]
+LEVEL = {{ GITEA_LOG_LEVEL }}
+; Reconnect host for every single message, default is false
+RECONNECT_ON_MSG = {{ GITEA_LOG_CONN_RECONNECT_ON_MSG }}
+; Try to reconnect when connection is lost, default is false
+RECONNECT = {{ GITEA_LOG_CONN_RECONNECT }}
+; Either "tcp", "unix" or "udp", default is "tcp"
+PROTOCOL = {{ GITEA_LOG_CONN_PROTOCOL }}
+; Host address
+ADDR = {{ GITEA_LOG_CONN_ADDR }}
+
+; For "smtp" mode only
+[log.smtp]
+LEVEL = {{ GITEA_LOG_LEVEL }}
+; Name displayed in mail title, default is "Diagnostic message from server"
+SUBJECT = {{ GITEA_LOG_SMTP_SUBJECT }}
+; Mail server
+HOST = {{ GITEA_LOG_SMTP_HOST }}
+; Mailer user name and password
+USER = {{ GITEA_LOG_SMTP_USER }}
+; Use PASSWD = `your password` for quoting if you use special characters in the password.
+PASSWD = {{ GITEA_LOG_SMTP_PASSWD }}
+; Receivers, can be one or more, e.g. 1@example.com,2@example.com
+RECEIVERS = {{ GITEA_LOG_SMTP_RECEIVERS }}
+
+; For "database" mode only
+[log.database]
+LEVEL = {{ GITEA_LOG_LEVEL }}
+; Either "mysql" or "postgres"
+DRIVER = {{ GITEA_LOG_DATABASE_DRIVER }}
+; Based on xorm, e.g.: root:root@localhost/gitea?charset=utf8
+CONN = {{ GITEA_LOG_DATABASE_CONN }}
+
+[cron]
+; Enable running cron tasks periodically.
+ENABLED = {{ GITEA_CRON_ENABLED }}
+; Run cron tasks when Gitea starts.
+RUN_AT_START = {{ GITEA_CRON_RUN_AT_START }}
+
+; Update mirrors
+[cron.update_mirrors]
+SCHEDULE = {{ GITEA_CRON_UPDATE_MIRRORS_SCHEDULE }}
+
+; Repository health check
+[cron.repo_health_check]
+SCHEDULE = {{ GITEA_CRON_REPO_HEALTH_CHECK_SCHEDULE }}
+TIMEOUT = {{ GITEA_CRON_REPO_HEALTH_CHECK_TIMEOUT }}
+; Arguments for command 'git fsck', e.g. "--unreachable --tags"
+; see more on http://git-scm.com/docs/git-fsck/1.7.5
+ARGS = {{ GITEA_CRON_REPO_HEALTH_CHECK_ARGS }}
+
+; Check repository statistics
+[cron.check_repo_stats]
+RUN_AT_START = {{ GITEA_CRON_CHECK_REPO_STATS_RUN_AT_START }}
+SCHEDULE = {{ GITEA_CRON_CHECK_REPO_STATS_SCHEDULE }}
+
+; Clean up old repository archives
+[cron.archive_cleanup]
+; Whether to enable the job
+ENABLED = {{ GITEA_CRON_ARCHIVE_CLEANUP_ENABLED }}
+; Whether to always run at least once at start up time (if ENABLED)
+RUN_AT_START = {{ GITEA_CRON_ARCHIVE_CLEANUP_RUN_AT_START }}
+; Time interval for job to run
+SCHEDULE = {{ GITEA_CRON_ARCHIVE_CLEANUP_SCHEDULE }}
+; Archives created more than OLDER_THAN ago are subject to deletion
+OLDER_THAN = {{ GITEA_CRON_ARCHIVE_CLEANUP_OLDER_THAN }}
+
+; Synchronize external user data (only LDAP user synchronization is supported)
+[cron.sync_external_users]
+; Synchronize external user data when starting server (default false)
+RUN_AT_START = {{ GITEA_CRON_SYNC_EXTERNAL_USERS_RUN_AT_START }}
+; Interval as a duration between each synchronization (default every 24h)
+SCHEDULE = {{ GITEA_CRON_SYNC_EXTERNAL_USERS_SCHEDULE }}
+; Create new users, update existing user data and disable users that are not in external source anymore (default)
+;   or only create new users if UPDATE_EXISTING is set to false
+UPDATE_EXISTING = {{ GITEA_CRON_SYNC_EXTERNAL_USERS_UPDATE_EXISTING }}
+
+[git]
+; Disables highlight of added and removed changes
+DISABLE_DIFF_HIGHLIGHT = {{ GITEA_GIT_DISABLE_DIFF_HIGHLIGHT }}
+; Max number of lines allowed in a single file in diff view
+MAX_GIT_DIFF_LINES = {{ GITEA_GIT_MAX_GIT_DIFF_LINES }}
+; Max number of allowed characters in a line in diff view
+MAX_GIT_DIFF_LINE_CHARACTERS = {{ GITEA_GIT_MAX_GIT_DIFF_LINE_CHARACTERS }}
+; Max number of files shown in diff view
+MAX_GIT_DIFF_FILES = {{ GITEA_GIT_MAX_GIT_DIFF_FILES }}
+; Arguments for command 'git gc', e.g. "--aggressive --auto"
+; see more on http://git-scm.com/docs/git-gc/1.7.5
+GC_ARGS = {{ GITEA_GIT_GC_ARGS }}
+
+; Operation timeout in seconds
+[git.timeout]
+MIGRATE = {{ GITEA_GIT_TIMEOUT_MIGRATE }}
+MIRROR = {{ GITEA_GIT_TIMEOUT_MIRROR }}
+CLONE = {{ GITEA_GIT_TIMEOUT_CLONE }}
+PULL = {{ GITEA_GIT_TIMEOUT_PULL }}
+GC = {{ GITEA_GIT_TIMEOUT_GC }}
+
+[mirror]
+; Default interval as a duration between each check
+DEFAULT_INTERVAL = {{ GITEA_MIRROR_DEFAULT_INTERVAL }}
+; Min interval as a duration must be > 1m
+MIN_INTERVAL = {{ GITEA_MIRROR_MIN_INTERVAL }}
+
+[api]
+; Enables /api/swagger, /api/v1/swagger etc. endpoints. True or false; default is true.
+ENABLE_SWAGGER_ENDPOINT = {{ GITEA_API_ENABLE_SWAGGER_ENDPOINT }}
+; Max number of items in a page
+MAX_RESPONSE_ITEMS = {{ GITEA_API_MAX_RESPONSE_ITEMS }}
+
+[i18n]
+LANGS = en-US,zh-CN,zh-HK,zh-TW,de-DE,fr-FR,nl-NL,lv-LV,ru-RU,uk-UA,ja-JP,es-ES,pt-BR,pl-PL,bg-BG,it-IT,fi-FI,tr-TR,cs-CZ,sr-SP,sv-SE,ko-KR
+NAMES = English,简体中文,繁體中文（香港）,繁體中文（台灣）,Deutsch,français,Nederlands,latviešu,русский,Українська,日本語,español,português do Brasil,polski,български,italiano,suomi,Türkçe,čeština,српски,svenska,한국어
+
+; Used for datetimepicker
+[i18n.datelang]
+en-US = en
+zh-CN = zh
+zh-HK = zh-HK
+zh-TW = zh-TW
+de-DE = de
+fr-FR = fr
+nl-NL = nl
+lv-LV = lv
+ru-RU = ru
+uk-UA = uk
+ja-JP = ja
+es-ES = es
+pt-BR = pt-BR
+pl-PL = pl
+bg-BG = bg
+it-IT = it
+fi-FI = fi
+tr-TR = tr
+cs-CZ = cs-CZ
+sr-SP = sr
+sv-SE = sv
+ko-KR = ko
+
+[U2F]
+; Two Factor authentication with security keys
+; https://developers.yubico.com/U2F/App_ID.html
+APP_ID = {{ GITEA_U2F_APP_ID }}
+; Comma seperated list of truisted facets
+TRUSTED_FACETS = {{ GITEA_U2F_TRUSTED_FACETS }}
+
+; Extension mapping to highlight class
+; e.g. .toml=ini
+[highlight.mapping]
+
+[other]
+SHOW_FOOTER_BRANDING = {{ GITEA_OTHER_SHOW_FOOTER_BRANDING }}
+; Show version information about Gitea and Go in the footer
+SHOW_FOOTER_VERSION = {{ GITEA_OTHER_SHOW_FOOTER_VERSION }}
+; Show template execution time in the footer
+SHOW_FOOTER_TEMPLATE_LOAD_TIME = {{ GITEA_OTHER_SHOW_FOOTER_TEMPLATE_LOAD_TIME }}
+
+[markup.asciidoc]
+ENABLED = {{ GITEA_MARKUP_ASCIIDOC_ENABLED }}
+; List of file extensions that should be rendered by an external command
+FILE_EXTENSIONS = {{ GITEA_MARKUP_ASCIIDOC_FILE_EXTENSIONS }}
+; External command to render all matching extensions
+RENDER_COMMAND = "{{ GITEA_MARKUP_ASCIIDOC_RENDER_COMMAND }}"
+; Don't pass the file on STDIN, pass the filename as argument instead.
+IS_INPUT_FILE = {{ GITEA_MARKUP_ASCIIDOC_IS_INPUT_FILE }}
