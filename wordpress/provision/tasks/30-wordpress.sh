@@ -33,4 +33,4 @@ if [[ -f /container/www/wp-config.php && "$(stat -c '%a' /container/www/wp-confi
     print_warning "ATTENTION: The settings file 'wp-config.php' should not be world readable. Use 'chmod' to change its permissions."
 fi
 
-export IMAGEMAGICK_SHARED_SECRET="$( </dev/urandom tr -dc '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' | head -c40; echo "")"
+export IMAGEMAGICK_SHARED_SECRET="$(create_random_string 64)"

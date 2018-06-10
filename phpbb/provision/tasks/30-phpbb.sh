@@ -68,4 +68,4 @@ elif [[ $(bool "$AUTO_UPDATE" "true") == "true" ]]; then
     unset INSTALLED_VERSION
 fi
 
-export IMAGEMAGICK_SHARED_SECRET="$( </dev/urandom tr -dc '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' | head -c40; echo "")"
+export IMAGEMAGICK_SHARED_SECRET="$(create_random_string 64)"
