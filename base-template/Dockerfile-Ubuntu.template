@@ -27,16 +27,11 @@ RUN \
     chmod g+rwX,o-rwx /home/cu &&\
     \
     # configure apt
+    sed -ri "s%http://(archive|security)\.ubuntu\.com/ubuntu/%$UBUNTU_MIRROR%g" /etc/apt/sources.list &&\
     { \
         echo "APT::Install-Recommends 0;"; \
         echo "APT::Install-Suggests 0;"; \
     } >> /etc/apt/apt.conf.d/01norecommends &&\
-    { \
-        echo "deb $UBUNTU_MIRROR bionic main universe multiverse restricted"; \
-        echo "deb $UBUNTU_MIRROR bionic-updates main universe multiverse restricted"; \
-        echo "deb $UBUNTU_MIRROR bionic-backports main universe multiverse restricted"; \
-        echo "deb $UBUNTU_MIRROR bionic-security main universe multiverse"; \
-    } > /etc/apt/sources.list &&\
     if [ -n "$APT_CACHER_NG" ]; then echo "Acquire::http { Proxy \"$APT_CACHER_NG\"; };" >> /etc/apt/apt.conf.d/01proxy; fi &&\
     apt-get update &&\
     \
