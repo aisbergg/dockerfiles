@@ -275,6 +275,10 @@ function version_greater() {
 	[[ "$(printf '%s\n' "$@" | sort $sort_flags | head -n 1)" != "$1" ]];
 }
 
+function create_random_string() {
+    </dev/urandom tr -dc '0-9a-zA-Z' | head -c${1:-64}
+}
+
 #-------------------------------------------------------------------------------
 
 IFS=$'\n'
