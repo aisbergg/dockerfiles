@@ -48,6 +48,7 @@ RUN \
         openssl \
         postgresql-client-10 \
         zlibc &&\
+    rm -rf /var/lib/apt/lists/* &&\
     \
     # prepare working directories and files
     touch /etc/msmtprc &&\
