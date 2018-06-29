@@ -22,10 +22,7 @@ RUN \
     chmod g+rwX,o-rwx /home/cu &&\
     \
     # install software
-    { \
-        echo "${ALPINE_MIRROR}v3.7/main"; \
-        echo "${ALPINE_MIRROR}v3.7/community"; \
-    } > /etc/apk/repositories &&\
+    sed -i "s%http://dl-cdn.alpinelinux.org/alpine/%$ALPINE_MIRROR%g" /etc/apk/repositories &&\
     apk update && apk upgrade &&\
     apk add --no-cache --no-progress  \
         bash \
