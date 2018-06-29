@@ -1,0 +1,95 @@
+#---------------------------------------------------------------------
+# Global settings
+#---------------------------------------------------------------------
+global
+    # global max concurrent connections
+    maxconn {{ HAPROXY_MAXCONN }}
+
+    # Default SSL material locations
+    ca-base /etc/ssl/certs
+    crt-base /container/tls/certs
+
+    # Default TLS ciphers
+    ssl-default-bind-ciphers ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:EECDH+AESGCM:EDH+AESGCM
+    # default TLS-options to force on all "bind" lines
+    ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
+    # Diffie-Hellman parameters
+    ssl-dh-param-file {{ HAPROXY_TLS_DHPARAM }}
+
+    # verify server certificates, set to 'none' when using self signed certificates
+    ssl-server-verify {{ 'required' if HAPROXY_SSL_SERVER_VERIFY else 'none' }}
+
+
+#---------------------------------------------------------------------
+# common defaults that all the 'listen' and 'backend' sections will
+# use if not designated in their block
+#---------------------------------------------------------------------
+defaults
+    mode                    http
+    log                     global
+    option                  httplog
+    option                  dontlognull
+    option http-server-close
+    option forwardfor       except 127.0.0.0/8
+    option                  redispatch
+    retries                 3
+    timeout http-request    10s
+    timeout queue           1m
+    timeout connect         10s
+    timeout client          1m
+    timeout server          1m
+    timeout http-keep-alive 10s
+    timeout check           10s
+
+
+
+
+    log         global
+    mode        http
+    option      httplog
+    #option      dontlognull
+    #option      dontlog-normal
+    option      redispatch
+    # adding X-Forwarded-For header so actually client IP address is preserved
+    option      forwardfor
+    # close connections on server side but maintain keep-alives to reduce latencies
+    option      http-server-close
+    # health check; test if the reversed webservers properly respond
+    #option      httpchk HEAD / HTTP/1.1\r\nHost:localhost
+    # enable HTTP keep-alive from client to server
+    option      http-keep-alive
+    # max concurrent connections
+    maxconn     2000
+    retries     3
+
+    # time from the first client byte received, until last byte sent to the client
+    timeout     http-request    7s
+    # maximum time to wait in the queue for a connection slot to be free
+    timeout     queue           1m
+    # time for client to send a complete request
+    timeout     connect         5s
+    # max inactivity time on the client side
+    timeout     client          600s
+    # max inactivity time on the server side
+    timeout     server          30min
+    # max time allowed to wait for new HTTP request to appear
+    timeout     http-keep-alive 30s
+    # additional check timeout
+    timeout     check           10s
+
+    # strategy for distrubuting load
+    balance     roundrobin
+
+
+{% if HAPROXY_STATS_ENABLED -%}
+#---------------------------------------------------------------------
+# Stats settings
+#---------------------------------------------------------------------
+frontend stats
+    bind *:1930
+    stats enable
+    mode  http
+    stats uri /stats
+    stats realm Haproxy\ Statistics
+    stats hide-version
+{%- endif %}

@@ -1,0 +1,341 @@
+#!/bin/bash
+set -eo pipefail
+
+function print_log() {
+    # Prints a log message.
+    #
+    # Usage: print_log "Message" "LOG_TYPE"
+    # where LOG_TYPE is one of: INFO, WARN, ERROR, DEBG
+    echo "$(date +"%Y-%d-%m %T %z") $2 ContainerProvisioning $1"
+}
+
+function print_warning() {
+    # Prints a warning message.
+    #
+    # Usage: print_warning "message"
+    if [[ "$quiet" != "true" ]]; then
+        print_log "$1" WARN
+    fi
+}
+
+function print_debug() {
+    # Prints a debug message.
+    #
+    # Usage: print_debug "message"
+    if [[ "$quiet" != "true" ]]; then
+        print_log "$1" DEBUG
+    fi
+}
+
+function print_info() {
+    # Prints an info message.
+    #
+    # Usage: print_info "message"
+    if [[ "$quiet" != "true" ]]; then
+        print_log "$1" INFO
+    fi
+}
+
+function print_error() {
+    # Prints an error message.
+    #
+    # Usage: print_error "message"
+    print_log "$1" ERROR
+}
+
+function upper_case() {
+    # Converts a string to upper case.
+    #
+    # Usage: string=$(upper_case "$string")
+    echo "$*" | tr '[:lower:]' '[:upper:]'
+}
+
+function lower_case() {
+    # Converts a string to lower case.
+    #
+    # Usage: string=$(lower_case "$string")
+    echo "$*" | tr '[:upper:]' '[:lower:]'
+}
+
+function array_contains() {
+    # Returns true if a given element is contained in an array.
+    #
+    # Args:
+    #     $1 (array): The array.
+    #     $2 (string): Element to look for in the array.
+    # Usage:
+    #    array_contains array[@] element
+    local array=("${!1}")
+    local elm="$2"
+    for a in "${array[@]}"; do
+        if [[ "$a" == "$elm" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+function backup_file() {
+    # Backups a file by creating a copy with the current date in its name.
+    #
+    # Args:
+    #     $1 (string): Path of the to backup.
+    # Usage:
+    #     backup_file myfile
+    local file_to_be_backuped="$1"
+    if [[ -f "$file_to_be_backuped" ]]; then
+        local dest_dir="$(dirname "$file_to_be_backuped")"
+        local file_name="$(basename "$file_to_be_backuped")"
+        local backup_file_name="${file_name%.*}_$(date +%F_%T).${file_name##*.}"
+        cp -dRf "$file_to_be_backuped" "$dest_dir/$backup_file_name"
+    else
+        print_error "File does not exists: $file_to_be_backuped"
+        exit 1
+    fi
+}
+
+function bool() {
+    # Converts from various bool styles to a standardized one.
+    # It will convert those:
+    #   true, on, yes, y, 1 --> true
+    #   false, off, no, n, 0 --> false
+    # When the given value doesn't match any of the above the default value
+    # will be used. The default value is specified by the second parameter.
+    #
+    # Usage: bool=$(bool "$bool" true)
+    local bool=$(lower_case "$1")
+    if [[ "$bool" == "true" || "$bool" == "on" || "$bool" == "yes" || "$bool" == "y" || "$bool" == "1" ]]; then
+        echo true
+    elif [[ "$bool" == "false" || "$bool" == "off" || "$bool" == "no" || "$bool" == "n" || "$bool" == "0" ]]; then
+        echo false
+    else
+        echo "$2"
+    fi
+}
+
+function export_bools() {
+    # Standardize bool envs or sets them to default value and exports them again.
+    # It takes an array with alternating order of variable name and default
+    # value.
+    #
+    # Usage:
+    # bools=(
+    #    FirstVar false
+    #    SecondVar true
+    #    ThirdVar false
+    # )
+    # export_bools bools[@]
+    local bools=("${!1}")
+    for (( i=0; i < ${#bools[@]}; i=i+2 )); do
+        eval export "${bools[$i]}=\"$(bool "${!bools[$i]}" "${bools[$i+1]}" )\""
+    done
+}
+
+function default() {
+    # Checks if the given parameter matches any of the possible values. If it
+    # does not match any then the default value will be used.
+    #
+    # Usage: param=$(default "$param" default_value possible_value1 ... possible_valueN)
+    local param=$(lower_case "$1")
+    shift 1
+    local default_values=("$@")
+    if [[ -n "$1" ]]; then
+        for pv in "${default_values[@]}"; do
+            if [[ "$param" == "$pv" ]]; then
+                echo "$pv"
+                return
+            fi
+        done
+    fi
+    echo "${default_values[0]}"
+}
+
+function is_dir_empty() {
+    # Checks wheter a dir is empty.
+    #
+    # Usage: if is_dir_empty /some/dir; then ...; fi
+    if [[ -e "$1" ]]; then
+        if [[ -d "$1" && $(ls -1A "$1" | wc -l) -eq 0 ]]; then
+            return 0
+        else
+            return 1
+        fi
+    else
+        return 0
+    fi
+}
+
+function merge_dirs() {
+    # Merges two directories.
+    #
+    # Usage: merge_dirs /merge/from /into/dest/dir
+    local src="$1"
+    local dest="$2"
+
+    if [[ ! -e "$src" ]]; then
+        print_error "Failed to merge '$src' into '$dest'. Source does not exist!"
+        exit 1
+    fi
+    if [[ ! -d "$src" ]]; then
+        print_error "Failed to merge '$src' into '$dest'. Source is not a dir!"
+        exit 1
+    fi
+    if [[ ! -d "$dest" ]]; then
+        print_error "Failed to merge '$src' into '$dest'. Destination is not a dir!"
+        exit 1
+    fi
+
+    # create list files that exists in the src dir
+    pushd "$src" >/dev/null
+    local relative_paths=($(find . -type f | sed -e "s/^\.\///g"))
+    popd >/dev/null
+
+    for rel_path in "${relative_paths[@]}"; do
+        mkdir -p "$(dirname "$dest/$rel_path")"
+        cp -dRf "$src/$rel_path" "$dest/$rel_path"
+    done
+}
+
+function copy_autogenerated_files() {
+    # Copies files to their destination in the filesystem, but skips files that
+    # are marked with "container_managed=false" in the header (first three
+    # lines) of the destination file.
+    # Other possible values are: FALSE, off, no, n
+    #
+    # Usage: copy_autogenerated_files /src/dir /dest/dir
+    local src="${1%/}"
+    local dest="${2%/}"
+
+    pushd "$src" >/dev/null
+    local relative_file_paths=($(find . -type f -not -name '*.j2' | sed -e "s/^\.\///g"))
+    for rel_path in "${relative_file_paths[@]}"; do
+        local container_managed=true
+        local dest_file="$dest/$rel_path"
+        if [[ -f "$dest_file" ]]; then
+            # migrate old header
+            local header="$(head -n 1 "$dest_file")"
+            if [[ "$header" =~ autogen[[:blank:]]+([^[:blank:]]+) ]]; then
+                sed -r -i '1s/autogen (true|false|on|off|yes|no|y|n|1|0)/container_managed=\1/' "$dest_file"
+            fi
+            for (( i = 1; i <= 3; i++ )); do
+                header="$(head -n $i "$dest_file" | tail -n 1 | tr '[:upper:]' '[:lower:]')"
+                if [[ "$header" =~ container_managed=(true|false|on|off|yes|no|y|n|1|0) ]]; then
+                    container_managed="$(bool "${BASH_REMATCH[1]}" true)"
+                    break
+                fi
+            done
+        fi
+        if [[ "$container_managed" == true ]]; then
+            mkdir -p "$(dirname "$dest_file")"
+            cp -dRf "$src/$rel_path" "$dest_file"
+        fi
+    done
+    popd >/dev/null
+}
+
+function unzip_strip() (
+    # Unzips a zip archive and strips the first component
+    # (like tar --strip-components=1)
+    #
+    # Args:
+    #     $1 (string): Path of zip archive
+    #     $2 (string): Destination path
+    # Usage:
+    #    unzip_strip some.zip ./output
+    local zip=$1
+    local dest=${2:-.}
+    local tempdir=$(mktemp -d)
+    unzip -qq -d "$tempdir" "$zip"
+    mkdir -p "$dest"
+    shopt -s dotglob
+    local f=("$tempdir"/*)
+    if [[ "${#f[@]}" == 1 && -d "${f[0]}" ]]; then
+        mv -f "$tempdir"/*/* "$dest"
+    else
+        mv -f "$tempdir"/* "$dest"
+    fi
+    rm -r "$tempdir"
+    shopt -u dotglob
+)
+
+function version_greater() {
+    # Returns true if version A > B
+    #
+    # Args:
+    #     $1 (string): Version A
+    #     $2 (string): Version B
+    # Usage:
+    #    if version_greater 1.2 1.1 ; then ... ; fi
+    local sort_flags
+    if [[ $(source /etc/os-release && echo "$NAME") == "Ubuntu" ]]; then
+        sort_flags='-V'
+    elif [[ $(source /etc/os-release && echo "$NAME") == "Alpine Linux" ]]; then
+        sort_flags='-n'
+    fi
+	[[ "$(printf '%s\n' "$@" | sort $sort_flags | head -n 1)" != "$1" ]];
+}
+
+function create_random_string() {
+    </dev/urandom tr -dc '0-9a-zA-Z' | head -c${1:-64}
+}
+
+#-------------------------------------------------------------------------------
+
+IFS=$'\n'
+available_commands=($(find /provision/cmds -type f -exec basename {} \;))
+USAGE="Usage: docker run ... [OPTIONS] COMMAND
+
+Container entrypoint
+Use 'run' to provision the container and start the init process. Use 'debug' to
+execute a bash shell.
+
+Options:
+  -h, --help           Show this help message and exit
+  -q, --quiet          Suppress messages during the provision process
+
+Commands:
+  $(IFS=' ' && echo ${available_commands[*]})
+"
+
+quiet=false
+
+# parse cli args
+args=("$@")
+i=0
+while [[ $# > 0 ]]; do
+    if array_contains available_commands[@] "$1"; then
+        break
+    fi
+    case "${args[$i]}" in
+        -h|--help)
+            echo "$USAGE"
+            exit 0
+            ;;
+        -q|--quiet)
+            quiet=true
+            shift 1
+            break
+            ;;
+        *)
+            echo "Unknown option '$1'"
+            echo
+            echo "$USAGE"
+            exit 1
+            ;;
+    esac
+done
+if [[ $# == 0 ]]; then
+    echo "$USAGE"
+    exit 1
+fi
+cmd="$1"
+shift 1
+
+# allow non-root users to write to stdout and stderr
+chmod o+w /dev/stdout /dev/stderr
+
+# file permissions for newly created files
+umask 0007
+
+# run the specified command
+. "/provision/cmds/$cmd"
