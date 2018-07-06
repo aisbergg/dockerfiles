@@ -93,10 +93,9 @@ server {
     }
 
     # pass PHP scripts to PHP-FPM
-    location ~ ^(.+\.php)(.*)$ {
+    location ~ \.php?$ {
         limit_req               zone=php burst=50;
         try_files               $uri =404;
-        fastcgi_split_path_info ^(.+\.php)(.*)$;
         include                 fastcgi_params;
         fastcgi_read_timeout    {{ NGINX_FASTCGI_READ_TIMEOUT }};
         fastcgi_index           index.php;
