@@ -1,11 +1,11 @@
-FROM aisberg/base-alpine:3.7
+FROM aisberg/base-alpine:3.8
 
 ENV INIT=supervisor
 
 RUN \
     # install required packages
     # for informations on Nginx modules see: https://www.nginx.com/resources/wiki/modules/
-    apk add --update --no-cache --no-progress --repository ${ALPINE_MIRROR}edge/main/ \
+    apk add --update --no-cache --no-progress \
         libressl \
         nginx \
         nginx-mod-http-cache-purge \
