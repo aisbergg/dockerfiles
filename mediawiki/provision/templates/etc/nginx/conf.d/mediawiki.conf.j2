@@ -7,7 +7,7 @@
 
 
 limit_conn_log_level    warn;
-limit_req_zone          $limit zone=php:5m rate=50r/s;
+limit_req_zone          $limit zone=php:5m rate=60r/s;
 
 {% if NGINX_REDIRECT_TO_FIRST_DOMAIN and DOMAINNAMES|length > 1 -%}
 server {
@@ -94,12 +94,13 @@ server {
 
     # pass PHP scripts to PHP-FPM
     location ~ \.php?$ {
-        limit_req               zone=php burst=50;
+        limit_req               zone=php burst=100;
         try_files               $uri =404;
         include                 fastcgi_params;
         fastcgi_read_timeout    {{ NGINX_FASTCGI_READ_TIMEOUT }};
         fastcgi_index           index.php;
-        fastcgi_param           SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        fastcgi_buffers         64 4k;
+        fastcgi_param           SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_pass            unix:/var/run/container/php7-fpm.sock;
     }
 
