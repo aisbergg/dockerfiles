@@ -1,7 +1,7 @@
 FROM aisberg/nginx
 
-ENV COMPOSER_VERSION=1.6.4 \
-    COMPOSER_SHA256_CHECKSUM=8d0d9246f68532cc8fd6a47a58d195f0c849d26430f93c397a3176fc2d971ded \
+ENV COMPOSER_VERSION=1.6.5 \
+    COMPOSER_SHA256_CHECKSUM=67bebe9df9866a795078bb2cf21798d8b0214f2e0b2fd81f2e907a8ef0be3434 \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME=/tmp
 
@@ -9,9 +9,7 @@ ENV COMPOSER_VERSION=1.6.4 \
 RUN \
     # install required packages
     apk add --update --no-cache --no-progress \
-        yaml \
         pcre \
-        zlib \
         php7 \
         php7-apcu \
         php7-bcmath \
@@ -45,7 +43,9 @@ RUN \
         php7-xmlreader \
         php7-xmlwriter \
         php7-zip \
-        php7-zlib &&\
+        php7-zlib \
+        yaml \
+        zlib &&\
     \
     # build PHP YAML extension
     apk add --no-cache --no-progress --virtual .pecl-deps \
@@ -54,12 +54,12 @@ RUN \
         gcc \
         libc-dev \
         make \
-        pkgconf \
-        re2c \
+        pcre-dev \
         php7-dev \
         php7-pear \
-        yaml-dev \
-        pcre-dev &&\
+        pkgconf \
+        re2c \
+        yaml-dev &&\
     sed -i 's/^exec $PHP -C -n/exec $PHP -C/g' $(which pecl) &&\
     pecl channel-update pecl.php.net &&\
     pecl install yaml &&\
@@ -72,8 +72,10 @@ RUN \
     echo "$COMPOSER_SHA256_CHECKSUM  /usr/bin/composer" | sha256sum -c &&\
     chmod +x /usr/bin/composer &&\
     \
+    # cleanup
+    rm /etc/php7/php-fpm.d/* /var/cache/apk/* &&\
+    \
     # prepare working directories
-    rm /etc/php7/php-fpm.d/* &&\
     workdirs \
         /etc/php7 \
         /var/cache/php/tmp
@@ -82,7 +84,7 @@ COPY provision /provision
 
 ARG CREATED
 LABEL org.opencontainers.image.title="Nginx-PHP7" \
-    org.opencontainers.image.version="7.1.15" \
+    org.opencontainers.image.version="7.2.7" \
     org.opencontainers.image.description="PHP-FPM (FastCGI Process Manager) is an alternative PHP FastCGI implementation." \
     org.opencontainers.image.url="https://php-fpm.org" \
     org.opencontainers.image.licenses="MIT" \

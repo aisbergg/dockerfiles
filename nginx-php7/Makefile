@@ -1,6 +1,6 @@
 USERNAME=aisberg
 NAME=nginx-php7
-VERSION=7.1.15
+VERSION=7.2.7
 
 DOCKER_BUILD_FLAGS?=
 
