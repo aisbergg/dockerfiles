@@ -1,6 +1,6 @@
 FROM aisberg/nginx-php7
 
-ENV PHPMYADMIN_VERSION=4.8.1 \
+ENV PHPMYADMIN_VERSION=4.8.2 \
     PHPMYADMIN_PGP_KEY_ID=3D06A59ECE730EB71B511C17CE752F178259BD92
 
 RUN \
@@ -27,6 +27,7 @@ RUN \
         php7-openssl \
         php7-session \
         php7-zip &&\
+    rm -rf /var/cache/apk/* &&\
     \
     # prepare working directories
     workdirs \
