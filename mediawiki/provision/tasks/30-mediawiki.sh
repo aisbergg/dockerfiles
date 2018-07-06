@@ -18,7 +18,8 @@ if [[ ! -f '/container/www/LocalSettings.php' ]]; then
         print_error "Install dir is not empty! Make sure the target dir is empty before trying to install a new MediaWiki!"
         exit 1
     fi
-    tar xfz /usr/local/src/mediawiki.tar.gz -C /container/www --strip-components=1
+    tar xzf /usr/local/src/mediawiki.tar.gz -C /container/www --strip-components=1
+    tar xzf /usr/local/src/mediawiki-extension-math.tar.gz -C /container/www/extensions
     shopt -s dotglob
     chmod g+rwX,o-rwx -R /container/www/* &&\
     chgrp root -R /container/www/*
@@ -27,20 +28,20 @@ if [[ ! -f '/container/www/LocalSettings.php' ]]; then
     # fix syntax of Alpines 'timeout' program, so that ImageMagick can be used
     sed -i -e 's?/usr/bin/timeout \$MW_WALL_CLOCK_LIMIT?/usr/bin/timeout -t \$MW_WALL_CLOCK_LIMIT?g' /container/www/includes/shell/limit.sh
 
-    echo "${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR}" > /container/www/.version
     # temporary disable a nginx rule until the wiki is properly installed
     export MEDIAWIKI_IS_INSTALLED="false"
 
 # check if the installed version can be upgraded
 elif [[ $(bool "$AUTO_UPDATE" true) == "true" ]]; then
     # information about upgrading MediaWiki can be found here: https://www.mediawiki.org/wiki/Manual:Upgrading
-    INSTALLED_VERSION="$(cat /container/www/.version)"
+    INSTALLED_VERSION="$(grep 'wgVersion' /container/www/includes/DefaultSettings.php | grep -Eo '[0-9\.]+')"
     # check if newer version is available to upgrade the current installation
     if version_greater "${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR}" "$INSTALLED_VERSION" ; then
         print_info "Upgrading MediaWiki ($INSTALLED_VERSION --> ${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR})"
 
         tempdir="$(mktemp -d)"
-        tar xfz /usr/local/src/mediawiki.tar.gz -C "$tempdir" --strip-components=1
+        tar xzf /usr/local/src/mediawiki.tar.gz -C "$tempdir" --strip-components=1
+        tar xzf /usr/local/src/mediawiki-extension-math.tar.gz -C "$tempdir/extensions"
 
         rsync -rlD --delete \
             --exclude /extensions/ \
@@ -56,8 +57,8 @@ elif [[ $(bool "$AUTO_UPDATE" true) == "true" ]]; then
         done
 
         shopt -s dotglob
-        chmod g+rwX,o-rwx -R /container/www/* &&\
-        chgrp root -R /container/www/*
+        chmod g+rwX,o-rwx -R /container/www/* || true
+        chgrp root -R /container/www/* || true
         shopt -u dotglob
 
         # fix syntax of Alpines 'timeout' program, so that ImageMagick can be used
@@ -65,7 +66,6 @@ elif [[ $(bool "$AUTO_UPDATE" true) == "true" ]]; then
 
         rm -rf "$tempdir"
 
-        echo "${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR}" > /container/www/.version
         echo "Keep until update is finished" > /container/www/.needs-update
     fi
 
@@ -74,8 +74,9 @@ fi
 
 if [[ -f /container/www/.needs-update ]]; then
     # call MediaWiki update routine
-    cd /container/www/maintenance
-    php update.php
+    cd /container/www
+    php maintenance/update.php
+    composer update --no-dev
     # remove update indicator if update succeeded
     rm /container/www/.needs-update
 fi
@@ -88,4 +89,4 @@ if [[ -f /container/www/LocalSettings.php && "$(stat -c '%a' /container/www/Loca
     print_warning "ATTENTION: The settings file 'LocalSettings.php' should not be world readable. Use 'chmod' to change its permissions."
 fi
 
-export IMAGEMAGICK_SHARED_SECRET="$( </dev/urandom tr -dc '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' | head -c40; echo "")"
+export IMAGEMAGICK_SHARED_SECRET="$(create_random_string 64)"

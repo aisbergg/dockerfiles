@@ -1,8 +1,10 @@
 FROM aisberg/nginx-php7
 
-ENV MEDIAWIKI_MAJOR=1.30 \
+ENV MEDIAWIKI_MAJOR=1.31 \
     MEDIAWIKI_MINOR=0 \
-    MEDIAWIKI_PGP_KEY_ID=41B2ABE817ADD3E52BDA946F72BC1C5D23107F8A
+    MEDIAWIKI_PGP_KEY_ID=41B2ABE817ADD3E52BDA946F72BC1C5D23107F8A \
+    MEDIAWIKI_MATH_EXTENSION_FILE_NAME=Math-REL1_31-a1263db.tar.gz \
+    MEDIAWIKI_MATH_EXTENSION_SHA256_CHECKSUM=e9a637221781eb92c7edc40907e23e4a7319e42a65dd75ef476fe99e7cf409d2
 
 RUN \
     # download MediaWiki source
@@ -14,8 +16,9 @@ RUN \
     gpg --verify /usr/local/src/mediawiki.tar.gz.sig /usr/local/src/mediawiki.tar.gz &&\
     rm /usr/local/src/mediawiki.tar.gz.sig &&\
     \
-    # install required packages
-    apk add --update --no-cache --no-progress \
+    # install general requirements for MediaWiki
+    apk update &&\
+    apk add --no-cache --no-progress \
         diffutils \
         php7-apcu \
         php7-curl \
@@ -34,22 +37,53 @@ RUN \
         php7-xml \
         php7-xmlwriter \
         rsync &&\
-    apk add --update --no-cache --no-progress --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
-        ghostscript-fonts \
-        graphviz \
-        imagemagick \
-        imagemagick-libs \
-        poppler-utils \
-        shared-mime-info &&\
     pear channel-update pear.php.net &&\
     pear install Net_SMTP mail Auth_SASL2-beta mail_mime &&\
     \
-    # install MS fonts for graphviz
+    # install requirements for processing images
+    apk add --no-cache --no-progress \
+        imagemagick \
+        imagemagick-libs \
+        shared-mime-info &&\
+    \
+    # install requirements for the GraphViz extension
+    apk add --no-cache --no-progress \
+        ghostscript-fonts \
+        graphviz &&\
     apk add --no-cache --no-progress --virtual .ms-fonts-deps \
         msttcorefonts-installer &&\
     /usr/bin/update-ms-fonts &&\
     fc-cache -f &&\
     apk del .ms-fonts-deps &&\
+    \
+    # install requirements for the PdfHandler extension
+    apk add --no-cache --no-progress \
+        ghostscript \
+        poppler-utils &&\
+    \
+    # install requirements for the Math extension
+    curl -fSL "https://extdist.wmflabs.org/dist/extensions/${MEDIAWIKI_MATH_EXTENSION_FILE_NAME}" -o /usr/local/src/mediawiki-extension-math.tar.gz &&\
+    echo "$MEDIAWIKI_MATH_EXTENSION_SHA256_CHECKSUM  /usr/local/src/mediawiki-extension-math.tar.gz" | sha256sum -c &&\
+    apk add --no-cache --no-progress \
+        texlive &&\
+    apk add --no-cache --no-progress --virtual .build-deps \
+        binutils \
+        gcc \
+        make \
+        musl-dev \
+        ocaml &&\
+    tempdir="$(mktemp -d)" &&\
+    tar xzf /usr/local/src/mediawiki-extension-math.tar.gz -C "$tempdir" &&\
+    cd "$tempdir/Math" &&\
+    make &&\
+    rm math/*.o texvccheck/*.o &&\
+    chmod g+rwX,o-rwx -R "$tempdir" &&\
+    tar pczf /usr/local/src/mediawiki-extension-math.tar.gz -C "$tempdir" "Math/" &&\
+    cd / && rm -rf "$tempdir" &&\
+    apk del .build-deps &&\
+    \
+    # cleanup
+    rm -rf /var/cache/apk/* &&\
     \
     # prepare working directories
     workdirs \
