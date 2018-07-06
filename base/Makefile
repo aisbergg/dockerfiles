@@ -1,5 +1,5 @@
 USERNAME=aisberg
-VERSION_ALPINE=3.7
+VERSION_ALPINE=3.8
 VERSION_UBUNTU=18.04
 UBUNTU_MIRROR=http://ftp.halifax.rwth-aachen.de/ubuntu/
 ALPINE_MIRROR=http://ftp.halifax.rwth-aachen.de/alpine/

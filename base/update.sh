@@ -1,7 +1,7 @@
 #/bin/bash
 set -e
 
-IMAGE_VERSION_ALPINE=${IMAGE_VERSION_ALPINE:-3.7}
+IMAGE_VERSION_ALPINE=${IMAGE_VERSION_ALPINE:-3.8}
 IMAGE_VERSION_UBUNTU=${IMAGE_VERSION_UBUNTU:-18.04}
 
 #-------------------------------------------------------------------------------

@@ -6,7 +6,7 @@ RUN apk add --update --no-cache --no-progress git &&\
 
 #-------------------------------------------------------------------------------
 
-FROM alpine:3.7
+FROM alpine:3.8
 
 ARG LANG=en_US.UTF-8
 ARG ALPINE_MIRROR=http://dl-cdn.alpinelinux.org/alpine/
@@ -16,18 +16,13 @@ ENV LANG=$LANG \
     ALPINE_MIRROR=$ALPINE_MIRROR \
     TZ=:/etc/localtime
 
-COPY --from=build /usr/bin/supervisord /usr/bin/supervisord
-
 RUN \
     # add container user (cu)
     adduser -S -u 999 -s /bin/bash -G root cu &&\
     chmod g+rwX,o-rwx /home/cu &&\
     \
     # install software
-    { \
-        echo "${ALPINE_MIRROR}v3.7/main"; \
-        echo "${ALPINE_MIRROR}v3.7/community"; \
-    } > /etc/apk/repositories &&\
+    sed -i "s%http://dl-cdn.alpinelinux.org/alpine/%$ALPINE_MIRROR%g" /etc/apk/repositories &&\
     apk update && apk upgrade &&\
     apk add --no-cache --no-progress  \
         bash \
@@ -50,6 +45,7 @@ RUN \
     find /usr/lib/python* -name __pycache__ -exec rm -r {} + &&\
     rm -rf /var/cache/apk/*
 
+COPY --from=build /usr/bin/supervisord /usr/bin/supervisord
 COPY provision /provision
 COPY static /
 RUN chmod 0755 /entrypoint /usr/bin/workdirs /usr/bin/schedule_program &&\
@@ -68,7 +64,7 @@ CMD ["run"]
 
 ARG CREATED
 LABEL org.opencontainers.image.title="Base Image - Alpine Linux" \
-    org.opencontainers.image.version="3.7" \
+    org.opencontainers.image.version="3.8" \
     org.opencontainers.image.description="A base image build upon Alpine Linux" \
     org.opencontainers.image.url="https://www.alpinelinux.org" \
     org.opencontainers.image.licenses="MIT" \
