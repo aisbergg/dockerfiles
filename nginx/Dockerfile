@@ -2,10 +2,11 @@ FROM aisberg/base-alpine:3.8
 
 ENV INIT=supervisor
 
-RUN \
+RUN set -xe \
+    \
     # install required packages
     # for informations on Nginx modules see: https://www.nginx.com/resources/wiki/modules/
-    apk add --update --no-cache --no-progress \
+    && apk add --update --no-cache --no-progress \
         libressl \
         nginx \
         nginx-mod-http-cache-purge \
@@ -20,11 +21,11 @@ RUN \
         nginx-mod-http-upstream-fair \
         nginx-mod-http-xslt-filter \
         nginx-mod-mail \
-        nginx-mod-stream &&\
+        nginx-mod-stream \
     \
     # prepare directories and files
-    rm -rf /var/www/* /etc/nginx/conf.d/* /var/cache/apk/* &&\
-    workdirs \
+    && rm -rf /var/www/* /etc/nginx/conf.d/* /var/cache/apk/* \
+    && workdirs \
         /container/tls \
         /etc/nginx \
         /var/lib/nginx \
@@ -32,8 +33,8 @@ RUN \
         /var/www
 
 COPY provision /provision
-RUN find /provision -type f -exec chmod 0664 {} + &&\
-    find /provision -type d -exec chmod 0775 {} +
+RUN find /provision -type f -exec chmod 0664 {} + \
+    && find /provision -type d -exec chmod 0775 {} +
 
 EXPOSE 8080 8443
 

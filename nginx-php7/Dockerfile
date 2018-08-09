@@ -1,14 +1,15 @@
 FROM aisberg/nginx
 
-ENV COMPOSER_VERSION=1.6.5 \
-    COMPOSER_SHA256_CHECKSUM=67bebe9df9866a795078bb2cf21798d8b0214f2e0b2fd81f2e907a8ef0be3434 \
+ENV COMPOSER_VERSION=1.7.1 \
+    COMPOSER_SHA256_CHECKSUM=1c0e95dc3f33985f9eeabb6f57896c0f9d46b7c9e70ad7bf2210a5508869a8fa \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME=/tmp
 
 # inspired by https://github.com/graze/docker-php-alpine
-RUN \
+RUN set -xe \
+    \
     # install required packages
-    apk add --update --no-cache --no-progress \
+    && apk add --update --no-cache --no-progress \
         pcre \
         php7 \
         php7-apcu \
@@ -45,10 +46,10 @@ RUN \
         php7-zip \
         php7-zlib \
         yaml \
-        zlib &&\
+        zlib \
     \
     # build PHP YAML extension
-    apk add --no-cache --no-progress --virtual .pecl-deps \
+    && apk add --no-cache --no-progress --virtual .pecl-deps \
         autoconf \
         file \
         gcc \
@@ -59,24 +60,24 @@ RUN \
         php7-pear \
         pkgconf \
         re2c \
-        yaml-dev &&\
-    sed -i 's/^exec $PHP -C -n/exec $PHP -C/g' $(which pecl) &&\
-    pecl channel-update pecl.php.net &&\
-    pecl install yaml &&\
-    echo "extension=yaml.so" > /etc/php7/conf.d/01_yaml.ini &&\
-    rm -rf /usr/share/php7 &&\
-    apk del .pecl-deps &&\
+        yaml-dev \
+    && sed -i 's/^exec $PHP -C -n/exec $PHP -C/g' $(which pecl) \
+    && pecl channel-update pecl.php.net \
+    && pecl install yaml \
+    && echo "extension=yaml.so" > /etc/php7/conf.d/01_yaml.ini \
+    && rm -rf /usr/share/php7 \
+    && apk del .pecl-deps \
     \
     # install PHP Composer
-    curl -fSL "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar" -o /usr/bin/composer &&\
-    echo "$COMPOSER_SHA256_CHECKSUM  /usr/bin/composer" | sha256sum -c &&\
-    chmod +x /usr/bin/composer &&\
+    && curl -fSL "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar" -o /usr/bin/composer \
+    && echo "$COMPOSER_SHA256_CHECKSUM  /usr/bin/composer" | sha256sum -c \
+    && chmod +x /usr/bin/composer \
     \
     # cleanup
-    rm /etc/php7/php-fpm.d/* /var/cache/apk/* &&\
+    && rm /etc/php7/php-fpm.d/* /var/cache/apk/* \
     \
     # prepare working directories
-    workdirs \
+    && workdirs \
         /etc/php7 \
         /var/cache/php/tmp
 
@@ -84,7 +85,7 @@ COPY provision /provision
 
 ARG CREATED
 LABEL org.opencontainers.image.title="Nginx-PHP7" \
-    org.opencontainers.image.version="7.2.7" \
+    org.opencontainers.image.version="7.2.8" \
     org.opencontainers.image.description="PHP-FPM (FastCGI Process Manager) is an alternative PHP FastCGI implementation." \
     org.opencontainers.image.url="https://php-fpm.org" \
     org.opencontainers.image.licenses="MIT" \

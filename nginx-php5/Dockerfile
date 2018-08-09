@@ -1,13 +1,13 @@
 FROM aisberg/nginx
 
-ENV COMPOSER_VERSION=1.6.5 \
-    COMPOSER_SHA256_CHECKSUM=67bebe9df9866a795078bb2cf21798d8b0214f2e0b2fd81f2e907a8ef0be3434 \
+ENV COMPOSER_VERSION=1.7.1 \
+    COMPOSER_SHA256_CHECKSUM=1c0e95dc3f33985f9eeabb6f57896c0f9d46b7c9e70ad7bf2210a5508869a8fa \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME=/tmp
 
 RUN \
     # install required packages
-    apk add --update --no-cache --no-progress \
+    && apk add --update --no-cache --no-progress \
         pcre \
         php5 \
         php5-apcu \
@@ -38,19 +38,19 @@ RUN \
         php5-xmlreader \
         php5-zip \
         php5-zlib \
-        zlib &&\
-    ln -sf /usr/bin/php5 /usr/bin/php &&\
+        zlib \
+    && ln -sf /usr/bin/php5 /usr/bin/php \
     \
     # install PHP Composer
-    curl -s -o /usr/bin/composer "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar" &&\
-    echo "$COMPOSER_SHA256_CHECKSUM  /usr/bin/composer" | sha256sum -c &&\
-    chmod +x /usr/bin/composer &&\
+    && curl -s -o /usr/bin/composer "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar" \
+    && echo "$COMPOSER_SHA256_CHECKSUM  /usr/bin/composer" | sha256sum -c \
+    && chmod +x /usr/bin/composer \
     \
     # cleanup
-    rm /var/cache/apk/* &&\
+    && rm /var/cache/apk/* \
     \
     # prepare working directories
-    workdirs \
+    && workdirs \
         /etc/php5 \
         /etc/php5/php-fpm.d \
         /var/cache/php/tmp
@@ -59,7 +59,7 @@ COPY provision /provision
 
 ARG CREATED
 LABEL org.opencontainers.image.title="Nginx-PHP5" \
-    org.opencontainers.image.version="5.6.36" \
+    org.opencontainers.image.version="5.6.37" \
     org.opencontainers.image.description="PHP-FPM (FastCGI Process Manager) is an alternative PHP FastCGI implementation." \
     org.opencontainers.image.url="https://php-fpm.org" \
     org.opencontainers.image.licenses="MIT" \
