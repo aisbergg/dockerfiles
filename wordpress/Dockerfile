@@ -1,34 +1,35 @@
 FROM aisberg/nginx-php7
 
-ENV WORDPRESS_VERSION=4.9.6 \
-    WORDPRESS_SHA256_CHECKSUM=08256affe745ad68f4210d26dce932fa43ec2da16f0ec96c2e76cac9836bd77a
+ENV WORDPRESS_VERSION=4.9.8 \
+    WORDPRESS_SHA256_CHECKSUM=37acdd94dd45257d3afa055b9c31f62d9daa5c5d0bfc4ee37f4f62c30bf0686b
 
-RUN \
+RUN set -x \
+    \
     # download Wordpress sources
-    curl -fSL "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz" -o /usr/local/src/wordpress.tar.gz &&\
-    echo "$WORDPRESS_SHA256_CHECKSUM  /usr/local/src/wordpress.tar.gz" | sha256sum -c &&\
+    && curl -fSL "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz" -o /usr/local/src/wordpress.tar.gz &&\
+    && echo "$WORDPRESS_SHA256_CHECKSUM  /usr/local/src/wordpress.tar.gz" | sha256sum -c &&\
     \
     # install required packages
-    apk add --update --no-cache --no-progress \
+    && apk add --update --no-cache --no-progress \
         php7-apcu \
         php7-gd \
         php7-mysqli \
         php7-opcache \
         php7-tokenizer &&\
-    apk add --update --no-cache --no-progress --repository ${ALPINE_MIRROR}edge/main/ \
+    && apk add --update --no-cache --no-progress --repository ${ALPINE_MIRROR}edge/main/ \
         ghostscript-fonts \
         imagemagick \
         imagemagick-libs \
         shared-mime-info &&\
     \
     # prepare working directories
-    workdirs \
+    && workdirs \
         /container/www \
         /etc/ImageMagick-7
 
 COPY provision /provision
 RUN find /provision -type f -exec chmod 0664 {} + &&\
-    find /provision -type d -exec chmod 0775 {} +
+    && find /provision -type d -exec chmod 0775 {} +
 
 VOLUME /container/www
 
