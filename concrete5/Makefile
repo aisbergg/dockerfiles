@@ -1,6 +1,6 @@
 USERNAME=aisberg
 NAME=concrete5
-VERSION=8.3.2
+VERSION=8.4.2
 
 DOCKER_BUILD_FLAGS?=
 

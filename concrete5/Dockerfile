@@ -1,16 +1,17 @@
 FROM aisberg/nginx-php7
 
-ENV CONCRETE5_VERSION=8.3.2 \
-    CONCRETE5_SHA256_CHECKSUM=86e38b59e6c488c2b9621c1fd80f60975c31b5910b49a13da7ccf3739efe232e
+ENV CONCRETE5_VERSION=8.4.2 \
+    CONCRETE5_SHA256_CHECKSUM=890deaa3706b2965e4fe04ad88bc99c1f003f98773dd057b605b13570d33371d
 
-RUN \
+RUN set -x \
+    \
     # download Concrete5 sources
-    curl -fSL "https://www.concrete5.org/download_file/-/view/100595/concrete5-${CONCRETE5_VERSION}.zip" -o /usr/local/src/concrete5.zip &&\
-    echo "$CONCRETE5_SHA256_CHECKSUM  /usr/local/src/concrete5.zip" | sha256sum -c &&\
+    && curl -fSL "https://www.concrete5.org/download_file/-/view/105477/concrete5-${CONCRETE5_VERSION}.zip" -o /usr/local/src/concrete5.zip \
+    && echo "$CONCRETE5_SHA256_CHECKSUM  /usr/local/src/concrete5.zip" | sha256sum -c \
     \
     # install required packages
     # PHP requirements: https://documentation.concrete5.org/developers/installation/system-requirements
-    apk add --update --no-cache --no-progress \
+    && apk add --update --no-cache --no-progress \
         php7-apcu \
         php7-curl \
         php7-dom \
@@ -27,14 +28,14 @@ RUN \
         php7-xml \
         php7-xmlreader \
         php7-xmlwriter \
-        php7-zip &&\
+        php7-zip \
     \
     # prepare working directories
-    workdirs /container/www
+    && workdirs /container/www
 
 COPY provision /provision
-RUN find /provision -type f -exec chmod 0664 {} + &&\
-    find /provision -type d -exec chmod 0775 {} +
+RUN find /provision -type f -exec chmod 0664 {} + \
+    && find /provision -type d -exec chmod 0775 {} +
 
 VOLUME /container/www
 
