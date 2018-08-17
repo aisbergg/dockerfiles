@@ -1,8 +1,0 @@
-[program:sshd]
-command=/usr/sbin/sshd -D -f /etc/ssh/sshd_config
-environment=USER="git",HOME="/home/cu",SHELL="/bin/bash",PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-startsecs=2
-autostart=true
-autorestart=unexpected
-exitcodes=0
-redirect_stderr=true
