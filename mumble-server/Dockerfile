@@ -2,21 +2,22 @@ FROM aisberg/base-alpine:3.7
 
 ENV INIT=supervisor
 
-RUN \
+RUN set -x \
+    \
     # install required packages
-    apk add --update --no-cache --no-progress \
+    && apk add --update --no-cache --no-progress \
         murmur \
         libressl \
-        tzdata &&\
+        tzdata \
     \
     # prepare working directories
-    workdirs \
+    && workdirs \
         /container/mumble-server \
         /container/tls
 
 COPY provision /provision
-RUN find /provision -type f -exec chmod 0664 {} + &&\
-    find /provision -type d -exec chmod 0775 {} +
+RUN find /provision -type f -exec chmod 0664 {} + \
+    && find /provision -type d -exec chmod 0775 {} +
 
 EXPOSE 64738 64738/udp
 
