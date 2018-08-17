@@ -3,7 +3,7 @@ FROM aisberg/nginx-php7
 ENV DOKUWIKI_VERSION=2018-04-22 \
     DOKUWIKI_SHA256_CHECKSUM=508ae5f9d9a3fd3743b48de1b8c4b39ed8c8dc4bc34db68e7c5bdf989f538ef8
 
-RUN set -xe \
+RUN set -x \
     \
     # download DokuWiki sources
     && curl -fSL "http://download.dokuwiki.org/src/dokuwiki/dokuwiki-$DOKUWIKI_VERSION.tgz" -o /usr/local/src/dokuwiki.tgz \
