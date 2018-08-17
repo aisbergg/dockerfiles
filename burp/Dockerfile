@@ -1,10 +1,13 @@
 FROM buildpack-deps:bionic as build
 
-ENV BURP_VERSION=2.2.2 \
-    BURP_SHA256_CHECKSUM=21574c87632d2923f8f4bb16738a8ddf8e28005c510964682222a157d8618931
+ENV BURP_VERSION=2.2.8 \
+    BURP_SHA256_CHECKSUM=8350266b5c91807fe1df8979c2338241ca13848a3c91ad47f8897c88f999ade1
 
-RUN apt-get update &&\
-    apt-get install -y \
+RUN set -x \
+    \
+    # install required packages
+    && apt-get update \
+    && apt-get install -y \
         autoconf \
         automake \
         check \
@@ -17,16 +20,18 @@ RUN apt-get update &&\
         make \
         pkgconf \
         uthash-dev \
-        zlib1g-dev &&\
-    curl -fSL "https://github.com/grke/burp/archive/${BURP_VERSION}.tar.gz" -o /usr/local/src/burp.tar.gz &&\
-    echo "$BURP_SHA256_CHECKSUM  /usr/local/src/burp.tar.gz" | sha256sum -c &&\
-    tempdir="$(mktemp -d)" &&\
-    tar xzf /usr/local/src/burp.tar.gz -C "$tempdir" --strip-components=1 &&\
-    cd "$tempdir" &&\
-    autoreconf -vif &&\
-    ./configure --prefix=/usr --sysconfdir=/container/burp --localstatedir=/var &&\
-    make && DESTDIR=/burp make install && DESTDIR=/burp make install-configs &&\
-    rm -rf $tempdir
+        zlib1g-dev \
+    \
+    # download and build Burp
+    && curl -fSL "https://github.com/grke/burp/archive/${BURP_VERSION}.tar.gz" -o /usr/local/src/burp.tar.gz \
+    && echo "$BURP_SHA256_CHECKSUM  /usr/local/src/burp.tar.gz" | sha256sum -c \
+    && tempdir="$(mktemp -d)" \
+    && tar xzf /usr/local/src/burp.tar.gz -C "$tempdir" --strip-components=1 \
+    && cd "$tempdir" \
+    && autoreconf -vif \
+    && ./configure --prefix=/usr --sysconfdir=/container/burp --localstatedir=/var \
+    && make && DESTDIR=/burp make install && DESTDIR=/burp make install-configs \
+    && rm -rf $tempdir
 
 #-------------------------------------------------------------------------------
 
@@ -34,10 +39,11 @@ FROM aisberg/base-ubuntu
 
 COPY --from=build /burp /
 
-RUN \
+RUN set -x \
+    \
     # install required packages
-    apt-get update &&\
-    apt-get install -y \
+    && apt-get update \
+    && apt-get install -y \
         file \
         libncurses5 \
         librsync1 \
@@ -47,23 +53,23 @@ RUN \
         msmtp \
         openssl \
         postgresql-client-10 \
-        zlibc &&\
-    rm -rf /var/lib/apt/lists/* &&\
+        zlibc \
+    && rm -rf /var/lib/apt/lists/* \
     \
     # prepare working directories and files
-    touch /etc/msmtprc &&\
-    chgrp 0 /etc/msmtprc &&\
-    chmod g+rw /etc/msmtprc &&\
-    workdirs \
+    && touch /etc/msmtprc \
+    && chgrp 0 /etc/msmtprc \
+    && chmod g+rw /etc/msmtprc \
+    && workdirs \
         /container/burp \
         /container/backup \
         /container/tls
 
 COPY provision /provision
 COPY static /
-RUN find /provision -type f -exec chmod 0664 {} + &&\
-    find /provision -type d -exec chmod 0775 {} + &&\
-    chmod 0755 \
+RUN find /provision -type f -exec chmod 0664 {} + \
+    && find /provision -type d -exec chmod 0775 {} + \
+    && chmod 0755 \
         /usr/bin/mysql-dump \
         /usr/bin/mysql-restore
 
