@@ -138,6 +138,8 @@ SSH_ROOT_PATH = /container/gitea/ssh
 SSH_BACKUP_AUTHORIZED_KEYS = false
 ; Enable exposure of SSH clone URL to anonymous visitors, default is false
 SSH_EXPOSE_ANONYMOUS = false
+; Indicate whether to check minimum key size with corresponding type
+MINIMUM_KEY_SIZE_CHECK = false
 ; Disable CDN even in "prod" mode
 OFFLINE_MODE = {{ GITEA_SERVER_OFFLINE_MODE }}
 DISABLE_ROUTER_LOG = {{ GITEA_SERVER_DISABLE_ROUTER_LOG }}
@@ -167,6 +169,7 @@ DSA = -1
 ; Either "mysql", "postgres", "mssql" or "sqlite3", it's your choice
 {%- if GITEA_DATABASE_TYPE == 'sqlite3' %}
 DB_TYPE  = {{ GITEA_DATABASE_TYPE }}
+; For "sqlite3" and "tidb", use absolute path when you start gitea as service
 PATH     = /container/gitea/gitea.db
 ; For "sqlite3" only. Query timeout
 SQLITE_TIMEOUT = {{ GITEA_DATABASE_SQLITE_TIMEOUT }}
@@ -335,7 +338,7 @@ SEND_AS_PLAIN_TEXT = {{ GITEA_MAILER_SEND_AS_PLAIN_TEXT }}
 ADAPTER = {{ GITEA_CACHE_ADAPTER }}
 {%- if GITEA_CACHE_ADAPTER == 'memory' %}
 ; For "memory" only, GC interval in seconds, default is 60
-INTERVAL = {{GITEA_CACHE_INTERVAL }}60
+INTERVAL = {{GITEA_CACHE_INTERVAL }}
 {%- else %}
 ; For "redis" and "memcache", connection host address
 ; redis: network=tcp,addr=:6379,password=macaron,db=0,pool_size=100,idle_timeout=180
@@ -373,6 +376,10 @@ SESSION_LIFE_TIME = {{ GITEA_SESSION_SESSION_LIFE_TIME }}
 
 [picture]
 AVATAR_UPLOAD_PATH = /container/gitea/avatars
+; Max Width and Height of uploaded avatars. This is to limit the amount of RAM
+; used when resizing the image.
+AVATAR_MAX_WIDTH = {{ GITEA_PICTURE_AVATAR_MAX_WIDTH }}
+AVATAR_MAX_HEIGHT = {{ GITEA_PICTURE_AVATAR_MAX_HEIGHT }}
 ; Chinese users can choose "duoshuo"
 ; or a custom avatar source, like: http://cn.gravatar.com/avatar/
 GRAVATAR_SOURCE = {{ GITEA_PICTURE_GRAVATAR_SOURCE }}
