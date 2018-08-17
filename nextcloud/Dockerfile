@@ -1,19 +1,20 @@
 FROM aisberg/nginx-php7
 
-ENV NEXTCLOUD_VERSION=13.0.2 \
+ENV NEXTCLOUD_VERSION=13.0.5 \
     NEXTCLOUD_PGP_KEY_ID=28806A878AE423A28372792ED75899B9A724937A
 
-RUN \
+RUN set -x \
+    \
     # download Nextcloud sources
-    curl -fSL "https://download.nextcloud.com/server/releases/nextcloud-${NEXTCLOUD_VERSION}.tar.bz2" -o /usr/local/src/nextcloud.tar.bz2 &&\
-    curl -fSL "https://download.nextcloud.com/server/releases/nextcloud-${NEXTCLOUD_VERSION}.tar.bz2.asc" -o /usr/local/src/nextcloud.tar.bz2.asc &&\
-    ( gpg --keyserver ipv4.pool.sks-keyservers.net --keyserver-options timeout=10 --recv-keys "$NEXTCLOUD_PGP_KEY_ID" \
+    && curl -fSL "https://download.nextcloud.com/server/releases/nextcloud-${NEXTCLOUD_VERSION}.tar.bz2" -o /usr/local/src/nextcloud.tar.bz2 \
+    && curl -fSL "https://download.nextcloud.com/server/releases/nextcloud-${NEXTCLOUD_VERSION}.tar.bz2.asc" -o /usr/local/src/nextcloud.tar.bz2.asc \
+    && ( gpg --keyserver ipv4.pool.sks-keyservers.net --keyserver-options timeout=10 --recv-keys "$NEXTCLOUD_PGP_KEY_ID" \
         || gpg --keyserver pgp.mit.edu --keyserver-options timeout=10 --recv-keys "$NEXTCLOUD_PGP_KEY_ID" \
-        || gpg --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$NEXTCLOUD_PGP_KEY_ID" ) &&\
-    gpg --verify /usr/local/src/nextcloud.tar.bz2.asc /usr/local/src/nextcloud.tar.bz2 &&\
+        || gpg --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$NEXTCLOUD_PGP_KEY_ID" ) \
+    && gpg --verify /usr/local/src/nextcloud.tar.bz2.asc /usr/local/src/nextcloud.tar.bz2 \
     \
     # install required packages
-    apk add --update --no-cache --no-progress \
+    && apk add --update --no-cache --no-progress \
         bzip2 \
         php7-apcu \
         php7-exif \
@@ -33,17 +34,17 @@ RUN \
         php7-posix \
         php7-redis \
         php7-zip \
-        rsync &&\
+        rsync \
     \
     # prepare working directories
-    workdirs \
+    && workdirs \
         /container/www \
         /tmp/nextcloudtemp \
         /var/cache/nginx
 
 COPY provision /provision
-RUN find /provision -type f -exec chmod 0664 {} + &&\
-    find /provision -type d -exec chmod 0775 {} +
+RUN find /provision -type f -exec chmod 0664 {} + \
+    && find /provision -type d -exec chmod 0775 {} +
 
 VOLUME /container/www
 

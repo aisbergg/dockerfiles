@@ -2,7 +2,7 @@ FROM aisberg/base-alpine:3.8
 
 ENV INIT=supervisor
 
-RUN set -xe \
+RUN set -x \
     \
     # install required packages
     # for informations on Nginx modules see: https://www.nginx.com/resources/wiki/modules/

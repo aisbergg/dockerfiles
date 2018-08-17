@@ -1,11 +1,12 @@
 FROM aisberg/nginx
 
-ENV COMPOSER_VERSION=1.7.1 \
-    COMPOSER_SHA256_CHECKSUM=1c0e95dc3f33985f9eeabb6f57896c0f9d46b7c9e70ad7bf2210a5508869a8fa \
+ENV COMPOSER_VERSION=1.7.2 \
+    COMPOSER_SHA256_CHECKSUM=ec3428d049ae8877f7d102c2ee050dbd51a160fc2dde323f3e126a3b3846750e \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME=/tmp
 
-RUN \
+RUN set -x \
+    \
     # install required packages
     && apk add --update --no-cache --no-progress \
         pcre \

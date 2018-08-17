@@ -1,12 +1,12 @@
 FROM aisberg/nginx
 
-ENV COMPOSER_VERSION=1.7.1 \
-    COMPOSER_SHA256_CHECKSUM=1c0e95dc3f33985f9eeabb6f57896c0f9d46b7c9e70ad7bf2210a5508869a8fa \
+ENV COMPOSER_VERSION=1.7.2 \
+    COMPOSER_SHA256_CHECKSUM=ec3428d049ae8877f7d102c2ee050dbd51a160fc2dde323f3e126a3b3846750e \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME=/tmp
 
 # inspired by https://github.com/graze/docker-php-alpine
-RUN set -xe \
+RUN set -x \
     \
     # install required packages
     && apk add --update --no-cache --no-progress \
@@ -85,7 +85,7 @@ COPY provision /provision
 
 ARG CREATED
 LABEL org.opencontainers.image.title="Nginx-PHP7" \
-    org.opencontainers.image.version="7.2.8" \
+    org.opencontainers.image.version="7.2.9" \
     org.opencontainers.image.description="PHP-FPM (FastCGI Process Manager) is an alternative PHP FastCGI implementation." \
     org.opencontainers.image.url="https://php-fpm.org" \
     org.opencontainers.image.licenses="MIT" \

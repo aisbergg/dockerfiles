@@ -19,7 +19,7 @@ ENV TERM=xterm \
     TINI_VERSION=v0.18.0 \
     TINI_PGP_KEY_ID=595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7
 
-RUN set -xe \
+RUN set -x \
     \
     # add container user (cu)
     && useradd -r -u 999 -m --shell /bin/bash -G root cu \

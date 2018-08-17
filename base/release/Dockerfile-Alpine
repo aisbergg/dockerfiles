@@ -16,7 +16,7 @@ ENV LANG=$LANG \
     ALPINE_MIRROR=$ALPINE_MIRROR \
     TZ=:/etc/localtime
 
-RUN set -xe \
+RUN set -x \
     \
     # add container user (cu)
     && adduser -S -u 999 -s /bin/bash -G root cu \
