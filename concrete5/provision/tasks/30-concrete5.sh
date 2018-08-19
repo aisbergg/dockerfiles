@@ -21,9 +21,11 @@ if [[ ! -f /container/www/concrete/config/concrete.php ]]; then
 
     unzip_strip /usr/local/src/concrete5.zip /container/www/
     echo "Still need to install" > /container/www/.need-to-install
+fi
 
-elif [[ -f /container/www/application/config/database.php ]]; then
-    chmod o-rwx /container/www/application/config/database.php
+# warn about lax permissions of the settings file
+if [[ -f /container/www/application/config/database.php && "$(stat -c '%a' /container/www/application/config/database.php | cut -c 3)" -ge 4 ]]; then
+    print_warning "ATTENTION: The settings file 'application/config/database.php' should not be world readable. Use 'chmod' to change its permissions."
 fi
 
 # to upgrade the installation checkout: http://documentation.concrete5.org/developers/installation/upgrading-concrete5

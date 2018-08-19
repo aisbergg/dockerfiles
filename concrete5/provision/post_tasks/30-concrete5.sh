@@ -19,5 +19,7 @@ if [[ -f /container/www/.need-to-install ]]; then
     php concrete/bin/concrete5 c5:install --db-server="$CONCRETE5_DB_SERVER" --db-username="$CONCRETE5_DB_USERNAME" --db-password="$CONCRETE5_DB_PASSWORD" --db-database="$CONCRETE5_DB_NAME" --site="$CONCRETE5_SITE_NAME" --starting-point="$CONCRETE5_STARTING_POINT" --admin-email="$CONCRETE5_EMAIL" --admin-password="$CONCRETE5_PASSWORD" --site-locale="$CONCRETE5_LOCALE"
     popd >/dev/null
 
+    chmod o-rwx /container/www/application/config/database.php
+
     rm /container/www/.need-to-install
 fi
