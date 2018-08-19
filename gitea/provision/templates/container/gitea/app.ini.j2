@@ -576,12 +576,12 @@ sr-SP = sr
 sv-SE = sv
 ko-KR = ko
 
-[U2F]
+{# [U2F]
 ; Two Factor authentication with security keys
 ; https://developers.yubico.com/U2F/App_ID.html
 APP_ID = {{ GITEA_U2F_APP_ID }}
-; Comma seperated list of truisted facets
-TRUSTED_FACETS = {{ GITEA_U2F_TRUSTED_FACETS }}
+; Comma seperated list of trusted facets
+TRUSTED_FACETS = {{ GITEA_U2F_TRUSTED_FACETS }} #}
 
 ; Extension mapping to highlight class
 ; e.g. .toml=ini

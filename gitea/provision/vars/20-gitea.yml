@@ -319,8 +319,9 @@ defaults:
   GITEA_API_MAX_RESPONSE_ITEMS: 50
 
   # U2F
-  GITEA_U2F_APP_ID: "https://%(DOMAIN)s"
-  GITEA_U2F_TRUSTED_FACETS: "https://%(DOMAIN)s"
+  # -- currently disabled --
+  #GITEA_U2F_APP_ID: "https://%(DOMAIN)s"
+  #GITEA_U2F_TRUSTED_FACETS: "https://%(DOMAIN)s"
 
   # other
   GITEA_OTHER_SHOW_FOOTER_BRANDING: false
