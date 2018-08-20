@@ -9,7 +9,8 @@ ENV COMPOSER_VERSION=1.7.2 \
 RUN set -x \
     \
     # install required packages
-    && apk add --update --no-cache --no-progress \
+    && apk update \
+    && apk add --no-progress \
         pcre \
         php7 \
         php7-apcu \
@@ -49,7 +50,7 @@ RUN set -x \
         zlib \
     \
     # build PHP YAML extension
-    && apk add --no-cache --no-progress --virtual .pecl-deps \
+    && apk add --no-progress --virtual .pecl-deps \
         autoconf \
         file \
         gcc \

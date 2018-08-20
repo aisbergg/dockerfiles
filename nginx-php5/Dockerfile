@@ -47,9 +47,6 @@ RUN set -x \
     && echo "$COMPOSER_SHA256_CHECKSUM  /usr/bin/composer" | sha256sum -c \
     && chmod +x /usr/bin/composer \
     \
-    # cleanup
-    && rm /var/cache/apk/* \
-    \
     # prepare working directories
     && workdirs \
         /etc/php5 \
