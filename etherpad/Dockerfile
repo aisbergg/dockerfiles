@@ -1,23 +1,24 @@
 FROM aisberg/nginx-node:10
 
-ENV ETHERPAD_VERSION=1.6.6 \
-    ETHERPAD_SHA256_CHECKSUM=64d080b7e6ebeba9007b9cb557d7be3124e6373190f610bcaf5ea5c7abc6363e
+ENV ETHERPAD_VERSION=1.7.0 \
+    ETHERPAD_SHA256_CHECKSUM=40c60b9c2e8e82af1f4e41f0d88fc79902b49391cb2d00c02c9ee7938acfb9b5
 
-RUN \
+RUN set -x \
+    \
     # download Etherpad sources
-    curl -fSL "https://github.com/ether/etherpad-lite/archive/${ETHERPAD_VERSION}.tar.gz" -o /usr/local/src/etherpad.tar.gz && \
-    echo "$ETHERPAD_SHA256_CHECKSUM  /usr/local/src/etherpad.tar.gz" | sha256sum -c && \
+    && curl -fSL "https://github.com/ether/etherpad-lite/archive/${ETHERPAD_VERSION}.tar.gz" -o /usr/local/src/etherpad.tar.gz \
+    && echo "$ETHERPAD_SHA256_CHECKSUM  /usr/local/src/etherpad.tar.gz" | sha256sum -c \
     \
     # install required packages
-    apk add --update --no-cache --no-progress \
-        rsync &&\
+    && apk add --update --no-cache --no-progress \
+        rsync \
     \
     # prepare working directories
-    workdirs /container/etherpad
+    && workdirs /container/etherpad
 
 COPY provision /provision
-RUN find /provision -type f -exec chmod 0664 {} + &&\
-    find /provision -type d -exec chmod 0775 {} +
+RUN find /provision -type f -exec chmod 0664 {} + \
+    && find /provision -type d -exec chmod 0775 {} +
 
 VOLUME /container/etherpad
 

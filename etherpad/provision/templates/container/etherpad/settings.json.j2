@@ -6,21 +6,50 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 {
-  // Name your instance!
+  /*
+   * Name your instance!
+   */
   "title": "{{ ETHERPAD_SITE_TITLE }}",
 
-  // favicon default name
-  // alternatively, set up a fully specified Url to your own favicon
+  /*
+   * favicon default name
+   * alternatively, set up a fully specified Url to your own favicon
+   */
   "favicon": "favicon.ico",
 
-  //IP and port which etherpad should bind at
+  /*
+   * IP and port which etherpad should bind at
+   */
   "ip": "127.0.0.1",
   "port" : 8001,
 
-  // Option to hide/show the settings.json in admin page, default option is set to true
+  /*
+   * Option to hide/show the settings.json in admin page.
+   *
+   * Default option is set to true
+   */
   "showSettingsInAdminPage" : {{ ETHERPAD_SHOW_SETTINGS_IN_ADMIN_PAGE | lower }},
 
+  /*
+   * The type of the database.
+   *
+   * You can choose between many DB drivers, for example: dirty, postgres,
+   * sqlite, mysql.
+   *
+   * You shouldn't use "dirty" for for anything else than testing or
+   * development.
+   *
+   * For a complete list of the supported drivers, please consult:
+   * https://www.npmjs.com/package/ueberdb2
+   */
   "dbType" : "mysql",
+
+  /*
+   * Database specific settings (dependent on dbType).
+   *
+   * Remember that since Etherpad 1.6.0 you can also store these informations in
+   * credentials.json.
+   */
   "dbSettings" : {
       "user"    : "{{ ETHERPAD_DATABASE_USER }}",
       "host"    : "{{ ETHERPAD_DATABASE_HOST }}",
@@ -28,10 +57,16 @@
       "database": "{{ ETHERPAD_DATABASE_NAME }}"
    },
 
-  //the default text of a pad
+   /*
+    * The default text of a pad
+    */
   "defaultPadText" : "{{ ETHERPAD_DEFAULT_PAD_TEXT }}",
 
-  /* Default Pad behavior, users can override by changing */
+  /*
+   * Default Pad behavior.
+   *
+   * Change them if you want to override.
+   */
   "padOptions": {
     "noColors": {{ ETHERPAD_NO_COLORS | lower }},
     "showControls": {{ ETHERPAD_SHOW_CONTROLS | lower }},
@@ -46,7 +81,9 @@
     "lang": "{{ ETHERPAD_LANGUAGE }}"
   },
 
-  /* Pad Shortcut Keys */
+  /*
+   * Pad Shortcut Keys
+   */
   "padShortcutEnabled" : {
     "altF9"     : true, /* focus on the File Menu and/or editbar */
     "altC"      : true, /* focus on the Chat window */
@@ -72,57 +109,159 @@
     "pageDown"  : true
   },
 
-  /* Shoud we suppress errors from being visible in the default Pad Text? */
+  /*
+   * Should we suppress errors from being visible in the default Pad Text?
+   */
   "suppressErrorsInPadText" : {{ ETHERPAD_SUPPRESS_ERRORS_IN_PAD_TEXT | lower }},
 
-  /* Users must have a session to access pads. This effectively allows only group pads to be accessed. */
+  /*
+   * If this option is enabled, a user must have a session to access pads.
+   * This effectively allows only group pads to be accessed.
+   */
   "requireSession" : {{ ETHERPAD_REQUIRE_SESSION | lower }},
 
-  /* Users may edit pads but not create new ones. Pad creation is only via the API. This applies both to group pads and regular pads. */
+  /*
+   * Users may edit pads but not create new ones.
+   *
+   * Pad creation is only via the API.
+   * This applies both to group pads and regular pads.
+   */
   "editOnly" : {{ ETHERPAD_EDIT_ONLY | lower }},
 
-  /* Users, who have a valid session, automatically get granted access to password protected pads */
+  /*
+   * If set to true, those users who have a valid session will automatically be
+   * granted access to password protected pads.
+   */
   "sessionNoPassword" : {{ ETHERPAD_SESSION_NO_PASSWORD | lower }},
 
-  /* if true, all css & js will be minified before sending to the client. This will improve the loading performance massivly,
-     but makes it impossible to debug the javascript/css */
+  /*
+   * If true, all css & js will be minified before sending to the client.
+   *
+   * This will improve the loading performance massively, but makes it difficult
+   * to debug the javascript/css
+   */
   "minify" : {{ ETHERPAD_MINIFY | lower }},
 
-  /* How long may clients use served javascript code (in seconds)? Without versioning this
-     may cause problems during deployment. Set to 0 to disable caching */
+  /*
+   * How long may clients use served javascript code (in seconds)?
+   *
+   * Not setting this may cause problems during deployment.
+   * Set to 0 to disable caching.
+   */
   "maxAge" : {{ ETHERPAD_MAX_AGE }}, // 60 * 60 * 6 = 6 hours
 
-  /* This is the path to the Abiword executable. Setting it to null, disables abiword.
-     Abiword is needed to advanced import/export features of pads*/
-  "abiword" : "",
+  /*
+   * Absolute path to the Abiword executable.
+   *
+   * Abiword is needed to get advanced import/export features of pads. Setting
+   * it to null disables Abiword and will only allow plain text and HTML
+   * import/exports.
+   */
+  "abiword" : null,
 
-  /* This is the path to the Tidy executable. Setting it to null, disables Tidy.
-     Tidy is used to improve the quality of exported pads*/
+  /*
+   * This is the absolute path to the soffice executable.
+   *
+   * LibreOffice can be used in lieu of Abiword to export pads.
+   * Setting it to null disables LibreOffice exporting.
+   */
+  "soffice" : null,
+
+  /*
+   * Path to the Tidy executable.
+   *
+   * Tidy is used to improve the quality of exported pads.
+   * Setting it to null disables Tidy.
+   */
   "tidyHtml" : null,
 
-  /* Allow import of file types other than the supported types: txt, doc, docx, rtf, odt, html & htm */
+  /*
+   * Allow import of file types other than the supported ones:
+   * txt, doc, docx, rtf, odt, html & htm
+   */
   "allowUnknownFileEnds" : {{ ETHERPAD_ALLOW_UNKNOWN_FILE_ENDS | lower }},
 
-  /* This setting is used if you require authentication of all users.
-     Note: /admin always requires authentication. */
+  /*
+   * This setting is used if you require authentication of all users.
+   *
+   * Note: "/admin" always requires authentication.
+   */
   "requireAuthentication" : {{ ETHERPAD_REQUIRE_AUTHENTICATION | lower }},
 
-  /* Require authorization by a module, or a user with is_admin set, see below. */
+  /*
+   * Require authorization by a module, or a user with is_admin set, see below.
+   */
   "requireAuthorization" : {{ ETHERPAD_REQUIRE_AUTHORIZATION | lower }},
 
-  /*when you use NginX or another proxy/ load-balancer set this to true*/
+  /*
+   * When you use NGINX or another proxy/load-balancer set this to true.
+   */
   "trustProxy" : true,
 
-  /* Privacy: disable IP logging */
+  /*
+   * Privacy: disable IP logging
+   */
   "disableIPlogging" : {{ ETHERPAD_DISABLE_IP_LOGGING | lower }},
 
-  /* Time (in seconds) to automatically reconnect pad when a "Force reconnect"
-     message is shown to user. Set to 0 to disable automatic reconnection */
+  /*
+   * Time (in seconds) to automatically reconnect pad when a "Force reconnect"
+   * message is shown to user.
+   *
+   * Set to 0 to disable automatic reconnection.
+   */
   "automaticReconnectionTimeout" : {{ ETHERPAD_AUTOMATIC_RECONNECTION_TIMEOUT }},
 
-  /* Users for basic authentication. is_admin = true gives access to /admin.
-     If you do not uncomment this, /admin will not be available! */
+  /*
+   * By default, when caret is moved out of viewport, it scrolls the minimum
+   * height needed to make this line visible.
+   */
+  "scrollWhenFocusLineIsOutOfViewport": {
 
+    /*
+     * Percentage of viewport height to be additionally scrolled.
+     *
+     * E.g.: use "percentage.editionAboveViewport": 0.5, to place caret line in
+     *       the middle of viewport, when user edits a line above of the
+     *       viewport
+     *
+     * Set to 0 to disable extra scrolling
+     */
+    "percentage": {
+      "editionAboveViewport": 0,
+      "editionBelowViewport": 0
+    },
+
+    /*
+     * Time (in milliseconds) used to animate the scroll transition.
+     * Set to 0 to disable animation
+     */
+    "duration": 0,
+
+    /*
+     * Flag to control if it should scroll when user places the caret in the
+     * last line of the viewport
+     */
+    "scrollWhenCaretIsInTheLastLineOfViewport": false,
+
+    /*
+     * Percentage of viewport height to be additionally scrolled when user
+     * presses arrow up in the line of the top of the viewport.
+     *
+     * Set to 0 to let the scroll to be handled as default by Etherpad
+     */
+    "percentageToScrollWhenUserPressesArrowUp": 0
+  },
+
+  /*
+   * Users for basic authentication.
+   *
+   * is_admin = true gives access to /admin.
+   * If you do not uncomment this, /admin will not be available!
+   *
+   * WARNING: passwords should not be stored in plaintext in this file.
+   *          If you want to mitigate this, please install ep_hash_auth and
+   *          follow the section "secure your installation" in README.md
+   */
   "users": {
     {% for user_def in ETHERPAD_USERS %}{% set user = user_def.split(':') %}
     "{{ user[0] }}": {
@@ -131,16 +270,31 @@
     },{% endfor %}
   },
 
-  // restrict socket.io transport methods
+  /*
+   * Restrict socket.io transport methods
+   */
   "socketTransportProtocols" : ["xhr-polling", "jsonp-polling", "htmlfile"],
 
-  // Allow Load Testing tools to hit the Etherpad Instance.  Warning this will disable security on the instance.
+  /*
+   * Allow Load Testing tools to hit the Etherpad Instance.
+   *
+   * WARNING: this will disable security on the instance.
+   */
   "loadTest": false,
 
-  // Disable indentation on new line when previous line ends with some special chars (':', '[', '(', '{')
+  /*
+   * Disable indentation on new line when previous line ends with some special
+   * chars (':', '[', '(', '{')
+   */
   "indentationOnNewLine": {{ ETHERPAD_INDENTATION_ON_NEW_LINE | lower }},
 
-  /* The toolbar buttons configuration.
+  /*
+   * Toolbar buttons configuration.
+   *
+   * Uncomment to customize.
+   */
+
+  /*
   "toolbar": {
     "left": [
       ["bold", "italic", "underline", "strikethrough"],
@@ -159,12 +313,19 @@
   },
   */
 
-  /* The log level we are using, can be: DEBUG, INFO, WARN, ERROR */
+  /*
+   * The log level we are using.
+   *
+   * Valid values: DEBUG, INFO, WARN, ERROR
+   */
   "loglevel": "{{ ETHERPAD_LOG_LEVEL }}",
 
-  //Logging configuration. See log4js documentation for further information
-  // https://github.com/nomiddlename/log4js-node
-  // You can add as many appenders as you want here:
+  /*
+   * Logging configuration. See log4js documentation for further information:
+   * https://github.com/nomiddlename/log4js-node
+   *
+   * You can add as many appenders as you want here.
+   */
   "logconfig" : {
     "appenders": [
       { "type": "console"
