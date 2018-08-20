@@ -64,6 +64,10 @@ elif [[ $(bool "$AUTO_UPDATE" "true") == "true" ]]; then
             --exclude /settings.json \
             "$tempdir/" /container/etherpad/
 
+        pushd /container/etherpad >/dev/null
+        npm update || true
+        popd >/dev/null
+
         rm -rf "$tempdir"
     fi
 
