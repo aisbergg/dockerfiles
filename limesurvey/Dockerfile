@@ -1,16 +1,17 @@
 FROM aisberg/nginx-php7
 
-ENV LIMESURVEY_VERSION=3.7.0 \
-    LIMESURVEY_BUILDNUMBER=180418 \
-    LIMESURVEY_SHA256_CHECKSUM=8df98ceefd5b2c1e4c29b6140f714897615e32d855610170bf77613f5ba02983
+ENV LIMESURVEY_VERSION=3.14.4 \
+    LIMESURVEY_BUILDNUMBER=180810 \
+    LIMESURVEY_SHA256_CHECKSUM=2ca641fcafc4ce68dec48d151df57672ef8d6940f196e7fd9b668cc571f1fcc1
 
-RUN \
+RUN set -x \
+    \
     # download Lime Survey sources
-    curl -fSL "https://github.com/LimeSurvey/LimeSurvey/archive/${LIMESURVEY_VERSION}+${LIMESURVEY_BUILDNUMBER}.tar.gz" -o /usr/local/src/limesurvey.tar.gz &&\
-    echo "$LIMESURVEY_SHA256_CHECKSUM  /usr/local/src/limesurvey.tar.gz" | sha256sum -c &&\
+    && curl -fSL "https://github.com/LimeSurvey/LimeSurvey/archive/${LIMESURVEY_VERSION}+${LIMESURVEY_BUILDNUMBER}.tar.gz" -o /usr/local/src/limesurvey.tar.gz \
+    && echo "$LIMESURVEY_SHA256_CHECKSUM  /usr/local/src/limesurvey.tar.gz" | sha256sum -c \
     \
     # install required packages
-    apk add --update --no-cache --no-progress \
+    && apk add --update --no-cache --no-progress \
         php7-apcu \
         php7-gd \
         php7-imap \
@@ -25,14 +26,14 @@ RUN \
         php7-pdo_pgsql \
         php7-zip \
         php7-zlib \
-        rsync &&\
+        rsync \
     \
     # prpare working directories
-    workdirs /container/www
+    && workdirs /container/www
 
 COPY provision /provision
-RUN find /provision -type f -exec chmod 0664 {} + &&\
-    find /provision -type d -exec chmod 0775 {} +
+RUN find /provision -type f -exec chmod 0664 {} + \
+    && find /provision -type d -exec chmod 0775 {} +
 
 VOLUME /container/www
 

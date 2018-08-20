@@ -11,7 +11,7 @@ if [[ $(bool "$CLEAN_INSTALLATION" false) == "True" ]]; then
     shopt -u dotglob
 fi
 
-# if Wordpress is not yet installed, copy it into web root
+# if Lime Survey is not yet installed, copy it into web root
 if [[ ! -f '/container/www/admin/admin.php' ]]; then
     print_info "No previous Lime Survey installation found, creating a new one"
     if ! is_dir_empty /container/www; then

@@ -1,6 +1,6 @@
 USERNAME=aisberg
 NAME=limesurvey
-VERSION=3.7.0
+VERSION=3.14.4
 
 DOCKER_BUILD_FLAGS?=
 
