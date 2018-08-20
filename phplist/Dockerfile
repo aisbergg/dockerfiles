@@ -1,16 +1,17 @@
 FROM aisberg/nginx-php7
 
-ENV PHPLIST_VERSION=3.3.1 \
-    PHPLIST_SHA256_CHECKSUM=d22b43eab6ead43a44167dce6eb54cb08501534ec27bd6400257314b9c8474fa \
-    CKEDITOR_VERSION=4.9.2 \
-    CKEDITOR_SHA256_CHECKSUM=7830b30ab61c5751c738597c301f757f28f57fc9b11db3449b59dd4c2bb0ee27
+ENV PHPLIST_VERSION=3.3.3 \
+    PHPLIST_SHA256_CHECKSUM=b4f7fda6764e2f495738b1ab396c8ee58914fc6adb66c8689a453b65c786a003 \
+    CKEDITOR_VERSION=4.10.0 \
+    CKEDITOR_SHA256_CHECKSUM=e803132a281d511a40ab8c66feb0af063622b95ee5146f76a3712cf331965dcd
 
 COPY install /install
 
-RUN \
+RUN set -x \
+    \
     # install required packages
     # PHP requirements: https://resources.phplist.com/system/start
-    apk add --update --no-cache --no-progress \
+    && apk add --update --no-cache --no-progress \
         pcre \
         php7-apcu \
         php7-curl \
@@ -26,19 +27,19 @@ RUN \
         php7-openssl \
         php7-session \
         php7-simplexml \
-        php7-xml &&\
-    pip3 install schedule &&\
+        php7-xml \
+    && pip3 install schedule \
     \
     # download and install phpList
-    bash /install/install-phplist.sh &&\
-    rm -rf /install &&\
+    && bash /install/install-phplist.sh \
+    && rm -rf /install \
     \
     # prepare working directories
-    workdirs /container/www
+    && workdirs /container/www
 
 COPY provision /provision
-RUN find /provision -type f -exec chmod 0664 {} + &&\
-    find /provision -type d -exec chmod 0775 {} +
+RUN find /provision -type f -exec chmod 0664 {} + \
+    && find /provision -type d -exec chmod 0775 {} +
 
 VOLUME /container/www/uploadimages
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 umask 0007
 
 apk --no-cache --no-progress --virtual .install-deps add rsync
