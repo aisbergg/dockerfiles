@@ -10,7 +10,7 @@ while [[ $# > 0 ]]; do
     find "$1" |
     while read elm; do
         # follow symlinks
-        elm="$(readlink -f $elm | cat -)"
+        elm="$(readlink -f "$elm" | cat -)"
         if [[ -n "$elm" ]]; then
             chown root:root "$elm"
             chmod g+rwX "$elm"
