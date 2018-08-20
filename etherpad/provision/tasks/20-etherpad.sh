@@ -35,7 +35,6 @@ if [[ ! -f '/container/etherpad/src/package.json' ]]; then
         ep_headings2 \
         ep_adminpads \
         ep_historicalsearch \
-        ep_html_export_using_client_filters \
         ep_page_view \
         ep_previewimages \
         ep_authornames \
