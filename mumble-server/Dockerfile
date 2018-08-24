@@ -21,6 +21,8 @@ RUN find /provision -type f -exec chmod 0664 {} + \
 
 EXPOSE 64738 64738/udp
 
+USER 999
+
 ARG CREATED
 LABEL org.opencontainers.image.title="Mumble Server" \
     org.opencontainers.image.version="1.2.19" \
