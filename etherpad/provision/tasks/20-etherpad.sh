@@ -48,7 +48,7 @@ if [[ ! -f '/container/etherpad/src/package.json' ]]; then
 
 # check if the installed version can be upgraded
 elif [[ $(bool "$AUTO_UPDATE" "true") == "true" ]]; then
-    INSTALLED_VERSION="$(grep '"version"' /container/etherpad/src/package.json | grep -Eo '[1-9\.]+')"
+    INSTALLED_VERSION="$(grep '"version"' /container/etherpad/src/package.json | grep -Eo '[0-9\.]+')"
 
     # check if newer version is available to upgrade the current installation
     if version_greater "$ETHERPAD_VERSION" "$INSTALLED_VERSION" ; then
