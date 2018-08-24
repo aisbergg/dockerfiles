@@ -63,8 +63,8 @@ RUN set -x \
         poppler-utils \
     \
     # install requirements for the Math extension
-    && curl -fSL "https://extdist.wmflabs.org/dist/extensions/${MEDIAWIKI_MATH_EXTENSION_FILE_NAME}" -o && /usr/local/src/mediawiki-extension-math.tar.gz \
-    && echo "$MEDIAWIKI_MATH_EXTENSION_SHA256_CHECKSUM  /usr/local/src/mediawiki-extension-math.tar.gz" | && sha256sum -c \
+    && curl -fSL "https://extdist.wmflabs.org/dist/extensions/${MEDIAWIKI_MATH_EXTENSION_FILE_NAME}" -o /usr/local/src/mediawiki-extension-math.tar.gz \
+    && echo "$MEDIAWIKI_MATH_EXTENSION_SHA256_CHECKSUM  /usr/local/src/mediawiki-extension-math.tar.gz" | sha256sum -c \
     && apk add --no-progress \
         texlive \
     && apk add --no-progress --virtual .build-deps \
