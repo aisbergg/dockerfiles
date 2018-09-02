@@ -1,6 +1,6 @@
 USERNAME=aisberg
 NAME=phpmyadmin
-VERSION=4.8.2
+VERSION=4.8.3
 
 DOCKER_BUILD_FLAGS?=
 
