@@ -13,6 +13,7 @@ RUN set -x \
         shared-mime-info \
     \
     # prepare working directories
+    && rm -rf /etc/nginx/conf.d \
     && ln -sf /container/nginx /etc/nginx/conf.d \
     && workdirs \
         /container/www \

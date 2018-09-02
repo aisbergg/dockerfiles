@@ -9,12 +9,14 @@ LABEL org.opencontainers.image.title="Nginx HTML" \
     org.opencontainers.image.created="$CREATED"
 
 COPY provision /provision
-RUN find /provision -type f -exec chmod 0664 {} + &&\
-    find /provision -type d -exec chmod 0775 {} + &&\
+RUN set -e \
+    && find /provision -type f -exec chmod 0664 {} + \
+    && find /provision -type d -exec chmod 0775 {} + \
     \
     # prepare working directories
-    ln -sf /container/nginx /etc/nginx/conf.d &&\
-    workdirs \
+    && rm -rf /etc/nginx/conf.d \
+    && ln -sf /container/nginx /etc/nginx/conf.d \
+    && workdirs \
         /container/www \
         /container/nginx
 
