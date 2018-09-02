@@ -18,14 +18,14 @@ defaults:
   ## Nginx
   ######################################
   NGINX_REDIRECT_TO_FIRST_DOMAIN: False
-  NGINX_FASTCGI_READ_TIMEOUT: 70
+  NGINX_FASTCGI_READ_TIMEOUT: 300
   NGINX_MAX_UPLOAD_FILESIZE: 50M
   NGINX_REWRITE_HTTPS: True
 
   ######################################
   ## PHP
   ######################################
-  PHP_MAX_EXECUTION_TIME: 70
+  PHP_MAX_EXECUTION_TIME: 300
   PHP_MAX_INPUT_TIME: 30
   PHP_MEMORY_LIMIT: "80M"
   PHP_MAX_FILE_UPLOADS: 10
