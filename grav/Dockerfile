@@ -1,10 +1,10 @@
 FROM aisberg/nginx-php7
 
-
-RUN \
+RUN set -x \
+    \
     # install required packages
     # PHP requirements: https://learn.getgrav.org/basics/requirements#php-requirements
-    apk add --update --no-cache --no-progress \
+    && apk add --update --no-cache --no-progress \
         php7-apcu \
         php7-ctype \
         php7-curl \
@@ -18,15 +18,15 @@ RUN \
         php7-simplexml \
         php7-tokenizer \
         php7-xml \
-        `# php7-yaml` \
-        php7-zip &&\
+        # php7-yaml \
+        php7-zip \
     \
     # prepare working directory
-    workdirs /container/www
+    && workdirs /container/www
 
 COPY provision /provision
-RUN find /provision -type f -exec chmod 0664 {} + &&\
-    find /provision -type d -exec chmod 0775 {} +
+RUN find /provision -type f -exec chmod 0664 {} + \
+    && find /provision -type d -exec chmod 0775 {} +
 
 VOLUME /container/www
 
