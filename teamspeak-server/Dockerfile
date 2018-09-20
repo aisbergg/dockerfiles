@@ -1,5 +1,5 @@
 # aisberg/teamspeak-server aisberg/teamspeak-server:3.1.1
-FROM ubuntu:17.10
+FROM ubuntu:18:04
 
 LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
     Version=1.5 \
