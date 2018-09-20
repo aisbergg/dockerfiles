@@ -32,11 +32,9 @@ VOLUME /container/www
 
 USER 999
 
-ARG CREATED
 LABEL org.opencontainers.image.title="Grav CMS" \
     org.opencontainers.image.description="Modern, Crazy Fast, Ridiculously Easy and Amazingly Powerful Flat-File CMS." \
     org.opencontainers.image.url="https://getgrav.org/" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/grav" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/grav"

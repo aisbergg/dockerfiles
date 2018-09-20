@@ -67,12 +67,10 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
   && apk del .build-deps-yarn
 #-------------------------------------------------------------------------------
 
-ARG CREATED
 LABEL org.opencontainers.image.title="Node.js" \
     org.opencontainers.image.version="$NODE_VERSION" \
     org.opencontainers.image.description="Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine." \
     org.opencontainers.image.url="https://nodejs.org/" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/node" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/node"

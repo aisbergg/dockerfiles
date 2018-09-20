@@ -1,12 +1,10 @@
 FROM aisberg/nginx
 
-ARG CREATED
 LABEL org.opencontainers.image.title="Nginx HTML" \
     org.opencontainers.image.description="Webserver for delivering static HTML" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/html" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/html"
 
 COPY provision /provision
 RUN set -e \

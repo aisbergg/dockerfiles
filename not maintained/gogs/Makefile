@@ -7,12 +7,11 @@ DOCKER_BUILD_FLAGS?=
 .PHONY: build debug push rmi release
 
 build:
-	CREATED="$(shell date +'%d-%m-%Y %H:%M:%S %z')"
-	docker build -t $(USERNAME)/$(NAME):$(VERSION) -f Dockerfile --build-arg CREATED="$$CREATED" $(DOCKER_BUILD_FLAGS) .
-	docker tag $(USERNAME)/$(NAME):$(VERSION) $(USERNAME)/$(NAME):latest
+	CREATED="$(shell date +'%d-%m-%Y %H:%M:%S %z')" &&\
+	docker build -t $(USERNAME)/$(NAME):$(VERSION) -t $(USERNAME)/$(NAME):latest --label org.opencontainers.image.created="$$CREATED" -f Dockerfile $(DOCKER_BUILD_FLAGS) .
 
 debug:
-	docker build -t $(USERNAME)/$(NAME):$(VERSION) -f Dockerfile $(DOCKER_BUILD_FLAGS) .
+	docker build -t $(USERNAME)/$(NAME):$(VERSION) -t $(USERNAME)/$(NAME):latest --label org.opencontainers.image.created="$$CREATED" -f Dockerfile $(DOCKER_BUILD_FLAGS) .
 	docker run -it --rm --user root $(USERNAME)/$(NAME):$(VERSION) debug
 
 push:

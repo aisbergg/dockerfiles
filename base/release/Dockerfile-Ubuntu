@@ -95,12 +95,10 @@ RUN chmod 0755 /entrypoint /usr/bin/workdirs /usr/bin/schedule_program \
 ENTRYPOINT ["/entrypoint"]
 CMD ["run"]
 
-ARG CREATED
 LABEL org.opencontainers.image.title="Base Image - Ubuntu" \
     org.opencontainers.image.version="18.04" \
     org.opencontainers.image.description="A base image build upon Ubuntu" \
     org.opencontainers.image.url="https://www.ubuntu.com" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/base" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/base"

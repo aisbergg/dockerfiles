@@ -43,12 +43,10 @@ VOLUME /container/mysql_dumps
 
 USER 999
 
-ARG CREATED
 LABEL org.opencontainers.image.title="phpMyAdmin" \
     org.opencontainers.image.version="$PHPMYADMIN_VERSION" \
     org.opencontainers.image.description="phpMyAdmin is an open-source web frontend for MySQL and MariaDB databases." \
     org.opencontainers.image.url="https://www.phpmyadmin.net/" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/phpmyadmin" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/phpmyadmin"

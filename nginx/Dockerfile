@@ -38,12 +38,10 @@ RUN find /provision -type f -exec chmod 0664 {} + \
 
 EXPOSE 8080 8443
 
-ARG CREATED
 LABEL org.opencontainers.image.title="Nginx" \
     org.opencontainers.image.version="1.14.0" \
     org.opencontainers.image.description="Nginx is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server" \
     org.opencontainers.image.url="http://nginx.org" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/nginx" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/nginx"

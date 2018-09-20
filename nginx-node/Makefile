@@ -10,10 +10,11 @@ build_targets=$(addprefix build-, $(NODE_VERSIONS))
 all: $(build_targets)
 
 $(build_targets): build-%: release/Dockerfile-Node-%
+	CREATED="$(shell date +'%d-%m-%Y %H:%M:%S %z')" &&\
 	df=$< && df="$${df#*/}" && version=$${df##*-} &&\
 	bash ./update.sh &&\
 	cd release &&\
-	docker build -t $(USERNAME)/$(NAME):$$version -f Dockerfile-Node-$$version --build-arg CREATED="$(CREATED)" $(DOCKER_BUILD_FLAGS) . &&\
+	docker build -t $(USERNAME)/$(NAME):$$version --label org.opencontainers.image.created="$$CREATED" -f Dockerfile-Node-$$version $(DOCKER_BUILD_FLAGS) . &&\
 	if [[ $$version == $$(echo $(NODE_VERSIONS) | awk '{ print $$1 }') ]]; then docker tag $(USERNAME)/$(NAME):$$version $(USERNAME)/$(NAME):latest ; fi
 
 build: $(build_targets)

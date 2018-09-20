@@ -39,12 +39,10 @@ VOLUME /container/www
 
 USER 999
 
-ARG CREATED
 LABEL org.opencontainers.image.title="Lime Survey" \
     org.opencontainers.image.version="$LIMESURVEY_VERSION" \
     org.opencontainers.image.description="LimeSurvey is an open-source tool for creating online surveys." \
     org.opencontainers.image.url="https://www.limesurvey.org" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/limesurvey" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/limesurvey"

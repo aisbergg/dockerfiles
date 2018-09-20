@@ -37,12 +37,10 @@ VOLUME /container/www
 
 USER 999
 
-ARG CREATED
 LABEL org.opencontainers.image.title="phpBB" \
     org.opencontainers.image.version="$PHPBB_VERSION" \
     org.opencontainers.image.description="PhpBB is an open-source forum software." \
     org.opencontainers.image.url="https://www.phpbb.com/" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/phpbb" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/phpbb"

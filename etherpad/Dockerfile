@@ -24,12 +24,10 @@ VOLUME /container/etherpad
 
 USER 999
 
-ARG CREATED
 LABEL org.opencontainers.image.title="Etherpad" \
     org.opencontainers.image.version="$ETHERPAD_VERSION" \
     org.opencontainers.image.description="Etherpad is an open-source online editor providing collaborative editing in really real-time." \
     org.opencontainers.image.url="http://etherpad.org/" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/etherpad" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/etherpad"

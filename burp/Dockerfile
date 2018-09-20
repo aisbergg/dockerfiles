@@ -75,12 +75,10 @@ RUN find /provision -type f -exec chmod 0664 {} + \
 
 EXPOSE 4971/tcp 4972/tcp
 
-ARG CREATED
 LABEL org.opencontainers.image.title="Burp" \
     org.opencontainers.image.version="$BURP_VERSION" \
     org.opencontainers.image.description="Burp is a backup and restore program" \
     org.opencontainers.image.url="http://burp.grke.org" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/burp" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/burp"

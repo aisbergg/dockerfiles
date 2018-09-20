@@ -1,16 +1,17 @@
 USERNAME=aisberg
 NAME=grav
+VERSION=$(shell date +'%Y-%m-%d')
 
 DOCKER_BUILD_FLAGS?=
 
 .PHONY: build debug push rmi release
 
 build:
-	CREATED="$(shell date +'%d-%m-%Y %H:%M:%S %z')"
-	docker build -t $(USERNAME)/$(NAME):latest -f Dockerfile --build-arg CREATED="$$CREATED" $(DOCKER_BUILD_FLAGS) .
+	CREATED="$(shell date +'%d-%m-%Y %H:%M:%S %z')" &&\
+	docker build -t $(USERNAME)/$(NAME):$(VERSION) -t $(USERNAME)/$(NAME):latest --label org.opencontainers.image.created="$$CREATED" -f Dockerfile $(DOCKER_BUILD_FLAGS) .
 
 debug:
-	docker build -t $(USERNAME)/$(NAME):latest -f Dockerfile $(DOCKER_BUILD_FLAGS) .
+	docker build -t $(USERNAME)/$(NAME):$(VERSION) -t $(USERNAME)/$(NAME):latest -f Dockerfile $(DOCKER_BUILD_FLAGS) .
 	docker run -it --rm $(USERNAME)/$(NAME):latest debug
 
 push:

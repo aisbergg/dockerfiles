@@ -53,12 +53,10 @@ EXPOSE 2022
 
 USER 999
 
-ARG CREATED
 LABEL org.opencontainers.image.title="Gogs" \
     org.opencontainers.image.version="$GOGS_VERSION" \
     org.opencontainers.image.description="A self-hosted git service" \
     org.opencontainers.image.url="https://gogs.io/" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/gogs" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/gogs"

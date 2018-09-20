@@ -1,6 +1,5 @@
 FROM alpine:3.7
 
-ARG CREATED
 ARG PIGPIO_COMMIT=1737d477479f6009a4e1f3227480bfdb1a3653d0
 ARG PIGPIO_SHA256_CHECKSUM=218db5bda5d58a4ecd9dc47027f82d51203de61d49b2eeaae29b0007f5ef31fd
 
@@ -11,8 +10,7 @@ LABEL org.opencontainers.image.title="PiGPIO" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
     org.opencontainers.image.url="http://abyz.me.uk/rpi/pigpio/" \
-    org.opencontainers.image.revision=$PIGPIO_COMMIT \
-    org.opencontainers.image.created=$CREATED
+    org.opencontainers.image.revision=$PIGPIO_COMMIT
 
 RUN apk --update --no-cache --no-progress --virtual .build-deps add \
         gcc \

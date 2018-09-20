@@ -99,12 +99,10 @@ USER 999
 
 VOLUME /container/www
 
-ARG CREATED
 LABEL org.opencontainers.image.title="MediaWiki" \
     org.opencontainers.image.version="${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR}" \
     org.opencontainers.image.description="MediaWiki is an open-source web application for creating a wiki." \
     org.opencontainers.image.url="https://www.mediawiki.org/wiki/MediaWiki" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/mediawiki" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/mediawiki"

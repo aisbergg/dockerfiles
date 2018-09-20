@@ -23,12 +23,10 @@ EXPOSE 64738 64738/udp
 
 USER 999
 
-ARG CREATED
 LABEL org.opencontainers.image.title="Mumble Server" \
     org.opencontainers.image.version="1.2.19" \
     org.opencontainers.image.description="Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming." \
     org.opencontainers.image.url="https://wiki.mumble.info/wiki/Main_Page" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/mumble-server" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/mumble-server"

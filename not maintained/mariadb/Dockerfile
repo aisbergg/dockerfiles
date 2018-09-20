@@ -28,12 +28,10 @@ VOLUME /container/db
 
 USER 999
 
-ARG CREATED
 LABEL org.opencontainers.image.title="MariaDB" \
     org.opencontainers.image.version="10.2" \
     org.opencontainers.image.description="MariaDB is a community-developed fork of the MySQL relational database management system." \
     org.opencontainers.image.url="https://mariadb.org/" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/mariadb" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/mariadb"

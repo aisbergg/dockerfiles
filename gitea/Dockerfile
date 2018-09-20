@@ -44,12 +44,10 @@ EXPOSE 2022
 
 USER 999
 
-ARG CREATED
 LABEL org.opencontainers.image.title="Gitea" \
     org.opencontainers.image.version="$GITEA_VERSION" \
     org.opencontainers.image.description="A self-hosted git service" \
     org.opencontainers.image.url="https://gitea.io/en-us/" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/gitea" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/gitea"

@@ -1,6 +1,6 @@
 USERNAME=aisberg
-NAME=dokuwiki
-VERSION=2018-04-22
+NAME=mattermost
+VERSION=5.2.1
 
 DOCKER_BUILD_FLAGS?=
 
@@ -12,7 +12,7 @@ build:
 
 debug:
 	docker build -t $(USERNAME)/$(NAME):$(VERSION) -t $(USERNAME)/$(NAME):latest --label org.opencontainers.image.created="$$CREATED" -f Dockerfile $(DOCKER_BUILD_FLAGS) .
-	docker run -it --rm $(USERNAME)/$(NAME):$(VERSION) debug
+	docker run -it --rm --user root $(USERNAME)/$(NAME):$(VERSION) debug
 
 push:
 	docker push $(USERNAME)/$(NAME):$(VERSION)

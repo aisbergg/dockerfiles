@@ -31,12 +31,10 @@ VOLUME /container/www
 
 USER 999
 
-ARG CREATED
 LABEL org.opencontainers.image.title="DokuWiki" \
     org.opencontainers.image.version="$DOKUWIKI_VERSION" \
     org.opencontainers.image.description="DokuWiki is an open-source web application for creating a wiki." \
     org.opencontainers.image.url="https://www.dokuwiki.org/provision" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/dokuwiki" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/dokuwiki"

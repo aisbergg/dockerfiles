@@ -29,10 +29,8 @@ VOLUME /container/www \
 
 USER 999
 
-ARG CREATED
 LABEL org.opencontainers.image.title="HTML+PHP5" \
     org.opencontainers.image.description="Webserver with PHP capabilities" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/html-php5" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/html-php5"

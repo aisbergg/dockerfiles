@@ -55,12 +55,10 @@ RUN set -x \
 
 COPY provision /provision
 
-ARG CREATED
 LABEL org.opencontainers.image.title="Nginx-PHP5" \
     org.opencontainers.image.version="5.6.37" \
     org.opencontainers.image.description="PHP-FPM (FastCGI Process Manager) is an alternative PHP FastCGI implementation." \
     org.opencontainers.image.url="https://php-fpm.org" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/nginx-php5" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/nginx-php5"

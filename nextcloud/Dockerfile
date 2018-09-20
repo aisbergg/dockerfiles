@@ -50,12 +50,10 @@ VOLUME /container/www
 
 USER 999
 
-ARG CREATED
 LABEL org.opencontainers.image.title="Nextcloud" \
     org.opencontainers.image.version="$NEXTCLOUD_VERSION" \
     org.opencontainers.image.description="Nextcloud is an open source, self-hosted file share and communication platform." \
     org.opencontainers.image.url="https://nextcloud.com" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/nextcloud" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/nextcloud"

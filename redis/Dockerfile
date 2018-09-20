@@ -22,12 +22,10 @@ EXPOSE 6379/tcp
 
 USER 999
 
-ARG CREATED
 LABEL org.opencontainers.image.title="Redis" \
     org.opencontainers.image.version="4.0.11" \
     org.opencontainers.image.description="Redis is an open source, in-memory data structure store, used as a database, cache and message broker" \
     org.opencontainers.image.url="https://redis.io" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/redis" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/redis"

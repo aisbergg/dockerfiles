@@ -41,12 +41,10 @@ VOLUME /container/www
 
 USER 999
 
-ARG CREATED
 LABEL org.opencontainers.image.title="Concrete5" \
     org.opencontainers.image.version="$CONCRETE5_VERSION" \
     org.opencontainers.image.description="Concrete5 is an open-source content management system (CMS)." \
     org.opencontainers.image.url="http://www.concrete5.org/" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/concrete5" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/concrete5"

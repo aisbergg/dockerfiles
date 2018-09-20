@@ -45,12 +45,10 @@ VOLUME /container/www/uploadimages
 
 USER 999
 
-ARG CREATED
 LABEL org.opencontainers.image.title="phpList" \
     org.opencontainers.image.version="$PHPLIST_VERSION" \
     org.opencontainers.image.description="phpList is an open-source newsletter and email marketing software." \
     org.opencontainers.image.url="https://www.phplist.org/" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/phplist" \
-    org.opencontainers.image.created="$CREATED"
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/phplist"
