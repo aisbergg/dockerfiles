@@ -50,7 +50,7 @@ defaults:
     choices:
       - "mysql"
       - "pgsql"
-      - "sqlite"
+      - "sqlite3"
   NEXTCLOUD_DATABASE_HOST: ""
   NEXTCLOUD_DATABASE_NAME: ""
   NEXTCLOUD_DATABASE_USER: ""
@@ -61,7 +61,9 @@ defaults:
   # User Experience
   # see https://www.transifex.com/explore/languages/ for supported language codes
   NEXTCLOUD_DEFAULT_LANGUAGE: "en"
-  NEXTCLOUD_FORCE_LANGUAGE: "false"
+  NEXTCLOUD_FORCE_LANGUAGE: false
+  NEXTCLOUD_DEFAULT_LOCALE: "en_US"
+  NEXTCLOUD_FORCE_LOCALE: true
   NEXTCLOUD_DEFAULTAPP: "files"
   NEXTCLOUD_KNOWLEDGEBASEENABLED: true
   NEXTCLOUD_ALLOW_USER_TO_CHANGE_DISPLAY_NAME: true
@@ -110,6 +112,7 @@ defaults:
       - "errorlog"
       - "file"
       - "syslog"
+      - "systemd"
   NEXTCLOUD_LOGLEVEL:
     type: choice
     default: "2"
@@ -124,7 +127,7 @@ defaults:
   NEXTCLOUD_LOGDATEFORMAT: "F d, Y H:i:s"
   NEXTCLOUD_LOGTIMEZONE: "Europe/Berlin"
   NEXTCLOUD_LOG_QUERY: false
-  NEXTCLOUD_LOG_ROTATE_SIZE: false
+  NEXTCLOUD_LOG_ROTATE_SIZE: "50 * 1024 * 1024"
 
   # Alternate Code Locations
   NEXTCLOUD_CUSTOMCLIENT_DESKTOP: "https://nextcloud.com/install/#install-clients"
@@ -139,7 +142,7 @@ defaults:
   NEXTCLOUD_PREVIEW_MAX_X: 4096
   NEXTCLOUD_PREVIEW_MAX_Y: 4096
   NEXTCLOUD_PREVIEW_MAX_FILESIZE_IMAGE: 50
-  NEXTCLOUD_PREVIEW_OFFICE_CL_PARAMETERS: '--headless --nologo --nofirststartwizard --invisible --norestore --convert-to pdf --outdir'
+  NEXTCLOUD_PREVIEW_OFFICE_CL_PARAMETERS: '--headless --nologo --nofirststartwizard --invisible --norestore --convert-to png --outdir'
   NEXTCLOUD_ENABLEDPREVIEWPROVIDERS:
     type: list
     delimiter: ','
@@ -148,6 +151,7 @@ defaults:
       - 'OC\Preview\PNG'
       - 'OC\Preview\JPEG'
       - 'OC\Preview\GIF'
+      - 'OC\Preview\HEIC'
       - 'OC\Preview\BMP'
       - 'OC\Preview\XBitmap'
       - 'OC\Preview\MP3'
@@ -175,7 +179,6 @@ defaults:
       - "ArrayCache"
       - "Memcached"
       - "Redis"
-      - "XCache"
   # example: server1.example.com:11211, server2.example.com:11211,
   NEXTCLOUD_MEMCACHED_SERVERS:
     type: list
@@ -274,3 +277,4 @@ defaults:
     choices:
       - "internal"
       - "global"
+  NEXTCLOUD_SIMPLESIGNUPLINK_SHOWN: true

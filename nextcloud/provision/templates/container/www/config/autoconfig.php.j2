@@ -19,8 +19,8 @@ $AUTOCONFIG = array(
   "dbhost"        => "{{ NEXTCLOUD_DATABASE_HOST }}",
   "dbtableprefix" => "{{ NEXTCLOUD_DATABASE_TABLE_PREFIX }}",
 
-  {% elif NEXTCLOUD_DATABASE_TYPE == "sqlite" -%}
-  "dbtype"        => "sqlite",
+  {% elif NEXTCLOUD_DATABASE_TYPE == "sqlite3" -%}
+  "dbtype"        => "sqlite3",
   "dbname"        => "{{ NEXTCLOUD_DATABASE_NAME }}",
   {%- endif %}
 );
