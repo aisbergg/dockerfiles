@@ -68,6 +68,9 @@ elif [[ $(bool "$AUTO_UPDATE" "true") == "true" ]]; then
 
         touch /container/www/.needs-upgrade
 
+        cd /container/www
+        php occ app:list | sed -n "/Disabled:/,//p" > .apps-before
+
         rm -r $tempdir
     fi
 
