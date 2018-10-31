@@ -10,7 +10,6 @@ fastcgi_cache_path /var/cache/nginx levels=1:2 keys_zone=NEXTCLOUD:100m inactive
 map $request_uri $skip_cache {
      default 1;
      ~*/thumbnail.php 0;
-     ~*/apps/galleryplus/ 0;
      ~*/apps/gallery/ 0;
 }
 
@@ -25,15 +24,9 @@ server {
     location / {
         return 301              $real_scheme://{{ DOMAINNAMES[0] }}$request_uri;
     }
-
-    # Let's Encrypt challenge response uri
-    location ^~ /.well-known/acme-challenge {
-        default_type "text/plain";
-        root /var/www/letsencrypt-challenge-response;
-    }
 }
+{%- endif %}
 
-{% endif -%}
 server {
     listen                      8080;
     listen                      [::]:8080;
@@ -47,21 +40,10 @@ server {
     index                       index.php;
 
     {% if NGINX_REWRITE_HTTPS -%}
-    rewrite_by_lua_block {
-        -- apply rules to all requests, but not to challenge responses
-        if not string.match(ngx.var.request_uri, "^/%.well%-known/acme%-challenge") and
-                ngx.var.real_scheme ~= "https" then
-            -- redirect scheme to https
-            return ngx.redirect("https://" .. ngx.var.host .. ngx.var.request_uri, 301)
-        end
+    if ($real_scheme != "https") {
+        return 301              https://$host$request_uri;
     }
     {%- endif %}
-
-    # Let's Encrypt challenge response uri
-    location ^~ /.well-known/acme-challenge {
-        default_type "text/plain";
-        root /var/www/letsencrypt-challenge-response;
-    }
 
     # add security headers
     more_set_headers "X-Frame-Options: SAMEORIGIN";
@@ -70,12 +52,13 @@ server {
     more_set_headers "X-Robots-Tag: none";
     more_set_headers "X-Download-Options: noopen";
     more_set_headers "X-Permitted-Cross-Domain-Policies: none";
+    more_set_headers "Referrer-Policy: no-referrer";
 
     location = /.well-known/carddav {
-        return 301 $scheme://$host/remote.php/dav;
+        return 301 $real_scheme://$host/remote.php/dav;
     }
     location = /.well-known/caldav {
-        return 301 $scheme://$host/remote.php/dav;
+        return 301 $real_scheme://$host/remote.php/dav;
     }
 
     # disable logging
@@ -83,7 +66,7 @@ server {
     location = /favicon.ico { access_log off; log_not_found off; }
 
     location / {
-        rewrite ^ /index.php$uri;
+        rewrite ^ /index.php$request_uri;
     }
 
     # deny access
@@ -108,6 +91,8 @@ server {
         fastcgi_pass                unix:/var/run/container/php7-fpm.sock;
         fastcgi_intercept_errors    on;
         fastcgi_request_buffering   off;
+        # Remove X-Powered-By, which is an information leak
+        fastcgi_hide_header         X-Powered-By;
 
         # cache_purge
         fastcgi_cache_bypass        $skip_cache;
@@ -123,15 +108,15 @@ server {
     }
 
     # adding the cache control header for js and css files
-    location ~* \.(?:css|js)$ {
-        try_files $uri /index.php$uri$is_args$args;
+    location ~* \.(?:css|js|ttf|woff|svg|gif)$ {
+        try_files $uri /index.php$request_uri;
         more_set_headers "Cache-Control: public, max-age=15778463";
         access_log off;
     }
 
     # disable logging for other assets
-    location ~* \.(?:svg|gif|png|html|ttf|woff|ico|jpg|jpeg)$ {
-        try_files $uri /index.php$uri$is_args$args;
+    location ~* \.(?:png|html|ico|jpg|jpeg)$ {
+        try_files $uri /index.php$request_uri;
         access_log off;
     }
 }
