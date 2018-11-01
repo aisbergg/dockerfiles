@@ -1,6 +1,6 @@
 USERNAME=aisberg
 NAME=mediawiki
-VERSION=1.31.0
+VERSION=1.31.1
 
 DOCKER_BUILD_FLAGS?=
 
