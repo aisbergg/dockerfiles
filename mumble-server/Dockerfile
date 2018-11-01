@@ -6,8 +6,9 @@ RUN set -x \
     \
     # install required packages
     && apk add --update --no-cache --no-progress \
-        murmur \
+        icu-libs \
         libressl \
+        murmur \
         tzdata \
     \
     # prepare working directories
