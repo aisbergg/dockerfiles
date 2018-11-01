@@ -1,6 +1,6 @@
 USERNAME=aisberg
 NAME=nginx-php5
-VERSION=5.6.37
+VERSION=latest
 
 DOCKER_BUILD_FLAGS?=
 

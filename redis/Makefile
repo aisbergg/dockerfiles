@@ -1,6 +1,6 @@
 USERNAME=aisberg
 NAME=redis
-VERSION=4.0.11
+VERSION=latest
 
 DOCKER_BUILD_FLAGS?=
 
