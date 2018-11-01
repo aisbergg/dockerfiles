@@ -1,6 +1,6 @@
 USERNAME=aisberg
 NAME=phplist
-VERSION=3.3.3
+VERSION=3.3.4
 
 DOCKER_BUILD_FLAGS?=
 
