@@ -2,7 +2,6 @@ FROM aisberg/nginx-php7
 
 ENV MEDIAWIKI_MAJOR=1.31 \
     MEDIAWIKI_MINOR=1 \
-    MEDIAWIKI_PGP_KEY_ID=41B2ABE817ADD3E52BDA946F72BC1C5D23107F8A \
     MEDIAWIKI_MATH_EXTENSION_FILE_NAME=Math-REL1_31-a1263db.tar.gz \
     MEDIAWIKI_MATH_EXTENSION_SHA256_CHECKSUM=e9a637221781eb92c7edc40907e23e4a7319e42a65dd75ef476fe99e7cf409d2
 
@@ -11,9 +10,20 @@ RUN set -x \
     # download MediaWiki source
     && curl -fSL "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR}/mediawiki-${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR}.tar.gz" -o /usr/local/src/mediawiki.tar.gz \
     && curl -fSL "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR}/mediawiki-${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR}.tar.gz.sig" -o /usr/local/src/mediawiki.tar.gz.sig \
-    && ( gpg --keyserver ipv4.pool.sks-keyservers.net --keyserver-options timeout=10 --recv-keys "$MEDIAWIKI_PGP_KEY_ID" \
-        || gpg --keyserver pgp.mit.edu --keyserver-options timeout=10 --recv-keys "$MEDIAWIKI_PGP_KEY_ID" \
-        || gpg --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$MEDIAWIKI_PGP_KEY_ID" ) \
+    # https://www.mediawiki.org/keys/keys.txt
+    && for key in \
+        1D98867E82982C8FE0ABC25F9B69B3109D3BB7B0 \
+        41B2ABE817ADD3E52BDA946F72BC1C5D23107F8A \
+        441276E9CCD15F44F6D97D18C119E1A64D70938E \
+        6237D8D3ECC1AE918729296FF6DAD285018FAC02 \
+        80D113B767E3D51936725679361F943B15C08DD4 \
+        D7D6767D135A514BEB86E9BA75682B08E8A3FEC4 \
+        F7F780D82EBFB8A56556E7EE82403E59F9F8CD79 \
+    ; do \
+        gpg --keyserver ipv4.pool.sks-keyservers.net --keyserver-options timeout=10 --recv-keys "$key" || \
+        gpg --keyserver pgp.mit.edu --keyserver-options timeout=10 --recv-keys "$key" || \
+        gpg --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$key" ; \
+    done \
     && gpg --verify /usr/local/src/mediawiki.tar.gz.sig /usr/local/src/mediawiki.tar.gz \
     && rm /usr/local/src/mediawiki.tar.gz.sig \
     \
