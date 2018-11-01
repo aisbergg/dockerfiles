@@ -5,62 +5,44 @@
 # 'container_managed=false'                                                    #
 ################################################################################
 
-
 limit_conn_log_level    warn;
 limit_req_zone          $limit zone=php:3m rate=15r/s;
 
 {% if NGINX_REDIRECT_TO_FIRST_DOMAIN and DOMAINNAMES|length > 1 -%}
 server {
-    listen              8080;
-    listen              [::]:8080;
-    listen              8443 ssl{{ ' http2' if NGINX_HTTP_VERSION == "2.0" else '' }};
-    listen              [::]:8443 ssl{{ ' http2' if NGINX_HTTP_VERSION == "2.0" else '' }};
-    server_name         {% for domain in DOMAINNAMES %}{% if not loop.first %}{{ domain }} {% endif %}{% endfor %};
+    listen                      8080;
+    listen                      [::]:8080;
+    listen                      8443 ssl{{ ' http2' if NGINX_HTTP_VERSION == "2.0" else '' }};
+    listen                      [::]:8443 ssl{{ ' http2' if NGINX_HTTP_VERSION == "2.0" else '' }};
+    server_name                 {% for domain in DOMAINNAMES %}{% if not loop.first %}{{ domain }} {% endif %}{% endfor %};
 
     location / {
-        return 301      $real_scheme://{{ DOMAINNAMES[0] }}$request_uri;
-    }
-
-    # Let's Encrypt challenge response uri
-    location ^~ /.well-known/acme-challenge {
-        default_type "text/plain";
-        root /var/www/letsencrypt-challenge-response;
+        return 301              $real_scheme://{{ DOMAINNAMES[0] }}$request_uri;
     }
 }
+{%- endif %}
 
-{% endif -%}
 server {
-    listen              8080;
-    listen              [::]:8080;
-    listen              8443 ssl{{ ' http2' if NGINX_HTTP_VERSION == "2.0" else '' }} default_server;
-    listen              [::]:8443 ssl{{ ' http2' if NGINX_HTTP_VERSION == "2.0" else '' }};
+    listen                      8080;
+    listen                      [::]:8080;
+    listen                      8443 ssl{{ ' http2' if NGINX_HTTP_VERSION == "2.0" else '' }} default_server;
+    listen                      [::]:8443 ssl{{ ' http2' if NGINX_HTTP_VERSION == "2.0" else '' }};
     {% if DOMAINNAMES|length > 0 -%}
-    server_name         {% if NGINX_REDIRECT_TO_FIRST_DOMAIN %}{{ DOMAINNAMES[0] }}{% else %}{% for domain in DOMAINNAMES %}{{ domain }} {% endfor %}{% endif %};
+    server_name                 {% if NGINX_REDIRECT_TO_FIRST_DOMAIN %}{{ DOMAINNAMES[0] }}{% else %}{% for domain in DOMAINNAMES %}{{ domain }} {% endfor %}{% endif %};
     {%- endif %}
 
-    root                /container/www;
-    index               index.php;
+    root                        /container/www;
+    index                       index.php;
 
-    rewrite_by_lua_block {
-        -- apply rules to all requests, but not to challenge responses
-        if not string.match(ngx.var.request_uri, "^/%.well%-known/acme%-challenge") then
-            -- block crawler ( see ../nginx.conf )
-            if ngx.var.limit_bots == "1" then
-                ngx.exit(ngx.HTTP_FORBIDDEN)
-            end
-            {% if NGINX_REWRITE_HTTPS -%}
-            -- redirect scheme to https
-            if ngx.var.real_scheme ~= "https" then
-                return ngx.redirect("https://" .. ngx.var.host .. ngx.var.request_uri, 301)
-            end
-            {%- endif %}
-        end
+    {% if NGINX_REWRITE_HTTPS -%}
+    if ($real_scheme != "https") {
+        return 301              https://$host$request_uri;
     }
+    {%- endif %}
 
-    # Let's Encrypt challenge response uri
-    location ^~ /.well-known/acme-challenge {
-        default_type "text/plain";
-        root /var/www/letsencrypt-challenge-response;
+    # block crawler ( see ../nginx.conf )
+    if ($limit_bots = 1) {
+        return 403;
     }
 
     location / {

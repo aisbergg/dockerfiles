@@ -5,7 +5,6 @@
 # 'container_managed=false'                                                    #
 ################################################################################
 
-
 limit_conn_log_level            warn;
 limit_req_zone                  $limit zone=php:5m rate=50r/s;
 
@@ -20,15 +19,9 @@ server {
     location / {
         return 301              $real_scheme://{{ DOMAINNAMES[0] }}$request_uri;
     }
-
-    # Let's Encrypt challenge response uri
-    location ^~ /.well-known/acme-challenge {
-        default_type "text/plain";
-        root /var/www/letsencrypt-challenge-response;
-    }
 }
+{%- endif %}
 
-{% endif -%}
 server {
     listen                      8080;
     listen                      [::]:8080;
@@ -42,21 +35,10 @@ server {
     index                       index.php;
 
     {% if NGINX_REWRITE_HTTPS -%}
-    # rewrite HTTP requests to HTTPS, except when the request is a Let's Encrypt
-    # challenge response
-    rewrite_by_lua_block {
-        if not string.match(ngx.var.request_uri, "^/%.well%-known/acme%-challenge") and
-                ngx.var.real_scheme ~= "https" then
-            return ngx.redirect("https://" .. ngx.var.host .. ngx.var.request_uri, 301)
-        end
+    if ($real_scheme != "https") {
+        return 301              https://$host$request_uri;
     }
     {%- endif %}
-
-    # Let's Encrypt challenge response uri
-    location ^~ /.well-known/acme-challenge {
-        default_type "text/plain";
-        root /var/www/letsencrypt-challenge-response;
-    }
 
     location / {
         try_files $uri $uri/ /index.php?$args;
