@@ -3,7 +3,7 @@ set -e
 
 # first arg is `-f` or `--some-option`
 if [ "${1#-}" != "$1" ]; then
-	set -- tini -- haproxy "$@"
+	set -- haproxy "$@"
 fi
 
 if [ "$1" = 'haproxy' ]; then
@@ -11,7 +11,7 @@ if [ "$1" = 'haproxy' ]; then
 	# if the user wants "haproxy", let's add a couple useful flags
 	#   -W  -- "master-worker mode" (similar to the old "haproxy-systemd-wrapper"; allows for reload via "SIGUSR2")
 	#   -db -- disables background mode
-	set -- tini -- haproxy -W -db -p /container/run/haproxy.pid "$@"
+	set -- haproxy -W -db -p /container/run/haproxy.pid "$@"
 fi
 
 exec "$@"

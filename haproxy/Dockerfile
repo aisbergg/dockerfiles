@@ -9,8 +9,8 @@ ENV LANG=$LANG \
     TZ=:/etc/localtime \
     \
     HAPROXY_MAJOR=1.8 \
-    HAPROXY_VERSION=1.8.13 \
-    HAPROXY_SHA256_CHECKSUM=2bf5dafbb5f1530c0e67ab63666565de948591f8e0ee2a1d3c84c45e738220f1
+    HAPROXY_VERSION=1.8.14 \
+    HAPROXY_SHA256_CHECKSUM=b17e402578be85e58af7a3eac99b1f675953bea9f67af2e964cf8bdbd1bd3fdf
 
 # from https://git.alpinelinux.org/cgit/aports/tree/main/haproxy?h=master
 COPY libressl-2.7.patch /usr/src/libressl-2.7.patch
@@ -24,7 +24,6 @@ RUN set -x \
     && apk add --no-progress  \
         ca-certificates \
         libressl \
-        tini \
     \
     # build HAProxy against LibreSSL
     # original code from official image: https://hub.docker.com/_/haproxy/
