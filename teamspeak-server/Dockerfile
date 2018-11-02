@@ -1,13 +1,12 @@
-# aisberg/teamspeak-server aisberg/teamspeak-server:3.1.1
-FROM ubuntu:18:04
+FROM ubuntu:18.04
 
 LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
     Version=1.5 \
     Comment="TeamSpeak is proprietary voice-over-Internet Protocol (VoIP) software for audio communication between users on a chat channel, much like a telephone conference call. (http://www.teamspeak.com/en/)"
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    TEAMSPEAK_VERSION=3.1.1 \
-    TEAMSPEAK_SHA256_CHECKSUM=c9403f7958e1bf1c5e5cf083641b1e02b06800158df543e09d9259c69181e873
+    TEAMSPEAK_VERSION=3.5.0 \
+    TEAMSPEAK_SHA256_CHECKSUM=9bd56e115afea19351a6238a670dc93e365fe88f8a6c28b5b542ef6ae2ca677e
 
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
