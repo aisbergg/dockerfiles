@@ -35,3 +35,5 @@ if [[ ! -f /container/gitea/ssh/ssh_host_ed25519_key || ! -f /container/gitea/ss
         chmod 600 /container/gitea/ssh/ssh_host_ecdsa_key
     fi
 fi
+
+chmod 600 /container/gitea/ssh/{ssh_host_ed25519_key,ssh_host_rsa_key,ssh_host_ecdsa_key} || true
