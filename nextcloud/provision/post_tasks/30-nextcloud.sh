@@ -7,7 +7,7 @@ if [[ -f /container/www/.needs-upgrade ]]; then
     php occ upgrade --no-interaction
 
     php occ app:list | sed -n -n "/Disabled:/,//p" > .apps-after
-    disabled_apps="$(diff -u .apps-before .apps-after | tail -n +5 | grep '+' | awk '{print $3}' | paste -sd ' ' -)"
+    disabled_apps="$(diff -u .apps-before .apps-after | tail -n +5 | grep '+' | awk '{print $3}' | paste -sd ' ' - )" || true
     if [[ -n "$disabled_apps" ]]; then
         print_info "The following apps have been disabled: $disabled_apps"
     fi
