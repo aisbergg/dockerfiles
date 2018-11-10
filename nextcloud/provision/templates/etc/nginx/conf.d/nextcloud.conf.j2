@@ -8,9 +8,9 @@
 # cache_purge
 fastcgi_cache_path /var/cache/nginx levels=1:2 keys_zone=NEXTCLOUD:100m inactive=60m;
 map $request_uri $skip_cache {
-     default 1;
-     ~*/thumbnail.php 0;
-     ~*/apps/gallery/ 0;
+    default                     1;
+    ~*/thumbnail.php            0;
+    ~*/apps/gallery/            0;
 }
 
 {% if NGINX_REDIRECT_TO_FIRST_DOMAIN and DOMAINNAMES|length > 1 -%}
@@ -47,12 +47,19 @@ server {
 
     # add security headers
     more_set_headers "X-Frame-Options: SAMEORIGIN";
-    # already set in nginx.conf
-    # more_set_headers "X-XSS-Protection: 1; mode=block";
     more_set_headers "X-Robots-Tag: none";
     more_set_headers "X-Download-Options: noopen";
     more_set_headers "X-Permitted-Cross-Domain-Policies: none";
     more_set_headers "Referrer-Policy: no-referrer";
+
+    # add nosniff header
+    #   see: https://www.owasp.org/index.php/List_of_useful_HTTP_headers
+    more_set_headers "X-Content-Type-Options: nosniff";
+
+    # enable anti-cross-site scripting filter built into Internet Explorer,
+    # Chrome and Safari
+    #   see: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
+    more_set_headers "X-XSS-Protection: 1; mode=block";
 
     location = /.well-known/carddav {
         return 301 $real_scheme://$host/remote.php/dav;
