@@ -1,10 +1,12 @@
 [program:gitea]
-command=/usr/bin/gitea web --config /container/gitea/app.ini --pid /var/run/container/gitea.pid 
+command=/usr/bin/gitea web --config /container/gitea/app.ini --pid /var/run/container/gitea.pid
 environment=USER="git",HOME="/home/cu",SHELL="/bin/bash",PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 autostart=true
 autorestart=unexpected
 startsecs=2
 stopwaitsecs=10
+exitcodes=0
+stopsignal=TERM
 redirect_stderr=true
 stdout_logfile={{ '/container/log/gitea.log' if SUPERVISOR_LOGTYPE == 'file' else 'syslog @' + SUPERVISOR_SYSLOG_PROTOCOL + ':' + SUPERVISOR_SYSLOG_HOST + ':' + SUPERVISOR_SYSLOG_PORT|string }}
 stdout_logfile_maxbytes={{ SUPERVISOR_LOGFILE_MAXBYTES }}

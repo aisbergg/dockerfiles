@@ -2,6 +2,8 @@
 command=/usr/sbin/php-fpm7 --nodaemonize
 autostart=true
 autorestart=unexpected
+exitcodes=0
+stopsignal=TERM
 redirect_stderr=true
 stdout_logfile={{ '/container/log/php7.log' if SUPERVISOR_LOGTYPE == 'file' else 'syslog @' + SUPERVISOR_SYSLOG_PROTOCOL + ':' + SUPERVISOR_SYSLOG_HOST + ':' + SUPERVISOR_SYSLOG_PORT|string }}
 stdout_logfile_maxbytes={{ SUPERVISOR_LOGFILE_MAXBYTES }}
