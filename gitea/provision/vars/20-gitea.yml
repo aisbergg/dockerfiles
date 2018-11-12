@@ -1,5 +1,8 @@
 ---
 
+# Load Dynamic Nginx Modules
+NGINX_LOAD_NGX_HTTP_HEADERS_MORE_FILTER_MODULE: true
+
 defaults:
   ######################################
   ## Nginx
