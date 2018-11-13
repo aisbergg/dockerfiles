@@ -1,5 +1,7 @@
+# for more information see: http://php.net/manual/de/apcu.configuration.php
+
 ; Enable APCu extension module
-extension = apcu.so
+extension=apcu.so
 
 ; This can be set to 0 to disable APCu
 apc.enabled={{ APC_ENABLED }}
@@ -7,6 +9,11 @@ apc.enabled={{ APC_ENABLED }}
 ; Setting this enables APCu for the CLI version of PHP
 ; (Mostly for testing and debugging).
 apc.enable_cli={{ APC_ENABLE_CLI }}
+
+; The number of shared memory segments to allocate for the compiler cache.
+; If APC is running out of shared memory but apc.shm_size is set as high as the
+; system allows, raising this value might prevent APC from exhausting its memory.
+apc.shm_segments={{ APC_SHM_SEGMENTS }}
 
 ; Sets the path to text files containing caches to load from disk upon
 ; initialization of APCu. preload_path should be a directory where each
@@ -36,10 +43,10 @@ apc.smart=1
 
 ; A "hint" about the number variables expected in the cache.
 ; Set to zero or omit if you are not sure;
-;apc.entries_hint=4096
+apc.entries_hint={{ APC_ENTRIES_HINT }}
 
 ; The mktemp-style file_mask to pass to the mmap module
-apc.mmap_file_mask=/tmp/apc.XXXXXX
+apc.mmap_file_mask=/dev/zero
 
 ; On very busy servers whenever you start the server or
 ; modify files you can create a race of many processes
@@ -48,7 +55,7 @@ apc.mmap_file_mask=/tmp/apc.XXXXXX
 ; A key is considered "slammed" if it was the last key set,
 ; and a context other than the current one set it ( ie. it
 ; was set by another process or thread )
-apc.slam_defense=1
+apc.slam_defense={{ APC_SLAM_DEFENSE }}
 
 ; Defines which serializer should be used
 ; Default is the standard PHP serializer.
