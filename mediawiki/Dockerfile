@@ -42,6 +42,7 @@ RUN set -x \
         php7-opcache \
         php7-openssl \
         php7-pear \
+        php7-redis \
         php7-session \
         php7-simplexml \
         php7-tokenizer \
