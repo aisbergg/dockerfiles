@@ -182,7 +182,7 @@ server_script_post_notify = {{ bool(BURP_SERVER_SCRIPT_POST_NOTIFY) }}
 # Clients that are able to list and restore files belonging to any other
 # client. If this is too permissive, you may set a restore_client for
 # individual original clients in the individual clientconfdir files.
-{% for restore_client in BURP_SERVER_RESTORE_CLIENT %}
+{% for restore_client in BURP_SERVER_RESTORE_CLIENT + ['burp-control-client'] %}
 restore_client = {{ restore_client }}
 {%- endfor %}
 

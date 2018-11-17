@@ -14,8 +14,10 @@ if [[ "$BURP_MODE" == server ]]; then
 
     export INIT=supervisor
     export BURP_SERVER_SSL_DHFILE=${BURP_SERVER_SSL_DHFILE:-"/container/tls/dhfile.pem"}
+    export BURP_CLIENT_PASSWORD="$(create_random_string 64)"
 
     if [[ ! -f "$BURP_SERVER_SSL_DHFILE" ]] ; then
+        print_info "Generating Diffie-Hellman parameters, this will might take a long time..."
     	openssl dhparam -dsaparam -out "$BURP_SERVER_SSL_DHFILE" 4096
     	chmod 600 "$BURP_SERVER_SSL_DHFILE"
     fi
