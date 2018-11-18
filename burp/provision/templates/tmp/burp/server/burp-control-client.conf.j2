@@ -37,4 +37,4 @@ ssl_ciphers = EECDH+AESGCM:EDH+AESGCM
 ssl_compression = zlib0
 
 # Common name in the certificate that the server gives us
-ssl_peer_cn = burp-control-client
+ssl_peer_cn = {{ BURP_SERVER_CA_SERVER_NAME }}
