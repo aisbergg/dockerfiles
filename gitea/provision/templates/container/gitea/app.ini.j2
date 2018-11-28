@@ -60,6 +60,10 @@ FILE_MAX_SIZE = {{ GITEA_REPOSITORY_UPLOAD_FILE_MAX_SIZE }}
 ; Max number of files per upload. Defaults to 5
 MAX_FILES = {{ GITEA_REPOSITORY_UPLOAD_MAX_FILES }}
 
+[repository.pull-request]
+; List of prefixes used in Pull Request title to mark them as Work In Progress
+WORK_IN_PROGRESS_PREFIXES={{ GITEA_REPOSITORY_PULL_REQUEST_WORK_IN_PROGRESS_PREFIXES }}
+
 [ui]
 ; Number of repositories that are displayed on one explore page
 EXPLORE_PAGING_NUM = {{ GITEA_UI_EXPLORE_PAGING_NUM }}
@@ -67,6 +71,10 @@ EXPLORE_PAGING_NUM = {{ GITEA_UI_EXPLORE_PAGING_NUM }}
 ISSUE_PAGING_NUM = {{ GITEA_UI_ISSUE_PAGING_NUM }}
 ; Number of maximum commits displayed in one activity feed
 FEED_MAX_COMMIT_NUM = {{ GITEA_UI_FEED_MAX_COMMIT_NUM }}
+; Number of maximum commits displayed in commit graph.
+GRAPH_MAX_COMMIT_NUM = {{ GITEA_UI_GRAPH_MAX_COMMIT_NUM }}
+; Number of line of codes shown for a code comment
+CODE_COMMENT_LINES = {{ GITEA_UI_CODE_COMMENT_LINES }}
 ; Value of `theme-color` meta tag, used by Android >= 5.0
 ; An invalid color like "none" or "disable" will have the default style
 ; More info: https://developers.google.com/web/updates/2014/11/Support-for-theme-color-in-Chrome-39-for-Android
@@ -75,13 +83,15 @@ THEME_COLOR_META_TAG = `{{ GITEA_UI_THEME_COLOR_META_TAG }}`#6cc644
 MAX_DISPLAY_FILE_SIZE = {{ GITEA_UI_MAX_DISPLAY_FILE_SIZE }}
 ; Whether the email of the user should be shown in the Explore Users page
 SHOW_USER_EMAIL = {{ GITEA_UI_SHOW_USER_EMAIL }}
+; Set the default theme for the Gitea install
+DEFAULT_THEME = {{ GITEA_UI_DEFAULT_THEME }}
 
 [ui.admin]
 ; Number of users that are displayed on one page
 USER_PAGING_NUM = {{ GITEA_UI_ADMIN_USER_PAGING_NUM }}
 ; Number of repos that are displayed on one page
 REPO_PAGING_NUM = {{ GITEA_UI_ADMIN_REPO_PAGING_NUM }}
-; Number of notices that are displayed on in one page
+; Number of notices that are displayed on one page
 NOTICE_PAGING_NUM = {{ GITEA_UI_ADMIN_NOTICE_PAGING_NUM }}
 ; Number of organizations that are displayed on one page
 ORG_PAGING_NUM = {{ GITEA_UI_ADMIN_ORG_PAGING_NUM }}
@@ -147,6 +157,12 @@ DISABLE_ROUTER_LOG = {{ GITEA_SERVER_DISABLE_ROUTER_LOG }}
 APP_DATA_PATH = /container/gitea
 ; Application level GZIP support
 ENABLE_GZIP = {{ GITEA_SERVER_ENABLE_GZIP }}
+; Application profiling (memory and cpu)
+; For "web" command it listens on localhost:6060
+; For "serve" command it dumps to disk at PPROF_DATA_PATH as (cpuprofile|memprofile)_<username>_<temporary id>
+ENABLE_PPROF = {{ GITEA_SERVER_ENABLE_PPROF }}
+; PPROF_DATA_PATH, use an absolute path when you start gitea as service
+PPROF_DATA_PATH = {{ GITEA_SERVER_PPROF_DATA_PATH }}
 ; Landing page, can be "home", "explore", or "organizations"
 LANDING_PAGE = {{ GITEA_SERVER_LANDING_PAGE }}
 ; Enables git-lfs support. true or false, default is false.
@@ -169,7 +185,7 @@ DSA = -1
 ; Either "mysql", "postgres", "mssql" or "sqlite3", it's your choice
 {%- if GITEA_DATABASE_TYPE == 'sqlite3' %}
 DB_TYPE  = {{ GITEA_DATABASE_TYPE }}
-; For "sqlite3" and "tidb", use absolute path when you start gitea as service
+; For "sqlite3" and "tidb", use an absolute path when you start gitea as service
 PATH     = /container/gitea/gitea.db
 ; For "sqlite3" only. Query timeout
 SQLITE_TIMEOUT = {{ GITEA_DATABASE_SQLITE_TIMEOUT }}
@@ -179,9 +195,12 @@ HOST = {{ GITEA_DATABASE_HOST }}
 NAME = {{ GITEA_DATABASE_NAME }}
 USER = {{ GITEA_DATABASE_USER }}
 PASSWD = {{ GITEA_DATABASE_PASSWORD }}
+; For Postgres, either "disable" (default), "require", or "verify-full"
+; For MySQL, either "false" (default), "true", or "skip-verify"
 {%- if GITEA_DATABASE_TYPE == 'postgres' %}
-; For "postgres" only, either "disable", "require" or "verify-full"
 SSL_MODE = {{ GITEA_DATABASE_PGSQL_SSL_MODE }}
+{%- elif GITEA_DATABASE_TYPE == 'mysql' %}
+SSL_MODE = {{ GITEA_DATABASE_MYSQL_SSL_MODE }}
 {%- endif %}
 {%- endif %}
 
@@ -274,12 +293,23 @@ ENABLE_REVERSE_PROXY_AUTHENTICATION = {{ GITEA_SERVICE_ENABLE_REVERSE_PROXY_AUTH
 ENABLE_REVERSE_PROXY_AUTO_REGISTRATION = {{ GITEA_SERVICE_ENABLE_REVERSE_PROXY_AUTO_REGISTRATION }}
 ; Enable captcha validation for registration
 ENABLE_CAPTCHA = {{ GITEA_SERVICE_ENABLE_CAPTCHA }}
+; Type of captcha you want to use. Options: image, recaptcha
+CAPTCHA_TYPE = {{ GITEA_SERVICE_CAPTCHA_TYPE }}
+{% if GITEA_SERVICE_CAPTCHA_TYPE == 'recaptcha' -%}
+; Enable recaptcha to use Google's recaptcha service
+; Go to https://www.google.com/recaptcha/admin to sign up for a key
+RECAPTCHA_SECRET = {{ GITEA_SERVICE_RECAPTCHA_SECRET }}
+RECAPTCHA_SITEKEY = {{ GITEA_SERVICE_RECAPTCHA_SITEKEY }}
+{%- endif %}
 ; Default value for KeepEmailPrivate
 ; Each new user will get the value of this setting copied into their profile
 DEFAULT_KEEP_EMAIL_PRIVATE = {{ GITEA_SERVICE_DEFAULT_KEEP_EMAIL_PRIVATE }}
 ; Default value for AllowCreateOrganization
 ; Every new user will have rights set to create organizations depending on this setting
 DEFAULT_ALLOW_CREATE_ORGANIZATION = {{ GITEA_SERVICE_DEFAULT_ALLOW_CREATE_ORGANIZATION }}
+; Default value for EnableDependencies
+; Repositories will use depencies by default depending on this setting
+DEFAULT_ENABLE_DEPENDENCIES = {{ GITEA_SERVICE_DEFAULT_ENABLE_DEPENDENCIES }}
 ; Enable Timetracking
 ENABLE_TIMETRACKING = {{ GITEA_SERVICE_ENABLE_TIMETRACKING }}
 ; Default value for EnableTimetracking
@@ -542,8 +572,8 @@ DEFAULT_INTERVAL = {{ GITEA_MIRROR_DEFAULT_INTERVAL }}
 MIN_INTERVAL = {{ GITEA_MIRROR_MIN_INTERVAL }}
 
 [api]
-; Enables /api/swagger, /api/v1/swagger etc. endpoints. True or false; default is true.
-ENABLE_SWAGGER_ENDPOINT = {{ GITEA_API_ENABLE_SWAGGER_ENDPOINT }}
+; Enables Swagger. True or false; default is true.
+ENABLE_SWAGGER = {{ GITEA_API_ENABLE_SWAGGER }}
 ; Max number of items in a page
 MAX_RESPONSE_ITEMS = {{ GITEA_API_MAX_RESPONSE_ITEMS }}
 
