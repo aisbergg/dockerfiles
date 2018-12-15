@@ -20,7 +20,7 @@ dockerfiles = [
     {'path': 'haproxy/Dockerfile', 'name': 'aisberg/haproxy', 'tag': '1.8.14'},
     {'path': 'html-php5/Dockerfile', 'name': 'aisberg/html-php5', 'tag': 'latest'},
     {'path': 'html-php7/Dockerfile', 'name': 'aisberg/html-php7', 'tag': 'latest'},
-    {'path': 'limesurvey/Dockerfile', 'name': 'aisberg/limesurvey', 'tag': '3.15.0'},
+    {'path': 'limesurvey/Dockerfile', 'name': 'aisberg/limesurvey', 'tag': '3.15.4'},
     {'path': 'mediawiki/Dockerfile', 'name': 'aisberg/mediawiki', 'tag': '1.31.1'},
     {'path': 'mumble-server/Dockerfile', 'name': 'aisberg/mumble-server', 'tag': '1.2.19'},
     {'path': 'nextcloud/Dockerfile', 'name': 'aisberg/nextcloud', 'tag': '14.0.3'},

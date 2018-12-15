@@ -1,8 +1,8 @@
 FROM aisberg/nginx-php7
 
-ENV LIMESURVEY_VERSION=3.15.0 \
-    LIMESURVEY_BUILDNUMBER=181008 \
-    LIMESURVEY_SHA256_CHECKSUM=2bbcaf04a7f3e83be717a48163470e2cdef6bcf747fe6ec12f321ff8d843c909
+ENV LIMESURVEY_VERSION=3.15.4 \
+    LIMESURVEY_BUILDNUMBER=181109 \
+    LIMESURVEY_SHA256_CHECKSUM=24e5753115f936884c5a2197e9586e2b68c62615938cdc9dfb7fd59ae43d9e5a
 
 RUN set -x \
     \
@@ -28,7 +28,7 @@ RUN set -x \
         php7-zlib \
         rsync \
     \
-    # prpare working directories
+    # prepare working directories
     && workdirs /container/www
 
 COPY provision /provision
