@@ -25,7 +25,7 @@ dockerfiles = [
     {'path': 'mumble-server/Dockerfile', 'name': 'aisberg/mumble-server', 'tag': '1.2.19'},
     {'path': 'nextcloud/Dockerfile', 'name': 'aisberg/nextcloud', 'tag': '14.0.3'},
     {'path': 'phpbb/Dockerfile', 'name': 'aisberg/phpbb', 'tag': '3.2.3'},
-    {'path': 'phplist/Dockerfile', 'name': 'aisberg/phplist', 'tag': '3.3.5'},
+    {'path': 'phplist/Dockerfile', 'name': 'aisberg/phplist', 'tag': '3.3.7'},
     {'path': 'phpmyadmin/Dockerfile', 'name': 'aisberg/phpmyadmin', 'tag': '4.8.4'},
     {'path': 'redis/Dockerfile', 'name': 'aisberg/redis', 'tag': 'latest'},
     {'path': 'teamspeak-server/Dockerfile', 'name': 'aisberg/teamspeak-server', 'tag': '3.5.0'},
