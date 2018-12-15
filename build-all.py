@@ -6,7 +6,7 @@ from subprocess import call
 dockerfiles = [
     {'path': 'base/release/Dockerfile-Alpine', 'name': 'aisberg/base-alpine', 'tag': '3.8', 'pull': True},
     {'path': 'base/release/Dockerfile-Ubuntu', 'name': 'aisberg/base-ubuntu', 'tag': '18.04', 'pull': True},
-    {'path': 'burp/Dockerfile', 'name': 'aisberg/burp', 'tag': '2.2.12'},
+    {'path': 'burp/Dockerfile', 'name': 'aisberg/burp', 'tag': '2.2.14'},
     {'path': 'nginx/Dockerfile', 'name': 'aisberg/nginx', 'tag': 'latest'},
     {'path': 'nginx-node/release/Dockerfile-Node-11', 'name': 'aisberg/nginx-node', 'tag': '11'},
     {'path': 'nginx-php5/Dockerfile', 'name': 'aisberg/nginx-php5', 'tag': 'latest'},
