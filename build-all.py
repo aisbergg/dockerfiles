@@ -14,7 +14,7 @@ dockerfiles = [
     {'path': 'concrete5/Dockerfile', 'name': 'aisberg/concrete5', 'tag': '8.4.2'},
     {'path': 'dokuwiki/Dockerfile', 'name': 'aisberg/dokuwiki', 'tag': '2018-04-22'},
     {'path': 'etherpad/Dockerfile', 'name': 'aisberg/etherpad', 'tag': '1.7.0'},
-    {'path': 'gitea/Dockerfile', 'name': 'aisberg/gitea', 'tag': '1.6.0'},
+    {'path': 'gitea/Dockerfile', 'name': 'aisberg/gitea', 'tag': '1.6.1'},
     {'path': 'grav/Dockerfile', 'name': 'aisberg/grav', 'tag': 'latest'},
     {'path': 'html/Dockerfile', 'name': 'aisberg/html', 'tag': 'latest'},
     {'path': 'haproxy/Dockerfile', 'name': 'aisberg/haproxy', 'tag': '1.8.14'},
