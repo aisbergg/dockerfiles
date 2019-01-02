@@ -26,6 +26,6 @@ if [[ ! -f "/container/www/bin/grav" ]]; then
 
 elif [[ $(bool "$GRAV_AUTO_UPDATE" true) == "true" ]]; then
     pushd /container/www > /dev/null
-    php bin/gpm selfupgrade -f || true
+    php bin/gpm selfupgrade -f -y || true
     popd > /dev/null
 fi
