@@ -11,7 +11,7 @@ basedir="$1" ; shift
 storagedir="$1" ; shift
 file="$1" ; shift
 brv="$1" ; shift # one of backup/restore/verify/delete/list/unknown
-warnings="$1" ; shift
+warning_count="$1" ; shift
 
 working="$basedir/working"
 finishing="$basedir/finishing"
@@ -20,8 +20,8 @@ while [ "$#" -gt 0 ] ; do
 	case "$1" in
 		Subject:*)
 			w=""
-			[ -n "$warnings" -a "$warnings" != "0" ] \
-				&& w="($warnings warnings)"
+			[ -n "$warning_count" -a "$warning_count" != "0" ] \
+				&& w="($warning_count warnings)"
 			h="$1"
 			h="${h//%c/$client}"
 			h="${h//%w/$w}"
@@ -60,13 +60,13 @@ fi
 if [ -z "$log" -a -z "$basedir" -a -n "$storagedir" ] ; then
   # This is the case where burp has no log directory and has given a buffer to
   # log via the storagedir argument.
-  (echo "$headers" && echo && echo "$storagedir") | msmtp {% for email in SMTP_TO %}{{ email }} {% endfor %}
+  (echo "$headers" && echo && echo "$storagedir") | msmtp -- {% for email in SMTP_TO %}{{ email }} {% endfor %}
 elif [ -z "$log" ] ; then
-  echo "$headers" && echo && echo "No log found to send in email" | msmtp {% for email in SMTP_TO %}{{ email }} {% endfor %}
+  echo "$headers" && echo && echo "No log found to send in email" | msmtp -- {% for email in SMTP_TO %}{{ email }} {% endfor %}
 else
   # The normal case.
   maximum_line_count=1000
-  (echo "$headers" && echo && echo "$id" && echo && echo "Last $maximum_line_count lines of $log:" && echo && ($catcmd "$log" 2>/dev/null || cat "$log") | tail -n "$maximum_line_count") | msmtp {% for email in SMTP_TO %}{{ email }} {% endfor %}
+  (echo "$headers" && echo && echo "$id" && echo && echo "Last $maximum_line_count lines of $log:" && echo && ($catcmd "$log" 2>/dev/null || cat "$log") | tail -n "$maximum_line_count") | msmtp -- {% for email in SMTP_TO %}{{ email }} {% endfor %}
 fi
 
 exit 0

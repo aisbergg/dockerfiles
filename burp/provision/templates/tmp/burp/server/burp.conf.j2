@@ -136,7 +136,7 @@ timer_arg = {{ timer }}
 # %w - number of warnings, if any
 {% if BURP_SERVER_NOTIFY_SUCCESS -%}
 notify_success_script = /container/burp/notify.sh
-notify_success_arg = To: {{ SMTP_TO }}
+notify_success_arg = To: {{ SMTP_TO|join(',') }}
 notify_success_arg = From: {{ SMTP_FROM }}
 notify_success_arg = Subject: {{ BURP_SERVER_NOTIFY_SUCCESS_SUBJECT }}
 #Uncomment the following to have success notifications only if there were
@@ -149,9 +149,8 @@ notify_success_changes_only = {{ bool(BURP_SERVER_NOTIFY_SUCCESS_CHANGES_ONLY) }
 
 # Uncomment the following for email notifications of backups that failed.
 {% if BURP_SERVER_NOTIFY_FAILURE -%}
-notify_failure_script = /usr/share/burp/scripts/notify_script
-notify_failure_arg = msmtp
-notify_failure_arg = To: {{ SMTP_TO }}
+notify_failure_script = /container/burp/notify.sh
+notify_failure_arg = To: {{ SMTP_TO|join(',') }}
 notify_failure_arg = From: {{ SMTP_FROM }}
 notify_failure_arg = Subject: {{ BURP_SERVER_NOTIFY_FAILURE_SUBJECT }}
 {%- endif %}
