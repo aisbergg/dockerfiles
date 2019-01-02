@@ -247,7 +247,7 @@ defaults:
   SMTP_FROM: ""
   SMTP_TO:
     type: list
-    delimiter: ' '
+    delimiter: ';'
     strip: true
     default: []
   SMTP_TLS:
