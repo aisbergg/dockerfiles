@@ -1,6 +1,6 @@
 USERNAME=aisberg
 NAME=gitea
-VERSION=1.6.1
+VERSION=1.7.0-rc2
 
 DOCKER_BUILD_FLAGS?=
 
