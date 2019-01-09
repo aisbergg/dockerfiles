@@ -35,8 +35,11 @@ network_timeout = {{ BURP_CLIENT_NETWORK_TIMEOUT }}
 randomise = {{ BURP_CLIENT_RANDOMISE }}
 
 # Set server_can_restore to 0 if you do not want the server to be able to
-# initiate a restore.
+# initiate a restore (setting it to 1 also requires 'restoreprefix').
 server_can_restore = {{ bool(BURP_CLIENT_SERVER_CAN_RESTORE) }}
+# This option is prefixed to the path of all restores, and is overridden by
+# '-d' on the command line.
+restoreprefix = {{ BURP_CLIENT_RESTOREPREFIX }}
 
 # Set server_can_override_includes to 0 if you do not want the server to be
 # able to override the local include/exclude list. The default is 1.
