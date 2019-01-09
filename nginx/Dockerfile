@@ -11,6 +11,7 @@ RUN set -x \
         nginx \
         nginx-mod-http-cache-purge \
         nginx-mod-http-fancyindex \
+        nginx-mod-http-geoip \
         nginx-mod-http-headers-more \
         nginx-mod-http-image-filter \
         nginx-mod-http-lua \
@@ -39,7 +40,7 @@ RUN find /provision -type f -exec chmod 0664 {} + \
 EXPOSE 8080 8443
 
 LABEL org.opencontainers.image.title="Nginx" \
-    org.opencontainers.image.version="1.14.0" \
+    org.opencontainers.image.version="1.14.2" \
     org.opencontainers.image.description="Nginx is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server" \
     org.opencontainers.image.url="http://nginx.org" \
     org.opencontainers.image.licenses="MIT" \
