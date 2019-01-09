@@ -1,7 +1,7 @@
 FROM aisberg/nginx
 
-ENV COMPOSER_VERSION=1.7.3 \
-    COMPOSER_SHA256_CHECKSUM=bc6cbcd2c0fbc03c7ab87442b5f1fbc9407f0b9900bddc10d755bdc81bbe7b6e \
+ENV COMPOSER_VERSION=1.8.0 \
+    COMPOSER_SHA256_CHECKSUM=0901a84d56f6d6ae8f8b96b0c131d4f51ccaf169d491813d2bcedf2a6e4cefa6 \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME=/tmp
 
@@ -56,7 +56,7 @@ RUN set -x \
 COPY provision /provision
 
 LABEL org.opencontainers.image.title="Nginx-PHP5" \
-    org.opencontainers.image.version="5.6.37" \
+    org.opencontainers.image.version="5.6.39" \
     org.opencontainers.image.description="PHP-FPM (FastCGI Process Manager) is an alternative PHP FastCGI implementation." \
     org.opencontainers.image.url="https://php-fpm.org" \
     org.opencontainers.image.licenses="MIT" \
