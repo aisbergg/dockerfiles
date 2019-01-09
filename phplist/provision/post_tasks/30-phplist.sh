@@ -8,4 +8,4 @@ templer --force \
     /container/www/admin/plugins/CKEditorPlugin/ckeditor/config.js \
     /container/www/admin/plugins/CKEditorPlugin/ckeditor/config.js
 
-chmod o-rwx /container/www/config/config.php
+chmod o-rwx /container/www/config/config.php || true

@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-if [[ -f /container/www/.needs-upgrade ]]; then
+if [[ -f /container/www/.update-in-progess-phase2 ]]; then
     # call upgrade routine
-    cd /container/www
+    pushd /container/www >/dev/null
     php occ upgrade --no-interaction
 
     php occ app:list | sed -n -n "/Disabled:/,//p" > .apps-after
@@ -14,5 +14,6 @@ if [[ -f /container/www/.needs-upgrade ]]; then
     unset disabled_apps
 
     # remove upgrade indicator if upgrade succeeded
-    rm /container/www/{.needs-upgrade,.apps-before,.apps-after}
+    rm ./{.update-in-progess-phase2,.apps-before,.apps-after}
+    popd >/dev/null
 fi

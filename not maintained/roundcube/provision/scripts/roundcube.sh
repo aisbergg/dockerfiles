@@ -20,7 +20,7 @@ fi
 if [ ! -f '/var/www/roundcube/index.php' ]; then
     printINFO "No previous Roundcube installation found, creating a new one"
     if ! isDirEmpty /var/www/roundcube; then
-        printERROR "Install dir is not empty! Make sure the target dir is empty before trying to install a new Roundcube!"
+        printERROR "Install dir is not empty! Make sure the target dir is empty before trying to install Roundcube!"
         exit 1
     fi
 

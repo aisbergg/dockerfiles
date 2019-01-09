@@ -17,7 +17,7 @@ fi
 if [ ! -f '/var/www/mybb/inc/config.php' ]; then
     print_info "No previous MyBB installation found, creating a new one"
     if ! is_dir_empty /var/www/mybb; then
-        print_error "Install dir is not empty! Make sure the target dir is empty before trying to install a new MyBB!"
+        print_error "Install dir is not empty! Make sure the target dir is empty before trying to install MyBB!"
         exit 1
     fi
 
@@ -41,7 +41,7 @@ elif [[ `bool "$AUTO_UPDATE"` == "True" ]]; then
     INSTALLED_VERSION="$(cat /var/www/mybb/.version)"
     # check if newer version is available to upgrade the current installation
     if [ "$INSTALLED_VERSION" != "$MYBB_VERSION" ]; then
-        print_info "Upgrading MyBB installation from $INSTALLED_VERSION to $MYBB_VERSION"
+        print_info "Updating MyBB installation from $INSTALLED_VERSION to $MYBB_VERSION"
 
         cd /tmp
         unzip -qq -d . /usr/local/src/mybb.zip Upload/*

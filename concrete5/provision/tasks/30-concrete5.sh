@@ -12,15 +12,17 @@ if [[ $(bool "$CLEAN_INSTALLATION" false) == true ]]; then
 fi
 
 # check if an valid Concrete5 installation is present, else create a new one
-if [[ ! -f /container/www/concrete/config/concrete.php ]]; then
+if [[ ! -f /container/www/concrete/config/concrete.php || -f /container/www/.installation-in-progess ]]; then
     print_info "No previous Concrete5 installation found, creating a new one"
-    if ! is_dir_empty /container/www; then
-        print_error "Install dir is not empty! Make sure the target dir is empty before trying to install a new Concrete5!"
+    if ! is_dir_empty /container/www || [[ -f /container/www/.installation-in-progess ]]; then
+        print_error "Install dir is not empty! Make sure the target dir is empty before trying to install Concrete5!"
         exit 1
     fi
 
+    # create lockfile
+    touch /container/www/.installation-in-progess
+    # copy concrete5 source files
     unzip_strip /usr/local/src/concrete5.zip /container/www/
-    echo "Still need to install" > /container/www/.need-to-install
 fi
 
 # warn about lax permissions of the settings file

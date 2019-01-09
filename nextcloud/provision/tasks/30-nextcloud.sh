@@ -17,34 +17,45 @@ if [[ $(bool "$CLEAN_INSTALLATION" false) == "true" ]]; then
 fi
 
 # create a new Nextcloud installation
-if [[ ! -f "/container/www/version.php" ]]; then
-    if ! is_dir_empty /container/www; then
-        print_error "Install dir is not empty! Make sure the target dir is empty before trying to install a new Nextcloud!"
+if [[ ! -f "/container/www/version.php" || -f /container/www/.installation-in-progess ]]; then
+    if ! is_dir_empty /container/www || [[ -f /container/www/.installation-in-progess ]]; then
+        print_error "Install dir is not empty! Make sure the target dir is empty before trying to install Nextcloud!"
         exit 1
     fi
     print_info "No previous Nextcloud installation found, creating a new one"
 
+    pushd /container/www >/dev/null
+    # create lockfile
+    touch .installation-in-progess
+
     # create files
-    tar xjf /usr/local/src/nextcloud.tar.bz2 -C /container/www --strip-components=1
-    rm -rf /container/www/updater
+    tar xjf /usr/local/src/nextcloud.tar.bz2 --strip-components=1
+    rm -rf updater
     mkdir -p \
-        /container/www/custom_apps \
-        /container/www/data \
-        /container/www/skeleton
+        custom_apps \
+        data \
+        skeleton
 
     # set permissions
     shopt -s dotglob
-    chmod g+rwX,o-rwx -R /container/www/* &&\
-    chgrp root -R /container/www/*
+    chmod g+rwX,o-rwx -R ./*
+    chgrp root -R ./*
+    chmod u+x,g+x ./occ
     shopt -u dotglob
-    chmod +x /container/www/occ
+
+    rm .installation-in-progess
+    popd >/dev/null
 
 # check if the installed version can be upgraded
-elif [[ $(bool "$AUTO_UPDATE" "true") == "true" ]]; then
+elif [[ $(bool "$NEXTCLOUD_AUTO_UPDATE" "true") == "true" || -f /container/www/.update-in-progess ]]; then
     INSTALLED_VERSION="$(php -r 'require "/container/www/version.php"; echo $OC_VersionString;')"
-    if version_greater "$NEXTCLOUD_VERSION" "$INSTALLED_VERSION" ; then
+    if version_greater "$NEXTCLOUD_VERSION" "$INSTALLED_VERSION" || [[ -f /container/www/.update-in-progess ]]; then
         # upgrade installation without destroying the userdata
-        print_info "Upgrading Nextcloud ($INSTALLED_VERSION --> $NEXTCLOUD_VERSION)"
+        print_info "Updating Nextcloud ($INSTALLED_VERSION --> $NEXTCLOUD_VERSION)"
+
+        pushd /container/www >/dev/null
+        # create lockfile
+        touch .update-in-progess
 
         tempdir="$(mktemp -d)"
         tar xjf /usr/local/src/nextcloud.tar.bz2 -C "$tempdir" --strip-components=1
@@ -57,21 +68,22 @@ elif [[ $(bool "$AUTO_UPDATE" "true") == "true" ]]; then
             --exclude /themes/ \
             --exclude /.user.ini \
             --exclude /favicon.ico \
-            "$tempdir/" /container/www/
+            "$tempdir/" ./
 
-        rsync -rlD --include "/themes/" --exclude '/*' "$tempdir/"  /container/www/
+        rsync -rlD --include "/themes/" --exclude '/*' "$tempdir/" ./
 
         shopt -s dotglob
-        chmod g+rwX,o-rwx -R /container/www/* &&\
-        chgrp root -R /container/www/*
+        chmod g+rwX,o-rwx -R ./* || true
+        chgrp root -R ./* || true
+        chmod u+x,g+x ./occ || true
         shopt -u dotglob
 
-        touch /container/www/.needs-upgrade
-
-        cd /container/www
         php occ app:list | sed -n "/Disabled:/,//p" > .apps-before
 
-        rm -r $tempdir
+        touch .update-in-progess-phase2
+
+        rm -rf $tempdir .update-in-progess
+        popd >/dev/null
     fi
 
     unset INSTALLED_VERSION

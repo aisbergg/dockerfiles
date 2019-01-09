@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-if [[ -f /container/www/.need-to-install ]]; then
+if [[ -f /container/www/.installation-in-progess ]]; then
     CONCRETE5_DB_SERVER=${CONCRETE5_DB_SERVER:-"mysql"}
     CONCRETE5_DB_USERNAME=${CONCRETE5_DB_USERNAME:-"concrete5"}
     CONCRETE5_DB_PASSWORD=${CONCRETE5_DB_PASSWORD:-""}
@@ -17,9 +17,9 @@ if [[ -f /container/www/.need-to-install ]]; then
 
     pushd /container/www >/dev/null
     php concrete/bin/concrete5 c5:install --db-server="$CONCRETE5_DB_SERVER" --db-username="$CONCRETE5_DB_USERNAME" --db-password="$CONCRETE5_DB_PASSWORD" --db-database="$CONCRETE5_DB_NAME" --site="$CONCRETE5_SITE_NAME" --starting-point="$CONCRETE5_STARTING_POINT" --admin-email="$CONCRETE5_EMAIL" --admin-password="$CONCRETE5_PASSWORD" --site-locale="$CONCRETE5_LOCALE"
+
+    chmod o-rwx application/config/database.php || true
+
+    rm .installation-in-progess
     popd >/dev/null
-
-    chmod o-rwx /container/www/application/config/database.php
-
-    rm /container/www/.need-to-install
 fi
