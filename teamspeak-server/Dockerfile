@@ -5,8 +5,8 @@ LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
     Comment="TeamSpeak is proprietary voice-over-Internet Protocol (VoIP) software for audio communication between users on a chat channel, much like a telephone conference call. (http://www.teamspeak.com/en/)"
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    TEAMSPEAK_VERSION=3.5.0 \
-    TEAMSPEAK_SHA256_CHECKSUM=9bd56e115afea19351a6238a670dc93e365fe88f8a6c28b5b542ef6ae2ca677e
+    TEAMSPEAK_VERSION=3.5.1 \
+    TEAMSPEAK_SHA256_CHECKSUM=aa991a7b88f4d6e24867a98548b808c093771b85443f986c8adb09e78e41eb79
 
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
