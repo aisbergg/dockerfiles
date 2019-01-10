@@ -1,6 +1,6 @@
 USERNAME=aisberg
 NAME=nextcloud
-VERSION=14.0.3
+VERSION=15.0.0
 
 DOCKER_BUILD_FLAGS?=
 

@@ -15,6 +15,7 @@ defaults:
   NGINX_CLIENT_BODY_BUFFER_SIZE: 16384k
   NGINX_REWRITE_HTTPS: true
 
+
   ######################################
   ## PHP
   ######################################
@@ -37,6 +38,24 @@ defaults:
   OPCACHE_MAX_ACCELERATED_FILES: 10000
   OPCACHE_REVALIDATE_FREQ: 1
   OPCACHE_SAVE_COMMENTS: 1
+
+
+  ######################################
+  ## ImageMagick
+  ######################################
+  IMAGEMAGICK_MEMORY: "256MiB"
+  IMAGEMAGICK_MAP: "512MiB"
+  IMAGEMAGICK_WIDTH: "8KP"
+  IMAGEMAGICK_HEIGHT: "8KP"
+  IMAGEMAGICK_AREA: "25MP"
+  IMAGEMAGICK_DISK: "1GiB"
+  IMAGEMAGICK_FILE: 768
+  IMAGEMAGICK_THREAD: 2
+  IMAGEMAGICK_THROTTLE: 0
+  IMAGEMAGICK_TIME: 120
+  IMAGEMAGICK_PRECISION: 6
+  IMAGEMAGICK_ENABLED_CODERS: "GIF,JPEG,JP2,PNG,BMP,TIFF,SVG,DNG,PSD,ICON,THUMBNAIL,WEBP,MPEG"
+
 
   ######################################
   ## Nextcloud
@@ -97,6 +116,16 @@ defaults:
       - "production"
       - "stable"
   NEXTCLOUD_HAS_INTERNET_CONNECTION: true
+  NEXTCLOUD_CONNECTIVITY_CHECK_DOMAINS:
+    type: list
+    delimiter: ','
+    strip: true
+    default:
+      - "www.nextcloud.com"
+      - "www.startpage.com"
+      - "www.eff.org"
+      - "www.edri.org"
+
   NEXTCLOUD_CHECK_FOR_WORKING_WEBDAV: true
   NEXTCLOUD_CHECK_FOR_WORKING_WELLKNOWN_SETUP: true
   NEXTCLOUD_CHECK_DATA_DIRECTORY_PERMISSIONS: true
@@ -276,3 +305,4 @@ defaults:
       - "internal"
       - "global"
   NEXTCLOUD_SIMPLESIGNUPLINK_SHOWN: true
+  NEXTCLOUD_LOGIN_FORM_AUTOCOMPLETE: true

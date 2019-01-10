@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
 if [[ -f /container/www/.update-in-progess-phase2 ]]; then
     # call upgrade routine

@@ -1,6 +1,6 @@
 FROM aisberg/nginx-php7
 
-ENV NEXTCLOUD_VERSION=14.0.3 \
+ENV NEXTCLOUD_VERSION=15.0.0 \
     NEXTCLOUD_PGP_KEY_ID=28806A878AE423A28372792ED75899B9A724937A
 
 RUN set -x \
@@ -16,10 +16,13 @@ RUN set -x \
     # install required packages
     && apk add --update --no-cache --no-progress \
         bzip2 \
+        imagemagick \
+        imagemagick-libs \
         php7-apcu \
         php7-exif \
         php7-fileinfo \
         php7-gd \
+        php7-imagick \
         php7-intl \
         php7-ldap \
         php7-mbstring \
@@ -38,6 +41,7 @@ RUN set -x \
     \
     # prepare working directories
     && workdirs \
+        /etc/ImageMagick-7 \
         /container/www \
         /tmp/nextcloudtemp \
         /var/cache/nginx

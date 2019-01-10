@@ -61,6 +61,13 @@ server {
     #   see: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
     more_set_headers "X-XSS-Protection: 1; mode=block";
 
+    # user_webfinger app
+    rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+    rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json last;
+
+    # Social app
+    rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
+
     location = /.well-known/carddav {
         return 301 $real_scheme://$host/remote.php/dav;
     }

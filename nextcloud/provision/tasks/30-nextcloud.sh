@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
 print_info "Configuring Nextcloud"
 
@@ -17,7 +17,7 @@ if [[ $(bool "$CLEAN_INSTALLATION" false) == "true" ]]; then
 fi
 
 # create a new Nextcloud installation
-if [[ ! -f "/container/www/version.php" || -f /container/www/.installation-in-progess ]]; then
+if [[ ! -f /container/www/version.php || -f /container/www/.installation-in-progess ]]; then
     if ! is_dir_empty /container/www || [[ -f /container/www/.installation-in-progess ]]; then
         print_error "Install dir is not empty! Make sure the target dir is empty before trying to install Nextcloud!"
         exit 1
@@ -66,6 +66,7 @@ elif [[ $(bool "$NEXTCLOUD_AUTO_UPDATE" "true") == "true" || -f /container/www/.
             --exclude /data/ \
             --exclude /skeleton/ \
             --exclude /themes/ \
+            --exclude /.update-in-progess \
             --exclude /.user.ini \
             --exclude /favicon.ico \
             "$tempdir/" ./
@@ -88,3 +89,5 @@ elif [[ $(bool "$NEXTCLOUD_AUTO_UPDATE" "true") == "true" || -f /container/www/.
 
     unset INSTALLED_VERSION
 fi
+
+export IMAGEMAGICK_SHARED_SECRET="$(create_random_string 64)"
