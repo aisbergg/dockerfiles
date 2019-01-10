@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
 templer --force \
     --dynamic-contextfiles \

@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
 if [[ -f /container/www/.installation-in-progess ]]; then
     CONCRETE5_DB_SERVER=${CONCRETE5_DB_SERVER:-"mysql"}

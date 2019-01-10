@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
 print_info "Configuring Etherpad"
 
@@ -66,6 +66,7 @@ elif [[ $(bool "$ETHERPAD_AUTO_UPDATE" "true") == "true" || -f /container/etherp
         rsync -rlD --delete \
             --exclude /node_modules/ \
             --exclude /var/ \
+            --exclude /.update-in-progess \
             --exclude /favicon.ico \
             --exclude /settings.json \
             "$tempdir/" ./

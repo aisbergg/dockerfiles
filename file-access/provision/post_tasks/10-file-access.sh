@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
 # create users, groups and set permissions
 if [[ $(bool "$FORCE_SETTING_OF_ACLS" false) == true ]]; then

@@ -1,4 +1,4 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
 mkdir -p /container/log

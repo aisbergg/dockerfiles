@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
 print_info "Configuring MediaWiki"
 
@@ -59,6 +59,7 @@ elif [[ $(bool "$AUTO_UPDATE" true) == "true" || -f /container/www/.update-in-pr
             --exclude /extensions/ \
             --exclude /images/ \
             --exclude /skins/ \
+            --exclude /.update-in-progess \
             --exclude /composer.local.json \
             --exclude /favicon.ico \
             --exclude /LocalSettings.php \

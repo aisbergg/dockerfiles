@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
 print_info "Configuring Lime Survey"
 
@@ -52,6 +52,7 @@ elif [[ $(bool "$LIMESURVEY_AUTO_UPDATE" "true") == "true" || -f /container/www/
             --exclude /upload/ \
             --exclude /themes/ \
             --exclude /plugins/ \
+            --exclude /.update-in-progess \
             "$tempdir/" ./
 
         for dir in plugins themes; do

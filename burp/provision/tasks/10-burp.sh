@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
 export BURP_MODE=$(default "$BURP_MODE" client server)
 export MYSQL_DATABASES=${MYSQL_DATABASES:-""}

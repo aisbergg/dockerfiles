@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
 print_info "Configuring phpBB"
 
@@ -60,6 +60,7 @@ elif [[ $(bool "$PHPBB_AUTO_UPDATE" "true") == "true" || -f /container/www/.upda
             --exclude /logs/ \
             --exclude /store/ \
             --exclude /styles/ \
+            --exclude /.update-in-progess \
             --exclude /config.php \
             "$tempdir/" ./
 

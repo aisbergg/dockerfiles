@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eo pipefail
 
 if [[ -n "$MUMBLE_SUPERUSER_PASSWORD" ]]; then
     # set SuperUser password
