@@ -12,21 +12,25 @@ if [[ $(bool "$CLEAN_INSTALLATION" false) == "true" ]]; then
 fi
 
 # if Grav is not yet installed, copy it into web root
-if [[ ! -f /container/www/bin/grav || -f /container/www/.installation-in-progess ]]; then
+if [[ ! -f /container/www/bin/grav ]]; then
     print_info "Installing Grav, might take some time..."
-    if ! is_dir_empty /container/www || [[ -f /container/www/.installation-in-progess ]]; then
+    if ! is_dir_empty /container/www ]]; then
         print_error "Install dir is not empty! Make sure the target dir is empty before trying to install Grav!"
         exit 1
     fi
 
     pushd /container/www >/dev/null
-    # create lockfile
-    touch .installation-in-progess
 
-    COMPOSER_CACHE_DIR=/tmp/composer-cache composer --no-interaction create-project getgrav/grav ./
-    php bin/gpm --no-interaction install admin
+    if ! COMPOSER_CACHE_DIR=/tmp/composer-cache composer --no-interaction create-project getgrav/grav ./ &&\
+       ! php bin/gpm --no-interaction install admin ; then
+        print_error "Installation of Grav has failed, cleaning up now"
+        shopt -s dotglob
+        rm -rf ./*
+        shopt -u dotglob
+        exit 1
+    fi
 
-    rm -rf /tmp/composer-cache .installation-in-progess
+    rm -rf /tmp/composer-cache
     popd >/dev/null
 
 elif [[ $(bool "$GRAV_AUTO_UPDATE" true) == "true" ]]; then
