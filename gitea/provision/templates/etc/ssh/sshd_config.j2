@@ -57,8 +57,8 @@ ClientAliveCountMax 2
 # Maximum number of concurrent unauthenticated connections to the sshd daemon.
 MaxStartups 30
 
-# Allow client to pass locale environment variables
-AcceptEnv LANG LC_*
+# Support for Git protocol v2
+AcceptEnv GIT_PROTOCOL
 
 # Disable reverse dns lookup
 UseDNS no
