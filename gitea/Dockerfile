@@ -1,6 +1,6 @@
 FROM golang:alpine as build
 
-ENV GITEA_VERSION=1.7.0-rc2
+ENV GITEA_VERSION=1.7.0
 
 RUN apk --no-cache --no-progress add build-base git \
     && git clone --branch v$GITEA_VERSION --single-branch --depth 1 https://github.com/go-gitea/gitea.git /go/src/code.gitea.io/gitea \
