@@ -1,6 +1,6 @@
 USERNAME=aisberg
 NAME=etherpad
-VERSION=1.7.0
+VERSION=1.7.5
 
 DOCKER_BUILD_FLAGS?=
 

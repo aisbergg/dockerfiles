@@ -17,6 +17,7 @@ defaults:
   ######################################
   ETHERPAD_SITE_TITLE: "Etherpad"
   ETHERPAD_DEFAULT_PAD_TEXT: ""
+  ETHERPAD_SKIN_NAME: "no-skin"
   ETHERPAD_SHOW_SETTINGS_IN_ADMIN_PAGE: True
 
   # databse settings
