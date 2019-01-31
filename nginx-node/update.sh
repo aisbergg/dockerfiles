@@ -2,8 +2,8 @@
 set -e
 
 NODE_VERSIONS=(
-    11.6.0
-    10.15.0
+    11.8.0
+    10.15.1
     8.15.0
 )
 YARN_VERSION=1.13.0
