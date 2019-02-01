@@ -1,4 +1,4 @@
-FROM aisberg/base-alpine:3.8
+FROM aisberg/base-alpine:3.9
 
 ENV INIT=supervisor
 
@@ -25,7 +25,7 @@ RUN set -x \
         nginx-mod-stream \
     \
     # prepare directories and files
-    && rm -rf /var/www/* /etc/nginx/conf.d/* /var/cache/apk/* \
+    && rm -rf /var/www/* /etc/nginx/conf.d/* /var/cache/apk/* /var/lib/nginx/run \
     && workdirs \
         /container/tls \
         /etc/nginx \
