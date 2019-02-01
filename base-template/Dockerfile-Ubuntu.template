@@ -52,9 +52,7 @@ RUN set -x \
         ca-certificates \
         curl \
         dirmngr \
-        git \
         gnupg \
-        iputils-ping \
         nano \
         python3-minimal \
         python3-pip \
@@ -69,10 +67,8 @@ RUN set -x \
         || gpg --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$TINI_PGP_KEY_ID" ) \
     && gpg --verify /tmp/tini.asc /sbin/tini \
     && chmod 755 /sbin/tini \
-    # pip3 install --upgrade pip \
     && pip3 install schedule \
-    && pip3 install git+https://github.com/Aisbergg/python-templer.git@v1.1.4 \
-    && pip3 install git+https://github.com/Aisbergg/python-confmerge.git@v0.2.0 \
+    && pip3 install Templer \
     \
     # cleanup
     && find /usr/lib/python* -name __pycache__ -exec rm -r {} + \

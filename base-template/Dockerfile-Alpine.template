@@ -29,7 +29,6 @@ RUN set -x \
         bash \
         ca-certificates \
         curl \
-        git \
         gnupg \
         nano \
         python3 \
@@ -39,8 +38,7 @@ RUN set -x \
     && pip3 install --upgrade pip \
     && pip3 install wheel \
     && pip3 install schedule \
-    && pip3 install git+https://github.com/Aisbergg/python-templer.git@v1.1.4 \
-    && pip3 install git+https://github.com/Aisbergg/python-confmerge.git@v0.2.0 \
+    && pip3 install Templer \
     \
     # cleanup
     && find /usr/lib/python* -name __pycache__ -exec rm -r {} + \
