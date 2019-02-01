@@ -1,4 +1,6 @@
-.git
-docker-compose.yml
+.release
+**/.gitkeep
+LICENSE
 Makefile
+readme-assets
 README.md

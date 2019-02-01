@@ -1,4 +1,6 @@
-.git
-README.md
-readme-assets
+.release
+**/.gitkeep
+LICENSE
 Makefile
+readme-assets
+README.md
