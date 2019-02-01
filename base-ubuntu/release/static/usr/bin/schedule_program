@@ -1,0 +1,137 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import argparse
+import schedule
+import signal
+
+from time import sleep
+from subprocess import Popen, PIPE
+
+
+class SignalExit(Exception):
+    def __init__(self, signum):
+        self.signum = signum
+
+
+class ScheduledProgram(object):
+    def __init__(self, cmd, wake_up, exitcodes=[0]):
+        super().__init__()
+        self.cmd = cmd
+        self.wake_up = wake_up
+        self.exitcodes = exitcodes
+        self._prog = None
+        self._return_code = 0
+
+    def handle_signal(self, signum, frame):
+        raise SignalExit(signum)
+
+    def _run_prog(self):
+        self._prog = Popen(self.cmd)
+        self._return_code = self._prog.wait()
+
+    def run(self):
+        signal.signal(signal.SIGHUP, self.handle_signal)
+        signal.signal(signal.SIGINT, self.handle_signal)
+        signal.signal(signal.SIGQUIT, self.handle_signal)
+        signal.signal(signal.SIGTERM, self.handle_signal)
+
+        while True:
+            try:
+                schedule.run_pending()
+                sleep(self.wake_up)
+
+            except SignalExit as e:
+                if not self._prog:
+                    return 0
+                elif self._prog.poll() is None:
+                    self._prog.send_signal(e.signum)
+                    return self._prog.wait()
+                else:
+                    return self._prog.poll()
+
+            except:
+                if self._prog:
+                    self._prog.kill()
+                    self._prog.wait()
+                raise
+
+    def schedule_seconds(self, seconds):
+        schedule.every(seconds).seconds.do(self._run_prog)
+
+    def schedule_hours(self, hours):
+        schedule.every(hours).hours.do(self._run_prog)
+
+    def schedule_minutes(self, minutes):
+        schedule.every(minutes).minutes.do(self._run_prog)
+
+    def schedule_days(self, days):
+        schedule.every(days).days.do(self._run_prog)
+
+    def schedule_time(self, _time):
+        import re
+        only_time = re.match(
+            r'(([0-1]?[0-9]|2[0-3]):[0-5][0-9])', _time, re.M | re.I)
+        date_and_time = re.match(
+            r'(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\s+(([0-1]?[0-9]|2[0-3]):[0-5][0-9])', _time, re.M | re.I)
+
+        if only_time:
+            schedule.every().day.at(_time).do(self._run_prog)
+
+        elif date_and_time:
+            days = {
+                'monday': schedule.every().monday,
+                'tuesday': schedule.every().tuesday,
+                'wednesday': schedule.every().wednesday,
+                'thursday': schedule.every().thursday,
+                'friday': schedule.every().friday,
+                'saturday': schedule.every().saturday,
+                'sunday': schedule.every().sunday
+            }
+            days[date_and_time.group(1).lower()].at(
+                date_and_time.group(2)).do(self._run_prog)
+        else:
+            print("Wrong date and time format! Given: " + _time)
+            exit(1)
+
+        del re
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Run a program periodically')
+
+    parser.add_argument('--days', dest='days', type=int, default=0,
+                        help='Run every N days')
+    parser.add_argument('--hours', dest='hours', type=int, default=0,
+                        help='Run every N hours')
+    parser.add_argument('--minutes', dest='minutes', type=int, default=0,
+                        help='Run every N minutes')
+    parser.add_argument('--seconds', dest='seconds', type=int, default=0,
+                        help='Run every N seconds')
+    parser.add_argument('--time', dest='time', action='append', type=str,
+                        help='Run at specific time. Example: 13:15')
+    parser.add_argument('--wake-up', dest='wake_up', type=int, default=5,
+                        help='Wake up every N seconds to check if a program is scheduled to run. Default: 5')
+    parser.add_argument('cmd', nargs='+',
+                        help='The command to execute periodically')
+    args = parser.parse_args()
+
+    scheduled_program = ScheduledProgram(args.cmd, args.wake_up)
+
+    if args.days > 0:
+        scheduled_program.schedule_days(args.days)
+    if args.hours > 0:
+        scheduled_program.schedule_hours(args.hours)
+    if args.minutes > 0:
+        scheduled_program.schedule_minutes(args.minutes)
+    if args.seconds > 0:
+        scheduled_program.schedule_seconds(args.seconds)
+    if args.time:
+        for t in args.time:
+            scheduled_program.schedule_time(t)
+
+    exit(scheduled_program.run())
+
+
+if __name__ == "__main__":
+    main()

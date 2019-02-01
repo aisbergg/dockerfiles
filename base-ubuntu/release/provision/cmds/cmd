@@ -1,0 +1,45 @@
+#!/bin/bash
+set -e
+
+USAGE="Usage: cmd [OPTIONS] -- COMMAND...
+
+Execute any linux command
+
+Options:
+  -h, --help           Show this help message and exit
+  -p, --provision      Provision the container before running the command
+"
+
+provision=false
+
+# parse cli args
+while [[ $# > 0 ]]; do
+    case "$1" in
+        -h|--help)
+            echo "$USAGE"
+            exit 0
+            ;;
+        -p|--provision)
+            provision=true
+            shift 1
+            ;;
+        --)
+            shift 1
+            break
+            ;;
+        *)
+            echo "Unknown option '$1'. Did you forget to append '--' after cmd?"
+            exit 1
+            ;;
+    esac
+done
+args=($@)
+shift $#
+
+# provision the container first
+if [[ "$provision" == true ]]; then
+    . /provision/cmds/provision
+fi
+
+# execute the given command
+exec ${args[@]}

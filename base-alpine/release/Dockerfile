@@ -6,7 +6,7 @@ RUN apk add --update --no-cache --no-progress git \
 
 #-------------------------------------------------------------------------------
 
-FROM alpine:3.8
+FROM alpine:3.9
 
 ARG LANG=en_US.UTF-8
 ARG ALPINE_MIRROR=http://dl-cdn.alpinelinux.org/alpine/
@@ -29,7 +29,6 @@ RUN set -x \
         bash \
         ca-certificates \
         curl \
-        git \
         gnupg \
         nano \
         python3 \
@@ -39,8 +38,7 @@ RUN set -x \
     && pip3 install --upgrade pip \
     && pip3 install wheel \
     && pip3 install schedule \
-    && pip3 install git+https://github.com/Aisbergg/python-templer.git@v1.1.4 \
-    && pip3 install git+https://github.com/Aisbergg/python-confmerge.git@v0.2.0 \
+    && pip3 install Templer \
     \
     # cleanup
     && find /usr/lib/python* -name __pycache__ -exec rm -r {} + \
@@ -64,7 +62,7 @@ ENTRYPOINT ["/entrypoint"]
 CMD ["run"]
 
 LABEL org.opencontainers.image.title="Base Image - Alpine Linux" \
-    org.opencontainers.image.version="3.8" \
+    org.opencontainers.image.version="3.9" \
     org.opencontainers.image.description="A base image build upon Alpine Linux" \
     org.opencontainers.image.url="https://www.alpinelinux.org" \
     org.opencontainers.image.licenses="MIT" \
