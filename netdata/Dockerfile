@@ -7,7 +7,23 @@ RUN set -x \
         ca-certificates \
         iproute2 \
         msmtp \
-        smartmontools
+        smartmontools \
+    && apk add --no-cache --virtual .build-deps \
+        gcc \
+        libc-dev \
+        mariadb-connector-c-dev \
+        py2-pip \
+        python2-dev \
+        shadow \
+    && pip install mysqlclient \
+    && pip install docker \
+    \
+    # add netdata user to docker group
+    && groupadd -r -g 991 docker \
+    && usermod -a -G docker netdata \
+    \
+    # cleanup
+    && apk del .build-deps
 
 COPY /entrypoint.sh /entrypoint.sh
 
