@@ -24,7 +24,7 @@ if [[ ! -f /container/www/doku.php || -f /container/www/.installation-in-progess
     touch .installation-in-progess
 
     # extract files
-    tar xzf /usr/local/src/dokuwiki.tgz --strip-components=1
+    tar xzf /usr/local/src/dokuwiki.tar.gz --strip-components=1
     shopt -s dotglob
     chmod g+rwX,o-rwx -R ./*
     chgrp root -R ./*
@@ -44,7 +44,7 @@ elif [[ $(bool "$DOKUWIKI_AUTO_UPDATE" "true") == "true" || -f /container/www/.u
         # create lockfile
         touch .update-in-progess
 
-        tar xzf /usr/local/src/dokuwiki.tgz --strip-components=1
+        tar xzf /usr/local/src/dokuwiki.tar.gz --strip-components=1
         grep -Ev '^($|#)' data/deleted.files | xargs -n 1 rm -vrf
 
         rm .update-in-progess

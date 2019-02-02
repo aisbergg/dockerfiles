@@ -1,13 +1,13 @@
 FROM aisberg/nginx-php7
 
-ENV DOKUWIKI_VERSION=2018-04-22 \
-    DOKUWIKI_SHA256_CHECKSUM=508ae5f9d9a3fd3743b48de1b8c4b39ed8c8dc4bc34db68e7c5bdf989f538ef8
+ENV DOKUWIKI_VERSION=2018-04-22b \
+    DOKUWIKI_SHA256_CHECKSUM=071831719a1bd6b9e0ce223b590dc1aec22d199a0fb1204723c237457fdff265
 
 RUN set -x \
     \
     # download DokuWiki sources
-    && curl -fSL "http://download.dokuwiki.org/src/dokuwiki/dokuwiki-$DOKUWIKI_VERSION.tgz" -o /usr/local/src/dokuwiki.tgz \
-    && echo "$DOKUWIKI_SHA256_CHECKSUM  /usr/local/src/dokuwiki.tgz" | sha256sum -c \
+    && curl -fSL "https://github.com/splitbrain/dokuwiki/archive/release_stable_${DOKUWIKI_VERSION}.tar.gz" -o /usr/local/src/dokuwiki.tar.gz \
+    && echo "$DOKUWIKI_SHA256_CHECKSUM  /usr/local/src/dokuwiki.tar.gz" | sha256sum -c \
     \
     # install required packages
     && apk add --update --no-cache --no-progress \
