@@ -2,7 +2,7 @@
 set -e
 
 NODE_VERSIONS=(
-    11.8.0
+    11.9.0
     10.15.1
     8.15.0
 )
@@ -12,18 +12,31 @@ YARN_VERSION=1.13.0
 
 pushd "$(dirname $0)" >/dev/null
 
-release_dir="release"
-
-mkdir -p "$release_dir"
-cp .dockerignore "$release_dir"
-
 for NODE_VERSION in ${NODE_VERSIONS[@]} ; do
-    df_dest="$release_dir/Dockerfile-Node-${NODE_VERSION%%.*}"
-    cat Dockerfile.template > "$df_dest"
-    sed -ri -e '
+    release_dir="./release/${NODE_VERSION%%.*}"
+    mkdir -p "$release_dir"
+
+    echo -e "release=${NODE_VERSION}\ntag=nginx-node-${NODE_VERSION}" > "$release_dir/.release"
+    cat <<-EOF > $release_dir/.dockerignore
+		.release
+		**/.gitkeep
+		LICENSE
+		Makefile
+		readme-assets
+		README.md
+		EOF
+    cat <<-EOF > $release_dir/Makefile
+		include ../../../Makefile.mk
+
+		USERNAME=aisberg
+		NAME=node
+
+		DOCKER_BUILD_ARGS=--label "org.opencontainers.image.created=\$(shell date +'%d-%m-%Y %H:%M:%S %z')"
+		EOF
+    cat Dockerfile.template | sed -re '
         s/%%NODE_VERSION%%/'"$NODE_VERSION"'/g;
         s/%%YARN_VERSION%%/'"$YARN_VERSION"'/g;
-        ' "$df_dest"
+        ' > "$release_dir/Dockerfile"
 done
 
 popd >/dev/null
