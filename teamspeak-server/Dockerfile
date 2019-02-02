@@ -1,9 +1,5 @@
 FROM ubuntu:18.04
 
-LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
-    Version=1.5 \
-    Comment="TeamSpeak is proprietary voice-over-Internet Protocol (VoIP) software for audio communication between users on a chat channel, much like a telephone conference call. (http://www.teamspeak.com/en/)"
-
 ENV DEBIAN_FRONTEND=noninteractive \
     TEAMSPEAK_VERSION=3.5.1 \
     TEAMSPEAK_SHA256_CHECKSUM=aa991a7b88f4d6e24867a98548b808c093771b85443f986c8adb09e78e41eb79
@@ -29,3 +25,11 @@ EXPOSE 9987/udp \
     30033
 
 ENTRYPOINT ["bash", "/entrypoint.sh"]
+
+LABEL org.opencontainers.image.title="TeamSpeak" \
+    org.opencontainers.image.version="$TEAMSPEAK_VERSION" \
+    org.opencontainers.image.description="TeamSpeak is proprietary voice-over-Internet Protocol (VoIP) software for audio communication between users on a chat channel, much like a telephone conference call." \
+    org.opencontainers.image.url="http://www.teamspeak.com/en/" \
+    org.opencontainers.image.licenses="MIT" \
+    org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
+    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/teamspeak-server"
