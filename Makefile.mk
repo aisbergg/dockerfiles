@@ -109,6 +109,10 @@ major-release: tag-major-release release
 	@echo $(VERSION)
 
 
+git-tag: VERSION=$(shell . $(RELEASE_SUPPORT) ; getRelease)
+git-tag:
+	git tag -f "$(notdir $(shell pwd))-$(VERSION)"
+
 tag: TAG=$(shell . $(RELEASE_SUPPORT); getTag $(VERSION))
 tag: check-status
 	@. $(RELEASE_SUPPORT) ; ! tagExists $(TAG) || (echo "ERROR: tag $(TAG) for version $(VERSION) already tagged in git" >&2 && exit 1) ;
