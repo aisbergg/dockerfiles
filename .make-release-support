@@ -22,6 +22,16 @@ function getRelease() {
 	awk -F= '/^release=/{print $2}' .release
 }
 
+function getMajorRelease() {
+	version="$(getRelease)"
+	echo "${version%%.*}"
+}
+
+function getMinorRelease() {
+	version="$(getRelease)"
+	echo "${version%.*}"
+}
+
 function getBaseTag() {
 		sed -n -e "s/^tag=\(.*\)$(getRelease)\$/\1/p" .release
 }

@@ -28,7 +28,7 @@ SHELL=/bin/bash
 DOCKER_BUILD_CONTEXT=.
 DOCKER_FILE_PATH=Dockerfile
 
-.PHONY: pre-build docker-build post-build build build-release release patch-release minor-release major-release tag check-status check-release showver \
+.PHONY: pre-build docker-build post-build build build-release release patch-release minor-release major-release docker-tag-major-minor tag check-status check-release showver \
 	push pre-push do-push post-push
 
 build: pre-build docker-build post-build
@@ -80,6 +80,15 @@ snapshot: build push
 
 showver: .release
 	@. $(RELEASE_SUPPORT); getVersion
+
+docker-tag-major-minor: VERSION=$(shell . $(RELEASE_SUPPORT) ; getRelease)
+docker-tag-major-minor: MAJOR_VERSION=$(shell . $(RELEASE_SUPPORT) ; getMajorRelease)
+docker-tag-major-minor: MINOR_VERSION=$(shell . $(RELEASE_SUPPORT) ; getMinorRelease)
+docker-tag-major-minor:
+	@ echo docker tag $(IMAGE):$(VERSION) $(IMAGE):$(MAJOR_VERSION) ;\
+	docker tag $(IMAGE):$(VERSION) $(IMAGE):$(MAJOR_VERSION) ; \
+	echo docker tag $(IMAGE):$(VERSION) $(IMAGE):$(MINOR_VERSION) ;\
+	docker tag $(IMAGE):$(VERSION) $(IMAGE):$(MINOR_VERSION)
 
 tag-patch-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextPatchLevel)
 tag-patch-release: .release tag
