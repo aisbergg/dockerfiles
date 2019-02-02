@@ -1,4 +1,4 @@
-FROM aisberg/base-alpine:3.8
+FROM aisberg/base-alpine:3.9
 
 ENV INIT=supervisor
 
