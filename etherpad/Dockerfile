@@ -11,6 +11,7 @@ RUN set -x \
     \
     # install required packages
     && apk add --update --no-cache --no-progress \
+        git \
         rsync \
     \
     # prepare working directories
