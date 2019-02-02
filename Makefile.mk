@@ -28,10 +28,13 @@ SHELL=/bin/bash
 DOCKER_BUILD_CONTEXT=.
 DOCKER_FILE_PATH=Dockerfile
 
-.PHONY: pre-build docker-build post-build build release patch-release minor-release major-release tag check-status check-release showver \
+.PHONY: pre-build docker-build post-build build build-release release patch-release minor-release major-release tag check-status check-release showver \
 	push pre-push do-push post-push
 
 build: pre-build docker-build post-build
+
+build-release: VERSION=$(shell . $(RELEASE_SUPPORT) ; getRelease)
+build-release: pre-build docker-build post-build
 
 pre-build:
 
@@ -43,7 +46,6 @@ pre-push:
 
 
 post-push:
-
 
 
 docker-build: .release
