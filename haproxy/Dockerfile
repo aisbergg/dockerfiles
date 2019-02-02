@@ -9,8 +9,8 @@ ENV LANG=$LANG \
     TZ=:/etc/localtime \
     \
     HAPROXY_MAJOR=1.8 \
-    HAPROXY_VERSION=1.8.14 \
-    HAPROXY_SHA256_CHECKSUM=b17e402578be85e58af7a3eac99b1f675953bea9f67af2e964cf8bdbd1bd3fdf
+    HAPROXY_VERSION=1.8.12 \
+    HAPROXY_SHA256_CHECKSUM=f438a98e657935fa8fad48b98d9029a399e0ad9105cf0e7e8e54365f93d83e9b
 
 # from https://git.alpinelinux.org/cgit/aports/tree/main/haproxy?h=master
 COPY libressl-2.7.patch /usr/src/libressl-2.7.patch
