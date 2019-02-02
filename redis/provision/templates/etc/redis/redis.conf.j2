@@ -44,7 +44,7 @@
 # loadmodule /path/to/other_module.so
 {% for module in REDIS_MODULES -%}
 loadmodule "{{ module }}"
-{%- endfor %}
+{% endfor %}
 
 ################################## NETWORK #####################################
 
@@ -221,7 +221,7 @@ always-show-logo no
 #   save ""
 {% for save in REDIS_SAVE -%}
 save {{ save['seconds'] }} {{ save['changes'] }}
-{%- endfor %}
+{% endfor %}
 
 # By default Redis will stop accepting writes if RDB snapshots are enabled
 # (at least one save point) and the latest background save failed.
@@ -525,7 +525,7 @@ min-slaves-max-lag {{ REDIS_MIN_SLAVES_MAX_LAG }}
 # AOF file or transmitted to slaves may cause problems.
 {% for rename_command in REDIS_RENAME_COMMAND -%}
 rename-command "{{ rename_command['cmd'] }}" "{{ rename_command['rename'] }}"
-{%- endfor %}
+{% endfor %}
 
 ################################### CLIENTS ####################################
 
