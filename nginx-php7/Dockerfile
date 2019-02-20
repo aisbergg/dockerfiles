@@ -1,7 +1,7 @@
 FROM aisberg/nginx
 
-ENV COMPOSER_VERSION=1.8.0 \
-    COMPOSER_SHA256_CHECKSUM=0901a84d56f6d6ae8f8b96b0c131d4f51ccaf169d491813d2bcedf2a6e4cefa6 \
+ENV COMPOSER_VERSION=1.8.4 \
+    COMPOSER_SHA256_CHECKSUM=6faf282db067f0f7625a5a1d80f4ecd3228ccc9a0388aec1599824c610d5d4e3 \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME=/tmp
 
@@ -70,7 +70,7 @@ RUN set -x \
     && apk del .pecl-deps \
     \
     # install PHP Composer
-    && curl -fSL "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar" -o /usr/bin/composer \
+    && curl -fSL "https://github.com/composer/composer/releases/download/${COMPOSER_VERSION}/composer.phar" -o /usr/bin/composer \
     && echo "$COMPOSER_SHA256_CHECKSUM  /usr/bin/composer" | sha256sum -c \
     && chmod +x /usr/bin/composer \
     \
@@ -85,7 +85,7 @@ RUN set -x \
 COPY provision /provision
 
 LABEL org.opencontainers.image.title="Nginx-PHP7" \
-    org.opencontainers.image.version="7.2.13" \
+    org.opencontainers.image.version="7.2.15" \
     org.opencontainers.image.description="PHP-FPM (FastCGI Process Manager) is an alternative PHP FastCGI implementation." \
     org.opencontainers.image.url="https://php-fpm.org" \
     org.opencontainers.image.licenses="MIT" \
