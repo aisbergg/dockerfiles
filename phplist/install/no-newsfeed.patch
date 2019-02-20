@@ -1,5 +1,6 @@
---- "ui/default/footer.inc"	2018-11-01 23:14:22.883049000 +0100
-+++ ui_no-newsfeed/default/footer.inc	2018-11-01 23:15:18.102960000 +0100
+diff -rupN ui/default/footer.inc ui_no-newsfeed/default/footer.inc
+--- ui/default/footer.inc	2019-02-11 14:51:42.000000000 +0100
++++ ui_no-newsfeed/default/footer.inc	2019-02-20 10:50:41.839802567 +0100
 @@ -13,11 +13,6 @@
          <div id="language">
              <?php print $languageswitcher; ?>
@@ -12,9 +13,9 @@
  	</div><!-- end #right-bar -->
  	
  	<div class="clear"></div>
-diff -rupN "ui/default/footer_minified.inc" ui_no-newsfeed/default/footer_minified.inc
---- "ui/default/footer_minified.inc"	2018-11-01 23:14:25.586378000 +0100
-+++ ui_no-newsfeed/default/footer_minified.inc	2018-11-01 23:15:18.102960000 +0100
+diff -rupN ui/default/footer_minified.inc ui_no-newsfeed/default/footer_minified.inc
+--- ui/default/footer_minified.inc	2019-02-11 14:51:42.000000000 +0100
++++ ui_no-newsfeed/default/footer_minified.inc	2019-02-20 10:50:41.839802567 +0100
 @@ -13,11 +13,6 @@
          <div id="language">
              <?php print $languageswitcher; ?>
@@ -27,9 +28,9 @@ diff -rupN "ui/default/footer_minified.inc" ui_no-newsfeed/default/footer_minifi
  	</div><!-- end #right-bar -->
  </div> <!-- end #container -->
  	
-diff -rupN "ui (Kopie)/dressprow/footer.inc" ui/dressprow/footer.inc
---- "ui (Kopie)/dressprow/footer.inc"	2018-11-01 23:14:27.613042000 +0100
-+++ ui/dressprow/footer.inc	2018-11-01 23:15:18.102960000 +0100
+diff -rupN ui/dressprow/footer.inc ui_no-newsfeed/dressprow/footer.inc
+--- ui/dressprow/footer.inc	2019-02-11 14:51:55.000000000 +0100
++++ ui_no-newsfeed/dressprow/footer.inc	2019-02-20 10:50:41.839802567 +0100
 @@ -13,11 +13,6 @@
          <div id="language">
              <?php print $languageswitcher; ?>
@@ -42,9 +43,9 @@ diff -rupN "ui (Kopie)/dressprow/footer.inc" ui/dressprow/footer.inc
  	</div><!-- end #right-bar -->
  	
  	<div class="clear"></div>
-diff -rupN "ui (Kopie)/dressprow/footer_minified.inc" ui/dressprow/footer_minified.inc
---- "ui (Kopie)/dressprow/footer_minified.inc"	2018-11-01 23:14:29.133040000 +0100
-+++ ui/dressprow/footer_minified.inc	2018-11-01 23:15:18.106293000 +0100
+diff -rupN ui/dressprow/footer_minified.inc ui_no-newsfeed/dressprow/footer_minified.inc
+--- ui/dressprow/footer_minified.inc	2019-02-11 14:51:55.000000000 +0100
++++ ui_no-newsfeed/dressprow/footer_minified.inc	2019-02-20 10:50:41.839802567 +0100
 @@ -13,11 +13,6 @@
          <div id="language">
              <?php print $languageswitcher; ?>
@@ -57,9 +58,9 @@ diff -rupN "ui (Kopie)/dressprow/footer_minified.inc" ui/dressprow/footer_minifi
  	</div><!-- end #right-bar -->
  </div> <!-- end #container -->
  	
-diff -rupN "ui (Kopie)/phplist-ui-bootlist/footer_minified.inc" ui/phplist-ui-bootlist/footer_minified.inc
---- "ui (Kopie)/phplist-ui-bootlist/footer_minified.inc"	2018-10-11 13:49:05.000000000 +0200
-+++ ui/phplist-ui-bootlist/footer_minified.inc	2018-11-02 10:40:52.217941255 +0100
+diff -rupN ui/phplist-ui-bootlist/footer_minified.inc ui_no-newsfeed/phplist-ui-bootlist/footer_minified.inc
+--- ui/phplist-ui-bootlist/footer_minified.inc	2019-02-11 14:52:02.000000000 +0100
++++ ui_no-newsfeed/phplist-ui-bootlist/footer_minified.inc	2019-02-20 10:50:41.843135922 +0100
 @@ -1,10 +1,3 @@
 -<?php if (empty($_GET['page']) || $_GET['page'] == 'dashboard' || $_GET['page'] == 'home') { ?>
 -                <div class="clear"></div>
@@ -71,4 +72,3 @@ diff -rupN "ui (Kopie)/phplist-ui-bootlist/footer_minified.inc" ui/phplist-ui-bo
          </div> <!-- end #Wrapp -->
              <div id="footer">
                  <div class="version pull-left">
-

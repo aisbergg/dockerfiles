@@ -18,7 +18,7 @@ rsync -rlD --exclude '*.htaccess' $tempdir/phplist-$PHPLIST_VERSION/public_html/
 mkdir -p /container/www/uploadimages
 rm /container/www/config/*
 # remove phplist.org rssfeeds (those slow down the page loading)
-( cd /container/www/admin/ui && patch -p1 < /install/no-newsfeed.patch >/dev/null )
+( cd /container/www/admin && patch -p0 < /install/no-newsfeed.patch >/dev/null )
 
 # install CKEditor
 unzip -qq -d /container/www/admin/plugins/CKEditorPlugin/ $tempdir/ckeditor.zip
