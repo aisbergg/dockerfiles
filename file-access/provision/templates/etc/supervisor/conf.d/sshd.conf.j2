@@ -1,7 +1,7 @@
 [program:sshd]
 command=/usr/sbin/sshd -D -f /etc/ssh/sshd_config -e
 user=root
-environment=USER="root",HOME="/root",SHELL="/bin/bash",PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+environment=USER="root",HOME="/root",SHELL="/bin/bash",PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/bin"
 startsecs=2
 autostart=true
 autorestart=unexpected

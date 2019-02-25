@@ -31,6 +31,7 @@ RUN set -x \
         vim \
         wget \
     && pip install -U ranger-fm \
+    && pip install -U PyMySQL \
     && rm -rf /var/lib/apt/lists/* \
     \
     # create dirs
@@ -39,6 +40,9 @@ RUN set -x \
     && workdirs \
         /container/cron \
         /container/ssh \
+    \
+    # set PATH variable
+    && echo PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/bin' > /etc/environment \
     \
     # git bash completion
     && wget -q https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -O /etc/bash_completion.d/git-prompt.sh \
@@ -64,9 +68,6 @@ RUN set -x \
         /etc/ssh/moduli \
     && find /etc/skel/ -type d -exec chmod 770 {} + \
     && find /etc/skel/ -type f -exec chmod 660 {} +
-
-ENV MYSQL_HOST=mysql \
-    INIT=supervisor
 
 VOLUME \
     /home \

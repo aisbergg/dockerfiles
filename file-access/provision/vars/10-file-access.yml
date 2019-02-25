@@ -1,0 +1,4 @@
+---
+
+defaults:
+  MYSQL_HOST: mysql
