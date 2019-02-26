@@ -4,7 +4,7 @@
 # To disable the autogeneration simply change the first line of this file to   #
 # 'container_managed=false'                                                    #
 ################################################################################
-{% macro bool(b) -%}{{ bool(b) }}{% endmacro %}
+{% macro bool(b) -%}{{ 'yes' if b else 'no' }}{% endmacro %}
 
 # Redis configuration file example.
 #
