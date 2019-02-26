@@ -93,7 +93,7 @@ server {
     fastcgi_ignore_headers Cache-Control Expires Set-Cookie;
 
     # pass PHP scripts to PHP-FPM
-    location ~ ^/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+)\.php(?:$|/) {
+    location ~ ^/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+|ocm-provider/.+)\.php(?:$|/) {
         fastcgi_split_path_info     ^(.+\.php)(/.+)$;
         fastcgi_read_timeout        {{ NGINX_FASTCGI_READ_TIMEOUT }};
         include                     /etc/nginx/fastcgi_params;
@@ -116,13 +116,13 @@ server {
         fastcgi_cache_methods       GET HEAD;
     }
 
-    location ~ ^/(?:updater|ocs-provider)(?:$|/) {
+    location ~ ^/(?:updater|ocs-provider|ocm-provider)(?:$|/) {
         try_files $uri/ =404;
         index index.php;
     }
 
     # adding the cache control header for js and css files
-    location ~* \.(?:css|js|ttf|woff|svg|gif)$ {
+    location ~* \.(?:css|js|ttf|woff2?|svg|gif)$ {
         try_files $uri /index.php$request_uri;
         more_set_headers "Cache-Control: public, max-age=15778463";
         access_log off;
