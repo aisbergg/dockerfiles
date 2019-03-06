@@ -1,6 +1,9 @@
-FROM netdata/netdata:v1.12.1
+FROM netdata/netdata:v1.12.2
 
 RUN set -x \
+    \
+    # remove old packages
+    && apk del py-mysqldb \
     \
     # install packages
     && apk add --update --no-cache --no-progress \
@@ -30,7 +33,7 @@ COPY /entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
 
 LABEL org.opencontainers.image.title="Netdata" \
-    org.opencontainers.image.version="1.12.1" \
+    org.opencontainers.image.version="1.12.2" \
     org.opencontainers.image.description="Real-time performance monitoring" \
     org.opencontainers.image.url="https://my-netdata.io" \
     org.opencontainers.image.licenses="MIT" \
