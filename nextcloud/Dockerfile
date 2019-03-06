@@ -8,10 +8,10 @@ RUN set -x \
     # download Nextcloud sources
     && curl -fSL "https://download.nextcloud.com/server/releases/nextcloud-${NEXTCLOUD_VERSION}.tar.bz2" -o /usr/local/src/nextcloud.tar.bz2 \
     && curl -fSL "https://download.nextcloud.com/server/releases/nextcloud-${NEXTCLOUD_VERSION}.tar.bz2.asc" -o /usr/local/src/nextcloud.tar.bz2.asc \
-    && ( gpg --keyserver ipv4.pool.sks-keyservers.net --keyserver-options timeout=10 --recv-keys "$NEXTCLOUD_PGP_KEY_ID" \
-        || gpg --keyserver pgp.mit.edu --keyserver-options timeout=10 --recv-keys "$NEXTCLOUD_PGP_KEY_ID" \
-        || gpg --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$NEXTCLOUD_PGP_KEY_ID" ) \
-    && gpg --verify /usr/local/src/nextcloud.tar.bz2.asc /usr/local/src/nextcloud.tar.bz2 \
+    && ( gpg --batch --keyserver ipv4.pool.sks-keyservers.net --keyserver-options timeout=10 --recv-keys "$NEXTCLOUD_PGP_KEY_ID" \
+        || gpg --batch --keyserver pgp.mit.edu --keyserver-options timeout=10 --recv-keys "$NEXTCLOUD_PGP_KEY_ID" \
+        || gpg --batch --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$NEXTCLOUD_PGP_KEY_ID" ) \
+    && gpg --batch --verify /usr/local/src/nextcloud.tar.bz2.asc /usr/local/src/nextcloud.tar.bz2 \
     \
     # install required packages
     && apk add --update --no-cache --no-progress \
