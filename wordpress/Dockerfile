@@ -1,16 +1,14 @@
 FROM aisberg/nginx-php7
 
-ENV WORDPRESS_VERSION=5.0.3 \
-    WORDPRESS_SHA256_CHECKSUM=9aa4d1bc9acc39279f15e914415be87af01a886287b1b92b3a80426a4edbd78a
+ENV WP_CLI_VERSION=2.1.0 \
+    WP_CLI_PGP_KEY_ID=63AF7AA15067C05616FDDD88A3A2E8F226F0BC06
 
 RUN set -x \
     \
-    # download Wordpress sources
-    && curl -fSL "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz" -o /usr/local/src/wordpress.tar.gz \
-    && echo "$WORDPRESS_SHA256_CHECKSUM  /usr/local/src/wordpress.tar.gz" | sha256sum -c \
-    \
     # install required packages
     && apk add --update --no-cache --no-progress \
+        less \
+        mariadb-client \
         php7-apcu \
         php7-gd \
         php7-mysqli \
@@ -21,6 +19,18 @@ RUN set -x \
         imagemagick \
         imagemagick-libs \
         shared-mime-info \
+    \
+    # install WP-CLI
+    && curl -fSL "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar" -o /usr/bin/wp-cli.phar \
+    && curl -fSL "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar.asc" -o /tmp/wp-cli.phar.asc \
+    && ( gpg --batch --keyserver ipv4.pool.sks-keyservers.net --keyserver-options timeout=10 --recv-keys "$WP_CLI_PGP_KEY_ID" \
+        || gpg --batch --keyserver pgp.mit.edu --keyserver-options timeout=10 --recv-keys "$WP_CLI_PGP_KEY_ID" \
+        || gpg --batch --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$WP_CLI_PGP_KEY_ID" ) \
+    && gpg --batch --verify /tmp/wp-cli.phar.asc /usr/bin/wp-cli.phar \
+    && rm /tmp/wp-cli.phar.asc \
+    && ln -sf /usr/bin/wp-cli.phar /usr/bin/wp-cli \
+    && ln -sf /usr/bin/wp-cli.phar /usr/bin/wp \
+    && chmod +x /usr/bin/wp-cli.phar \
     \
     # prepare working directories
     && workdirs \
@@ -36,7 +46,6 @@ VOLUME /container/www
 USER 999
 
 LABEL org.opencontainers.image.title="Wordpress" \
-    org.opencontainers.image.version="$WORDPRESS_VERSION" \
     org.opencontainers.image.description="Wordpress is an open-source content management system (CMS)." \
     org.opencontainers.image.url="https://wordpress.org/" \
     org.opencontainers.image.licenses="MIT" \

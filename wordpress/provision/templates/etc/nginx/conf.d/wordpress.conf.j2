@@ -54,7 +54,12 @@ server {
     location / {
         # Try using a file from given path. If it doesn't exist try the next
         # file in the row. First try $uri, then $uri/ and /index.php as fallback
-        try_files               $uri $uri/ /index.php?$args;
+        try_files               $uri $uri/ /index.php?$args @robots;
+    }
+
+    # additional fallback if robots.txt doesn't exist
+    location @robots {
+        return 200 "User-agent: *\nDisallow: /wp-admin/\nAllow: /wp-admin/admin-ajax.php\n";
     }
 
     # limit requests to login page
@@ -68,7 +73,7 @@ server {
     location = /favicon.ico { access_log off; log_not_found off; }
 
     # deny access to non public locations
-    location ~ /\.                                    { access_log off; log_not_found off; deny all; }
+    location ~ /\.(?!well-known\/)                    { access_log off; log_not_found off; deny all; }
     location ~* wp-includes/js/tinymce/langs/.*\.php  { internal; }
     location ~* /(?:uploads|files)/.*\.php$           { deny all; }
     location ~* /wp-config.php                        { deny all; }
