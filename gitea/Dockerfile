@@ -1,6 +1,6 @@
 FROM golang:alpine as build
 
-ENV GITEA_VERSION=1.7.2
+ENV GITEA_VERSION=1.7.3
 
 RUN apk --no-cache --no-progress add build-base git \
     && git clone --branch v$GITEA_VERSION --single-branch --depth 1 https://github.com/go-gitea/gitea.git /go/src/code.gitea.io/gitea \
@@ -45,7 +45,7 @@ EXPOSE 2022
 USER 999
 
 LABEL org.opencontainers.image.title="Gitea" \
-    org.opencontainers.image.version="$GITEA_VERSION" \
+    org.opencontainers.image.version="1.7.3" \
     org.opencontainers.image.description="A self-hosted git service" \
     org.opencontainers.image.url="https://gitea.io/en-us/" \
     org.opencontainers.image.licenses="MIT" \
