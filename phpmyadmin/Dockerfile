@@ -8,10 +8,10 @@ RUN set -x \
     # download and install phpMyAdmin
     && curl -fSL "https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz" -o /usr/local/src/phpmyadmin.tar.gz \
     && curl -fSL "https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz.asc" -o /usr/local/src/phpmyadmin.tar.gz.asc \
-    && ( gpg --keyserver ipv4.pool.sks-keyservers.net --keyserver-options timeout=10 --recv-keys "$PHPMYADMIN_PGP_KEY_ID" \
-        || gpg --keyserver pgp.mit.edu --keyserver-options timeout=10 --recv-keys "$PHPMYADMIN_PGP_KEY_ID" \
-        || gpg --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$PHPMYADMIN_PGP_KEY_ID" ) \
-    && gpg --verify /usr/local/src/phpmyadmin.tar.gz.asc /usr/local/src/phpmyadmin.tar.gz \
+    && ( gpg --batch --keyserver ipv4.pool.sks-keyservers.net --keyserver-options timeout=10 --recv-keys "$PHPMYADMIN_PGP_KEY_ID" \
+        || gpg --batch --keyserver pgp.mit.edu --keyserver-options timeout=10 --recv-keys "$PHPMYADMIN_PGP_KEY_ID" \
+        || gpg --batch --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$PHPMYADMIN_PGP_KEY_ID" ) \
+    && gpg --batch --verify /usr/local/src/phpmyadmin.tar.gz.asc /usr/local/src/phpmyadmin.tar.gz \
     && mkdir -p /container/www \
     && tar xf /usr/local/src/phpmyadmin.tar.gz --strip-components=1 -C /container/www \
     && rm -rf \
