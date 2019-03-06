@@ -40,7 +40,7 @@ if [[ ! -f /container/www/LocalSettings.php || -f /container/www/.installation-i
     export MEDIAWIKI_IS_INSTALLED="false"
 
 # check if the installed version can be upgraded
-elif [[ $(bool "$AUTO_UPDATE" true) == "true" || -f /container/www/.update-in-progess ]]; then
+elif [[ $(bool "$MEDIAWIKI_AUTO_UPDATE" true) == "true" || -f /container/www/.update-in-progess ]]; then
     # information about upgrading MediaWiki can be found here: https://www.mediawiki.org/wiki/Manual:Upgrading
     INSTALLED_VERSION="$(grep 'wgVersion' /container/www/includes/DefaultSettings.php | grep -Eo '[0-9\.]+')"
     # check if newer version is available to upgrade the current installation
@@ -97,5 +97,3 @@ chmod o-rwx /container/www/LocalSettings.php || true
 if [[ -f /container/www/LocalSettings.php && "$(stat -c '%a' /container/www/LocalSettings.php | cut -c 3)" -ge 4 ]]; then
     print_warning "ATTENTION: The settings file 'LocalSettings.php' should not be world readable. Use 'chmod' to change its permissions."
 fi
-
-export IMAGEMAGICK_SHARED_SECRET="$(create_random_string 64)"
