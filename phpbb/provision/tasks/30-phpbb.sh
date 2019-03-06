@@ -80,5 +80,3 @@ elif [[ $(bool "$PHPBB_AUTO_UPDATE" "true") == "true" || -f /container/www/.upda
 
     unset INSTALLED_VERSION
 fi
-
-export IMAGEMAGICK_SHARED_SECRET="$(create_random_string 64)"

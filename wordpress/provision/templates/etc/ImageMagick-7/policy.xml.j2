@@ -74,7 +74,6 @@
   <policy domain="system" name="memory-map" value="anonymous"/>
   <policy domain="cache" name="memory-map" value="anonymous"/>
   <policy domain="system" name="shred" value="1"/>
-  <policy domain="cache" name="shared-secret" value="{{ env.IMAGEMAGICK_SHARED_SECRET }}" stealth="true"/>
 
   <!-- Disable all coders (requires ImageMagick version >= 7.0.4-7) -->
   <policy domain="coder" rights="none" pattern="*" />

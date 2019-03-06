@@ -89,5 +89,3 @@ elif [[ $(bool "$NEXTCLOUD_AUTO_UPDATE" "true") == "true" || -f /container/www/.
 
     unset INSTALLED_VERSION
 fi
-
-export IMAGEMAGICK_SHARED_SECRET="$(create_random_string 64)"
