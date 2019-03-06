@@ -1,45 +1,12 @@
 #!/bin/bash
 
-function print_message() {
-    # Prints a colorful message
-    # Usage: print_message COLOR "Some message"
-    # where COLOR can be one of: RED, YELLOW, BLUE, GREEN (default BLUE)
-
-    local C_BLUE=`tput setaf 4`
-    local C_GREEN=`tput setaf 2`
-    local C_YELLOW=`tput setaf 3`
-    local C_RED=`tput setaf 1`
-    local C_RESET=`tput sgr0`
-
-    local log_level="$1"
-    shift
-    case "$log_level" in
-        RED)
-            echo "${C_RED}$@${C_RESET}"
-            ;;
-        YELLOW)
-            echo "${C_YELLOW}$@${C_RESET}"
-            ;;
-        BLUE)
-            echo "${C_BLUE}$@${C_RESET}"
-            ;;
-        GREEN)
-            echo "${C_GREEN}$@${C_RESET}"
-            ;;
-        *)
-            echo "${C_BLUE}$@${C_RESET}"
-            ;;
-    esac
-}
+local C_BLUE=`tput setaf 4`
+local C_GREEN=`tput setaf 2`
+local C_YELLOW=`tput setaf 3`
+local C_RED=`tput setaf 1`
+local C_RESET=`tput sgr0`
 
 function print_headline() {
-    # Prints a colorful headline
-    # Usage: print_headline COLOR "Some message"
-    # where COLOR can be one of: RED, YELLOW, BLUE, GREEN (default BLUE)
-
-    local log_level="$1"
-    shift
-
     # format string
     local input_str="$@"
     local term_cols=$(tput cols)
@@ -56,13 +23,9 @@ function print_headline() {
     str+="$(eval "printf '#'%.0s {1..$term_cols}")"
 
     # printing the formatted message
-    print_message $log_level "$str"
+    echo  "${C_GREEN}${str}${C_RESET}"
 
 }
-
-#################################
-# main
-#################################
 
 greeting_messages=(
     "Welcome, good to see you again!"
@@ -77,16 +40,15 @@ greeting_messages=(
 )
 
 clear
-print_headline GREEN "${greeting_messages[$(expr $(shuf -i 1-${#greeting_messages[@]} -n 1) - 1)]}"
+print_headline "${greeting_messages[$(expr $(shuf -i 1-${#greeting_messages[@]} -n 1) - 1)]}"
 
-echo
-print_message BLUE "Notes
-====="
-echo "Here you have access to the files of all services run by your organization. All the service files are neatly organized one place. You can find them in the directory: /apps
+echo "${C_BLUE}Notes
+=====${C_RESET}
+This Secure Shell (SSH) provides file access to services run by your organization. All service data is neatly organized and can be found in the directory '/apps'. Newly created files in '/apps' or '$HOME' will be persistent, however files created in different places might be deleted at anytime.
 
-Beware that the services itself run in separated docker containers (this SSH access too), and therefore you won't be able to control the services itself. Also this SSH lives in a 'virtual' file system. Files created in your home ($HOME) or service directory (/apps) are persistent and thus they are save. Data stored in different location eventually will be lost!
-"
-print_message YELLOW "Important
-========="
-echo "This is a production environment! For your private testing and conducting experiments use your own development environment!
+Webservers and other programs cannot be controled through this SSH access. If you help any help ask the administrator for assistance.
+
+${C_YELLOW}Important
+=========${C_RESET}
+This is a production environment! Therefore this is not a place for experiments and private testing. For development use your own environment at home!
 "
