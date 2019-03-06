@@ -18,6 +18,7 @@ RUN set -x \
         cron \
         curl \
         git \
+        less \
         man \
         mysql-client \
         nano \
