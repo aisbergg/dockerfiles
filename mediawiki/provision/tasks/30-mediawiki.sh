@@ -30,9 +30,6 @@ if [[ ! -f /container/www/LocalSettings.php || -f /container/www/.installation-i
     chgrp root -R ./*
     shopt -u dotglob
 
-    # fix syntax of Alpines 'timeout' program, so that ImageMagick can be used
-    sed -i -e 's?/usr/bin/timeout \$MW_WALL_CLOCK_LIMIT?/usr/bin/timeout -t \$MW_WALL_CLOCK_LIMIT?g' includes/shell/limit.sh
-
     rm .installation-in-progess
     popd >/dev/null
 

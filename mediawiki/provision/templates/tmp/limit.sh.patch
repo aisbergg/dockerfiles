@@ -1,0 +1,14 @@
+--- limit.sh
++++ limit.sh
+@@ -90,7 +90,10 @@
+ 	ulimit -f "$MW_FILE_SIZE_LIMIT"
+ fi
+ if [ "$MW_WALL_CLOCK_LIMIT" -gt 0 -a -x "/usr/bin/timeout" ]; then
+-	/usr/bin/timeout $MW_WALL_CLOCK_LIMIT /bin/bash -c "$1" 3>&-
++	if [[ -f /etc/alpine-release ]]; then
++		extra_flag_for_alpine="-t"
++	fi
++	/usr/bin/timeout $extra_flag_for_alpine $MW_WALL_CLOCK_LIMIT /bin/bash -c "$1" 3>&-
+ 	STATUS="$?"
+ 	if [ "$STATUS" == 124 ]; then
+ 		log "timed out executing command \"$1\""
