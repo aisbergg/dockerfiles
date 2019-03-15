@@ -18,13 +18,24 @@ RUN set -x \
         cron \
         curl \
         git \
+        iputils-ping \
         less \
         man \
         mysql-client \
         nano \
         openssh-server \
-        php7.2-cli \
-        php7.2-mysql \
+        php-cli \
+        php-curl \
+        php-fileinfo \
+        php-gd \
+        php-intl \
+        php-json \
+        php-mbstring \
+        php-mysql \
+        php-pear \
+        php-redis \
+        php-tokenizer \
+        php-xml \
         renameutils \
         rsync \
         tmux \
