@@ -11,6 +11,24 @@ defaults:
     choices:
       - client
       - server
+  BURP_IONICE_CLASS:
+    type: choice
+    default: 2
+    choices:
+      - 1
+      - 2
+      - 3
+  BURP_IONICE_CLASSDATA:
+    type: choice
+    default: 7
+    choices:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
 
   ######################################
   ## Burp Server

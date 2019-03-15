@@ -28,6 +28,8 @@ elif [[ "$BURP_MODE" == client ]]; then
         /container/tls
 
     BURP_CLIENT_SCHEDULE=${BURP_CLIENT_SCHEDULE:-20}
+    BURP_IONICE_CLASS=${BURP_IONICE_CLASS:-2}
+    BURP_IONICE_CLASSDATA=${BURP_IONICE_CLASSDATA:-7}
     export INIT=tini
-    export INIT_ARGS=( /usr/bin/schedule_program --minutes $BURP_CLIENT_SCHEDULE --wake-up 60 -- /usr/sbin/burp -a t -c /container/burp/burp.conf )
+    export INIT_ARGS=( /usr/bin/ionice -c${BURP_IONICE_CLASS} -n${BURP_IONICE_CLASSDATA} /usr/bin/schedule_program --minutes $BURP_CLIENT_SCHEDULE --wake-up 60 -- /usr/sbin/burp -a t -c /container/burp/burp.conf )
 fi

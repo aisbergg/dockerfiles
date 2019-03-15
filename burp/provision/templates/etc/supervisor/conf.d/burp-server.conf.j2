@@ -1,5 +1,5 @@
 [program:burp-server]
-command=/usr/sbin/burp -F -c /container/burp/burp.conf
+command=/usr/bin/ionice -c{{ BURP_IONICE_CLASS }} -n{{ BURP_IONICE_CLASSDATA }} /usr/sbin/burp -F -c /container/burp/burp.conf
 autostart={{ 'true' if BURP_MODE|lower == 'server' else 'false' }}
 autorestart=unexpected
 directory=/container/burp
