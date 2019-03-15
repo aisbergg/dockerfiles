@@ -1,10 +1,10 @@
 #!/bin/bash
 
-local C_BLUE=`tput setaf 4`
-local C_GREEN=`tput setaf 2`
-local C_YELLOW=`tput setaf 3`
-local C_RED=`tput setaf 1`
-local C_RESET=`tput sgr0`
+C_BLUE=`tput setaf 4`
+C_GREEN=`tput setaf 2`
+C_YELLOW=`tput setaf 3`
+C_RED=`tput setaf 1`
+C_RESET=`tput sgr0`
 
 function print_headline() {
     # format string
@@ -24,7 +24,6 @@ function print_headline() {
 
     # printing the formatted message
     echo  "${C_GREEN}${str}${C_RESET}"
-
 }
 
 greeting_messages=(
@@ -42,7 +41,8 @@ greeting_messages=(
 clear
 print_headline "${greeting_messages[$(expr $(shuf -i 1-${#greeting_messages[@]} -n 1) - 1)]}"
 
-echo "${C_BLUE}Notes
+echo "
+${C_BLUE}Notes
 =====${C_RESET}
 This Secure Shell (SSH) provides file access to services run by your organization. All service data is neatly organized and can be found in the directory '/apps'. Newly created files in '/apps' or '$HOME' will be persistent, however files created in different places might be deleted at anytime.
 
