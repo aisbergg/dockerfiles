@@ -1,7 +1,7 @@
 FROM aisberg/nginx
 
-ENV NODE_VERSION=10.15.2 \
-    YARN_VERSION=1.13.0
+ENV NODE_VERSION=10.15.3 \
+    YARN_VERSION=1.15.2
 
 # code taken from official node repo: https://hub.docker.com/_/node/
 #-------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
 #-------------------------------------------------------------------------------
 
 LABEL org.opencontainers.image.title="Node.js" \
-    org.opencontainers.image.version="10.15.2" \
+    org.opencontainers.image.version="10.15.3" \
     org.opencontainers.image.description="Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine." \
     org.opencontainers.image.url="https://nodejs.org/" \
     org.opencontainers.image.licenses="MIT" \

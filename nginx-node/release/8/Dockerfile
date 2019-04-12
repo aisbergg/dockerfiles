@@ -1,7 +1,7 @@
 FROM aisberg/nginx
 
 ENV NODE_VERSION=8.15.1 \
-    YARN_VERSION=1.13.0
+    YARN_VERSION=1.15.2
 
 # code taken from official node repo: https://hub.docker.com/_/node/
 #-------------------------------------------------------------------------------
