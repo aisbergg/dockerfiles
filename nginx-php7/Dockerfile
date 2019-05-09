@@ -1,9 +1,10 @@
 FROM aisberg/nginx
 
-ENV COMPOSER_VERSION=1.8.4 \
-    COMPOSER_SHA256_CHECKSUM=6faf282db067f0f7625a5a1d80f4ecd3228ccc9a0388aec1599824c610d5d4e3 \
+ENV COMPOSER_VERSION=1.8.5 \
+    COMPOSER_SHA256_CHECKSUM=23b29b1a921b56db3c12ba531752dffcfaa3de0fcece3e54974e06990e46bbf9 \
     COMPOSER_ALLOW_SUPERUSER=1 \
-    COMPOSER_HOME=/tmp
+    COMPOSER_HOME=/tmp \
+    LD_PRELOAD="/usr/lib/preloadable_libiconv.so php"
 
 # inspired by https://github.com/graze/docker-php-alpine
 RUN set -x \
@@ -48,6 +49,9 @@ RUN set -x \
         php7-zlib \
         yaml \
         zlib \
+    \
+    # fix for PHP ICONV extension
+    && apk add --no-cache --repository "$(grep -oE '^.*/alpine/' /etc/apk/repositories | head -n1)edge/community/" gnu-libiconv \
     \
     # build PHP YAML extension
     && apk add --no-progress --virtual .pecl-deps \
