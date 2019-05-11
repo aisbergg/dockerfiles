@@ -1,4 +1,4 @@
-FROM aisberg/nginx-node:11
+FROM aisberg/nginx-node:12
 
 ENV ETHERPAD_VERSION=1.7.5 \
     ETHERPAD_SHA256_CHECKSUM=485c336cd9e21ce9fc442705b7e4e93b9af3b2c7f4665a0aa40cdb989c57bc7f
