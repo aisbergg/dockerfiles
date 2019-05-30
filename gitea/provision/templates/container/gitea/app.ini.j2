@@ -31,8 +31,13 @@ PULL_REQUEST_QUEUE_LENGTH = {{ GITEA_REPOSITORY_PULL_REQUEST_QUEUE_LENGTH }}
 PREFERRED_LICENSES = {{ GITEA_REPOSITORY_PREFERRED_LICENSES }}
 ; Disable the ability to interact with repositories using the HTTP protocol
 DISABLE_HTTP_GIT = {{ GITEA_REPOSITORY_DISABLE_HTTP_GIT }}
+; Value for Access-Control-Allow-Origin header, default is not to present
+; WARNING: This maybe harmful to you website if you do not give it a right value.
+ACCESS_CONTROL_ALLOW_ORIGIN = {{ GITEA_REPOSITORY_ACCESS_CONTROL_ALLOW_ORIGIN }}
 ; Force ssh:// clone url instead of scp-style uri when default SSH port is used
 USE_COMPAT_SSH_URI = {{ GITEA_REPOSITORY_USE_COMPAT_SSH_URI }}
+; Close issues as long as a commit on any branch marks it as fixed
+DEFAULT_CLOSE_ISSUES_VIA_COMMITS_IN_ANY_BRANCH =  {{ GITEA_REPOSITORY_DEFAULT_CLOSE_ISSUES_VIA_COMMITS_IN_ANY_BRANCH }}
 
 [repository.editor]
 ; List of file extensions for which lines should be wrapped in the CodeMirror editor
@@ -64,6 +69,10 @@ MAX_FILES = {{ GITEA_REPOSITORY_UPLOAD_MAX_FILES }}
 ; List of prefixes used in Pull Request title to mark them as Work In Progress
 WORK_IN_PROGRESS_PREFIXES={{ GITEA_REPOSITORY_PULL_REQUEST_WORK_IN_PROGRESS_PREFIXES }}
 
+[repository.issue]
+; List of reasons why a Pull Request or Issue can be locked
+LOCK_REASONS={{ GITEA_REPOSITORY_ISSUE_LOCK_REASONS }}
+
 [ui]
 ; Number of repositories that are displayed on one explore page
 EXPLORE_PAGING_NUM = {{ GITEA_UI_EXPLORE_PAGING_NUM }}
@@ -85,6 +94,8 @@ MAX_DISPLAY_FILE_SIZE = {{ GITEA_UI_MAX_DISPLAY_FILE_SIZE }}
 SHOW_USER_EMAIL = {{ GITEA_UI_SHOW_USER_EMAIL }}
 ; Set the default theme for the Gitea install
 DEFAULT_THEME = {{ GITEA_UI_DEFAULT_THEME }}
+; All available themes. Allow users select personalized themes regardless of the value of `DEFAULT_THEME`.
+THEMES = {{ GITEA_UI_THEMES }}
 
 [ui.admin]
 ; Number of users that are displayed on one page
@@ -208,9 +219,24 @@ SSL_MODE = {{ GITEA_DATABASE_MYSQL_SSL_MODE }}
 ITERATE_BUFFER_SIZE = {{ GITEA_DATABASE_ITERATE_BUFFER_SIZE }}
 ; Show the database generated SQL
 LOG_SQL = {{ GITEA_DATABASE_LOG_SQL }}
+; Maximum number of DB Connect retries
+DB_RETRIES = {{ GITEA_DATABASE_DB_RETRIES }}
+; Backoff time per DB retry (time.Duration)
+DB_RETRY_BACKOFF = {{ GITEA_DATABASE_DB_RETRY_BACKOFF }}
 
 [indexer]
+; Issue indexer type, currently support: bleve or db, default is bleve
+ISSUE_INDEXER_TYPE = {{ GITEA_INDEXER_ISSUE_INDEXER_TYPE }}
+; Issue indexer storage path, available when ISSUE_INDEXER_TYPE is bleve
 ISSUE_INDEXER_PATH = /container/gitea/indexers/issues.bleve
+; Issue indexer queue, currently support: channel or levelqueue, default is levelqueue
+ISSUE_INDEXER_QUEUE_TYPE = {{ GITEA_INDEXER_ISSUE_INDEXER_QUEUE_TYPE }}
+; When ISSUE_INDEXER_QUEUE_TYPE is levelqueue, this will be the queue will be saved path,
+; default is indexers/issues.queue
+ISSUE_INDEXER_QUEUE_DIR = /container/gitea/indexers/issues.queue
+; Batch queue number, default is 20
+ISSUE_INDEXER_QUEUE_BATCH_NUMBER = {{ GITEA_INDEXER_ISSUE_INDEXER_QUEUE_BATCH_NUMBER }}
+
 ; repo indexer by default disabled, since it uses a lot of disk space
 REPO_INDEXER_ENABLED = {{ GITEA_INDEXER_REPO_INDEXER_ENABLED }}
 REPO_INDEXER_PATH = /container/gitea/indexers/repos.bleve
@@ -307,6 +333,11 @@ DEFAULT_KEEP_EMAIL_PRIVATE = {{ GITEA_SERVICE_DEFAULT_KEEP_EMAIL_PRIVATE }}
 ; Default value for AllowCreateOrganization
 ; Every new user will have rights set to create organizations depending on this setting
 DEFAULT_ALLOW_CREATE_ORGANIZATION = {{ GITEA_SERVICE_DEFAULT_ALLOW_CREATE_ORGANIZATION }}
+; Either "public", "limited" or "private", default is "public"
+; Limited is for signed user only
+; Private is only for member of the organization
+; Public is for everyone
+DEFAULT_ORG_VISIBILITY = {{ GITEA_SERVICE_DEFAULT_ORG_VISIBILITY }}
 ; Default value for EnableDependencies
 ; Repositories will use depencies by default depending on this setting
 DEFAULT_ENABLE_DEPENDENCIES = {{ GITEA_SERVICE_DEFAULT_ENABLE_DEPENDENCIES }}
@@ -322,6 +353,12 @@ DEFAULT_ALLOW_ONLY_CONTRIBUTORS_TO_TRACK_TIME = {{ GITEA_SERVICE_DEFAULT_ALLOW_O
 ; if he has set KeepEmailPrivate to true. The user's email will be replaced with a
 ; concatenation of the user name in lower case, "@" and NO_REPLY_ADDRESS.
 NO_REPLY_ADDRESS = {{ GITEA_SERVICE_NO_REPLY_ADDRESS }}
+; Show Registration button
+SHOW_REGISTRATION_BUTTON = {{ GITEA_SERVICE_SHOW_REGISTRATION_BUTTON }}
+; Default value for AutoWatchNewRepos
+; When adding a repo to a team or creating a new repo all team members will watch the
+; repo automatically if enabled
+AUTO_WATCH_NEW_REPOS = {{ GITEA_SERVICE_AUTO_WATCH_NEW_REPOS }}
 
 [webhook]
 ; Hook task queue length, increase if webhook shooting starts hanging
@@ -362,6 +399,8 @@ USER = {% if GITEA_MAILER_ENABLED %}{{ GITEA_MAILER_USER | mandatory('You need t
 PASSWD = `{% if GITEA_MAILER_ENABLED %}{{ GITEA_MAILER_PASSWD | mandatory('You need to specify a password for smtp') }}{% endif %}`
 ; Send mails as plain text
 SEND_AS_PLAIN_TEXT = {{ GITEA_MAILER_SEND_AS_PLAIN_TEXT }}
+; Set Mailer Type (either SMTP, sendmail or dummy to just send to the log)
+MAILER_TYPE = smtp
 
 [cache]
 ; Either "memory", "redis", or "memcache", default is "memory"
@@ -447,6 +486,7 @@ MODE = {{ GITEA_LOG_MODE }}
 BUFFER_LEN = {{ GITEA_LOG_BUFFER_LEN }}
 ; Either "Trace", "Debug", "Info", "Warn", "Error", "Critical", default is "Trace"
 LEVEL = {{ GITEA_LOG_LEVEL }}
+REDIRECT_MACARON_LOG = {{ GITEA_LOG_REDIRECT_MACARON_LOG }}
 
 ; For "console" mode only
 [log.console]
@@ -559,6 +599,7 @@ GC_ARGS = {{ GITEA_GIT_GC_ARGS }}
 
 ; Operation timeout in seconds
 [git.timeout]
+DEFAULT = {{ GITEA_GIT_TIMEOUT_DEFAULT }}
 MIGRATE = {{ GITEA_GIT_TIMEOUT_MIGRATE }}
 MIRROR = {{ GITEA_GIT_TIMEOUT_MIRROR }}
 CLONE = {{ GITEA_GIT_TIMEOUT_CLONE }}
@@ -576,6 +617,22 @@ MIN_INTERVAL = {{ GITEA_MIRROR_MIN_INTERVAL }}
 ENABLE_SWAGGER = {{ GITEA_API_ENABLE_SWAGGER }}
 ; Max number of items in a page
 MAX_RESPONSE_ITEMS = {{ GITEA_API_MAX_RESPONSE_ITEMS }}
+; Default paging number of api
+DEFAULT_PAGING_NUM = {{ GITEA_API_DEFAULT_PAGING_NUM }}
+; Default and maximum number of items per page for git trees api
+DEFAULT_GIT_TREES_PER_PAGE = {{ GITEA_API_DEFAULT_GIT_TREES_PER_PAGE }}
+
+[oauth2]
+; Enables OAuth2 provider
+ENABLED = {{ GITEA_OAUTH2_ENABLED }}
+; Lifetime of an OAuth2 access token in seconds
+ACCESS_TOKEN_EXPIRATION_TIME = {{ GITEA_OAUTH2_ACCESS_TOKEN_EXPIRATION_TIME }}
+; Lifetime of an OAuth2 access token in hours
+REFRESH_TOKEN_EXPIRATION_TIME = {{ GITEA_OAUTH2_REFRESH_TOKEN_EXPIRATION_TIME }}
+; Check if refresh token got already used
+INVALIDATE_REFRESH_TOKENS = {{ GITEA_OAUTH2_INVALIDATE_REFRESH_TOKENS }}
+; OAuth2 authentication secret for access and refresh tokens, change this a unique string.
+JWT_SECRET = {{ GITEA_OAUTH2_JWT_SECRET }}
 
 [i18n]
 LANGS = en-US,zh-CN,zh-HK,zh-TW,de-DE,fr-FR,nl-NL,lv-LV,ru-RU,uk-UA,ja-JP,es-ES,pt-BR,pl-PL,bg-BG,it-IT,fi-FI,tr-TR,cs-CZ,sr-SP,sv-SE,ko-KR
