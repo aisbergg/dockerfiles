@@ -1,4 +1,4 @@
-FROM aisberg/base-alpine:3.9
+FROM aisberg/base-alpine:3.10
 
 RUN set -x \
     \

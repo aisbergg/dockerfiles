@@ -6,7 +6,7 @@ RUN apk add --update --no-cache --no-progress git \
 
 #-------------------------------------------------------------------------------
 
-FROM alpine:3.9
+FROM alpine:3.10
 
 ARG LANG=en_US.UTF-8
 ARG ALPINE_MIRROR=http://dl-cdn.alpinelinux.org/alpine/
@@ -62,7 +62,7 @@ ENTRYPOINT ["/entrypoint"]
 CMD ["run"]
 
 LABEL org.opencontainers.image.title="Base Image - Alpine Linux" \
-    org.opencontainers.image.version="3.9" \
+    org.opencontainers.image.version="3.10" \
     org.opencontainers.image.description="A base image build upon Alpine Linux" \
     org.opencontainers.image.url="https://www.alpinelinux.org" \
     org.opencontainers.image.licenses="MIT" \
