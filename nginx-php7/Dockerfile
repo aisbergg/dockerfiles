@@ -1,7 +1,7 @@
 FROM aisberg/nginx
 
-ENV COMPOSER_VERSION=1.8.5 \
-    COMPOSER_SHA256_CHECKSUM=23b29b1a921b56db3c12ba531752dffcfaa3de0fcece3e54974e06990e46bbf9 \
+ENV COMPOSER_VERSION=1.9.0 \
+    COMPOSER_SHA256_CHECKSUM=1126fd7501ae6ff1dc9f91f0a3eca7430b1ea060d018d21521dc5e2d1ba01606 \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME=/tmp \
     LD_PRELOAD="/usr/lib/preloadable_libiconv.so php"
@@ -12,6 +12,7 @@ RUN set -x \
     # install required packages
     && apk update \
     && apk add --no-progress \
+        gnu-libiconv\
         pcre \
         php7 \
         php7-apcu \
@@ -49,9 +50,6 @@ RUN set -x \
         php7-zlib \
         yaml \
         zlib \
-    \
-    # fix for PHP ICONV extension
-    && apk add --no-cache --repository "$(grep -oE '^.*/alpine/' /etc/apk/repositories | head -n1)edge/community/" gnu-libiconv \
     \
     # build PHP YAML extension
     && apk add --no-progress --virtual .pecl-deps \
