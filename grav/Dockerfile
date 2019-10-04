@@ -5,6 +5,7 @@ RUN set -x \
     # install required packages
     # PHP requirements: https://learn.getgrav.org/basics/requirements#php-requirements
     && apk add --update --no-cache --no-progress \
+        git \
         php7-apcu \
         php7-ctype \
         php7-curl \
@@ -20,6 +21,10 @@ RUN set -x \
         php7-xml \
         # php7-yaml \
         php7-zip \
+        # for TNTSearch plugin
+        php7-pdo_mysql \
+        php7-pdo_sqlite \
+        sqlite \
     \
     # prepare working directory
     && workdirs /container/www
