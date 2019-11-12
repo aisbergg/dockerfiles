@@ -1,6 +1,6 @@
 FROM aisberg/nginx-php7
 
-ENV NEXTCLOUD_VERSION=15.0.7 \
+ENV NEXTCLOUD_VERSION=16.0.6 \
     NEXTCLOUD_PGP_KEY_ID=28806A878AE423A28372792ED75899B9A724937A
 
 RUN set -x \
@@ -8,7 +8,7 @@ RUN set -x \
     # download Nextcloud sources
     && curl -fSL "https://download.nextcloud.com/server/releases/nextcloud-${NEXTCLOUD_VERSION}.tar.bz2" -o /usr/local/src/nextcloud.tar.bz2 \
     && curl -fSL "https://download.nextcloud.com/server/releases/nextcloud-${NEXTCLOUD_VERSION}.tar.bz2.asc" -o /usr/local/src/nextcloud.tar.bz2.asc \
-    && ( gpg --batch --keyserver ipv4.pool.sks-keyservers.net --keyserver-options timeout=10 --recv-keys "$NEXTCLOUD_PGP_KEY_ID" \
+    && ( gpg --batch --keyserver ha.pool.sks-keyservers.net --keyserver-options timeout=10 --recv-keys "$NEXTCLOUD_PGP_KEY_ID" \
         || gpg --batch --keyserver pgp.mit.edu --keyserver-options timeout=10 --recv-keys "$NEXTCLOUD_PGP_KEY_ID" \
         || gpg --batch --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$NEXTCLOUD_PGP_KEY_ID" ) \
     && gpg --batch --verify /usr/local/src/nextcloud.tar.bz2.asc /usr/local/src/nextcloud.tar.bz2 \
