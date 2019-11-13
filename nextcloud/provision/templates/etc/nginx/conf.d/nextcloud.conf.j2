@@ -50,20 +50,13 @@ server {
     }
     {%- endif %}
 
-    # add security headers
-    more_set_headers "X-Frame-Options: SAMEORIGIN";
-    more_set_headers "X-Robots-Tag: none";
-    more_set_headers "X-Download-Options: noopen";
-    more_set_headers "X-Permitted-Cross-Domain-Policies: none";
+    # security headers
     more_set_headers "Referrer-Policy: no-referrer";
-
-    # add nosniff header
-    #   see: https://www.owasp.org/index.php/List_of_useful_HTTP_headers
     more_set_headers "X-Content-Type-Options: nosniff";
-
-    # enable anti-cross-site scripting filter built into Internet Explorer,
-    # Chrome and Safari
-    #   see: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
+    more_set_headers "X-Download-Options: noopen";
+    more_set_headers "X-Frame-Options: SAMEORIGIN";
+    more_set_headers "X-Permitted-Cross-Domain-Policies: none";
+    more_set_headers "X-Robots-Tag: none";
     more_set_headers "X-XSS-Protection: 1; mode=block";
 
     # user_webfinger app
@@ -73,6 +66,7 @@ server {
     # Social app
     rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
 
+    # contacts and calendar
     location = /.well-known/carddav {
         return 301 $real_scheme://$host/remote.php/dav;
     }
@@ -81,16 +75,28 @@ server {
     }
 
     # disable logging
-    location = /robots.txt  { access_log off; log_not_found off; allow all; }
-    location = /favicon.ico { access_log off; log_not_found off; }
-
-    location / {
-        rewrite ^ /index.php$request_uri;
+    location = /robots.txt  {
+        access_log off;
+        log_not_found off;
+        allow all;
+    }
+    location = /favicon.ico {
+        access_log off;
+        log_not_found off;
     }
 
-    # deny access
-    location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data|skeleton)/ { deny all; }
-    location ~ ^/(?:\.autotest|occ|issue|indie|db_|console|README) { deny all; }
+    # default location
+    location / {
+        rewrite ^ /index.php;
+    }
+
+    # deny access to internal locations
+    location ~ ^\/(?:build|tests|config|lib|3rdparty|templates|data|skeleton)\/ {
+        deny all;
+    }
+    location ~ ^\/(?:\.autotest|occ|issue|indie|db_|console|README) {
+        deny all;
+    }
 
     # cache_purge (with $http_cookies we have unique keys for the user)
     fastcgi_cache_key $http_cookie$request_method$host$request_uri;
@@ -98,15 +104,17 @@ server {
     fastcgi_ignore_headers Cache-Control Expires Set-Cookie;
 
     # pass PHP scripts to PHP-FPM
-    location ~ ^/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+|ocm-provider/.+)\.php(?:$|/) {
-        fastcgi_split_path_info     ^(.+\.php)(/.+)$;
-        fastcgi_read_timeout        {{ NGINX_FASTCGI_READ_TIMEOUT }};
+    location ~ ^\/(?:index|remote|public|cron|core\/ajax\/update|status|ocs\/v[12]|updater\/.+|oc[ms]-provider\/.+)\.php(?:$|\/) {
+        fastcgi_split_path_info     ^(.+?\.php)(\/.*|)$;
+        set                         $path_info $fastcgi_path_info;
+        try_files                   $fastcgi_script_name =404;
         include                     /etc/nginx/fastcgi_params;
+        fastcgi_read_timeout        {{ NGINX_FASTCGI_READ_TIMEOUT }};
         #Avoid sending the security headers twice
+        fastcgi_param               SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param               PATH_INFO $path_info;
         fastcgi_param               modHeadersAvailable true;
         fastcgi_param               front_controller_active true;
-        fastcgi_param               SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_param               PATH_INFO $fastcgi_path_info;
         fastcgi_pass                unix:/var/run/container/php7-fpm.sock;
         fastcgi_intercept_errors    on;
         fastcgi_request_buffering   off;
@@ -121,20 +129,20 @@ server {
         fastcgi_cache_methods       GET HEAD;
     }
 
-    location ~ ^/(?:updater|ocs-provider|ocm-provider)(?:$|/) {
+    location ~ ^\/(?:updater|oc[ms]-provider)(?:$|\/) {
         try_files $uri/ =404;
         index index.php;
     }
 
     # adding the cache control header for js and css files
-    location ~* \.(?:css|js|ttf|woff2?|svg|gif)$ {
+    location ~ \.(?:css|js|woff2?|svg|gif|map)$ {
         try_files $uri /index.php$request_uri;
         more_set_headers "Cache-Control: public, max-age=15778463";
         access_log off;
     }
 
     # disable logging for other assets
-    location ~* \.(?:png|html|ico|jpg|jpeg)$ {
+    location ~ \.(?:png|html|ttf|ico|jpg|jpeg|bcmap)$ {
         try_files $uri /index.php$request_uri;
         access_log off;
     }
