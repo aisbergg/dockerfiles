@@ -6,7 +6,7 @@ RUN apk add --update --no-cache --no-progress git \
 
 #-------------------------------------------------------------------------------
 
-FROM ubuntu:18.04
+FROM ubuntu:19.10
 
 ARG LANG=en_US.UTF-8
 ARG APT_CACHER_NG
@@ -92,7 +92,7 @@ ENTRYPOINT ["/entrypoint"]
 CMD ["run"]
 
 LABEL org.opencontainers.image.title="Base Image - Ubuntu" \
-    org.opencontainers.image.version="18.04" \
+    org.opencontainers.image.version="19.10" \
     org.opencontainers.image.description="A base image build upon Ubuntu" \
     org.opencontainers.image.url="https://www.ubuntu.com" \
     org.opencontainers.image.licenses="MIT" \
