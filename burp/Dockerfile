@@ -1,7 +1,7 @@
-FROM buildpack-deps:bionic as build
+FROM buildpack-deps:19.10 as build
 
-ENV BURP_VERSION=2.3.2 \
-    BURP_SHA256_CHECKSUM=c0d155d324735f116788d71b6bc6399e7ffe8af6f8a73b103f0928df78a60c94
+ENV BURP_VERSION=2.3.20 \
+    BURP_SHA256_CHECKSUM=5a205fbacc4f9c815bc6cfcbc8e5f891b144795c23110b06e2ac6c16776d94d8
 
 RUN set -x \
     \
@@ -35,7 +35,7 @@ RUN set -x \
 
 #-------------------------------------------------------------------------------
 
-FROM aisberg/base-ubuntu
+FROM aisberg/base-ubuntu:19.10
 
 COPY --from=build /burp /
 
@@ -45,14 +45,14 @@ RUN set -x \
     && apt-get update \
     && apt-get install -y \
         file \
-        libncurses5 \
-        librsync1 \
-        libssl1.0.0 \
+        libncurses6 \
+        librsync2 \
+        libssl1.1 \
         libyajl2 \
         mariadb-client \
         msmtp \
         openssl \
-        postgresql-client-10 \
+        postgresql-client-11 \
         zlibc \
     && rm -rf /var/lib/apt/lists/* \
     \
