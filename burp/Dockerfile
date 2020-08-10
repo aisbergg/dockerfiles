@@ -52,7 +52,7 @@ RUN set -x \
         mariadb-client \
         msmtp \
         openssl \
-        postgresql-client-11 \
+        postgresql-client-12 \
         zlibc \
     && rm -rf /var/lib/apt/lists/* \
     \
