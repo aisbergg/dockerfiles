@@ -2,8 +2,8 @@
 set -e
 
 NODE_VERSIONS=(
-    14.7.0
-    12.18.3
+    14.7.0  fc556b2b3f751e08d745e97bf6197d977de2a885a6080d0a731158c00ffbb02f
+    12.18.3 14dafe026366e7a9cc8d4737b1fcdcb6c534667e22bbeea63a29a1791ac6ac1f
 )
 YARN_VERSION=1.22.4
 
@@ -11,7 +11,10 @@ YARN_VERSION=1.22.4
 
 pushd "$(dirname $0)" >/dev/null
 
-for NODE_VERSION in ${NODE_VERSIONS[@]} ; do
+for (( i = 0; i < ${#NODE_VERSIONS[@]}; i = i + 2 )); do
+    NODE_VERSION="${NODE_VERSIONS[$i]}"
+    CHECKSUM="${NODE_VERSIONS[$i+1]}"
+
     release_dir="./release/${NODE_VERSION%%.*}"
     mkdir -p "$release_dir"
 
@@ -35,6 +38,7 @@ for NODE_VERSION in ${NODE_VERSIONS[@]} ; do
     cat Dockerfile.template | sed -re '
         s/%%NODE_VERSION%%/'"$NODE_VERSION"'/g;
         s/%%YARN_VERSION%%/'"$YARN_VERSION"'/g;
+        s/%%CHECKSUM%%/'"$CHECKSUM"'/g;
         ' > "$release_dir/Dockerfile"
 done
 
