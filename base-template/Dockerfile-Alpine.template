@@ -31,6 +31,7 @@ RUN set -x \
         curl \
         gnupg \
         nano \
+        py3-pip \
         python3 \
         tini \
     && ln -sf /usr/bin/python3 /usr/bin/python \
@@ -41,7 +42,6 @@ RUN set -x \
     && pip3 install Templer \
     \
     # cleanup
-    && find /usr/lib/python* -name __pycache__ -exec rm -r {} + \
     && rm -rf /var/cache/apk/*
 
 COPY --from=build /usr/bin/supervisord /usr/bin/supervisord

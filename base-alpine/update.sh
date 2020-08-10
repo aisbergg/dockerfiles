@@ -1,7 +1,7 @@
 #/bin/bash
 set -e
 
-IMAGE_VERSION=${IMAGE_VERSION:-3.10}
+IMAGE_VERSION=${IMAGE_VERSION:-3.12}
 
 #-------------------------------------------------------------------------------
 
