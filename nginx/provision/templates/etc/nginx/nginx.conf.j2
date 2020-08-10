@@ -170,7 +170,7 @@ http {
     # TLS
     ###############################################
 
-    {% if not NGINX_TLS_TERMINATED -%}
+    {% if NGINX_TLS_ENABLED -%}
     ssl_protocols               TLSv1.2 TLSv1.3;
 
     # let the server decide which cipher to use

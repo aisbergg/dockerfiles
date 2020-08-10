@@ -54,7 +54,7 @@ defaults:
 
   # TLS related
   NGINX_REWRITE_HTTPS: true
-  NGINX_TLS_TERMINATED: true
+  NGINX_TLS_ENABLED: false
   # following variables are defined in 'tasks/10-nginx.sh' and not needed here
   # NGINX_TLS_KEY: "/container/tls/key.pem"
   # NGINX_TLS_CERT: "/container/tls/cert.pem"
