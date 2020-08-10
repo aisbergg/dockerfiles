@@ -1,7 +1,7 @@
-FROM buildpack-deps:19.10 as build
+FROM buildpack-deps:20.04 as build
 
-ENV BURP_VERSION=2.3.20 \
-    BURP_SHA256_CHECKSUM=5a205fbacc4f9c815bc6cfcbc8e5f891b144795c23110b06e2ac6c16776d94d8
+ENV BURP_VERSION=2.3.32 \
+    BURP_SHA256_CHECKSUM=0058d2c9b3ddc513cc6401f8bac5c5bec5a74affa153f51afcf49b4e739c3eb3
 
 RUN set -x \
     \
@@ -35,7 +35,7 @@ RUN set -x \
 
 #-------------------------------------------------------------------------------
 
-FROM aisberg/base-ubuntu:19.10
+FROM aisberg/base-ubuntu:20.04
 
 COPY --from=build /burp /
 
