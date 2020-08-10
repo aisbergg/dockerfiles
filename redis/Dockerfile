@@ -1,4 +1,4 @@
-FROM aisberg/base-alpine:3.10
+FROM aisberg/base-alpine:3.12
 
 RUN set -x \
     \
@@ -23,7 +23,7 @@ EXPOSE 6379/tcp
 USER 999
 
 LABEL org.opencontainers.image.title="Redis" \
-    org.opencontainers.image.version="4.0.11" \
+    org.opencontainers.image.version="5.0.5" \
     org.opencontainers.image.description="Redis is an open source, in-memory data structure store, used as a database, cache and message broker" \
     org.opencontainers.image.url="https://redis.io" \
     org.opencontainers.image.licenses="MIT" \

@@ -1,4 +1,4 @@
-FROM aisberg/base-alpine:3.10
+FROM aisberg/base-alpine:3.12
 
 ENV INIT=supervisor
 
@@ -40,7 +40,7 @@ RUN find /provision -type f -exec chmod 0664 {} + \
 EXPOSE 8080 8443
 
 LABEL org.opencontainers.image.title="Nginx" \
-    org.opencontainers.image.version="1.14.2" \
+    org.opencontainers.image.version="1.18.0" \
     org.opencontainers.image.description="Nginx is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server" \
     org.opencontainers.image.url="http://nginx.org" \
     org.opencontainers.image.licenses="MIT" \

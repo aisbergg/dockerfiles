@@ -1,7 +1,7 @@
 FROM aisberg/nginx
 
-ENV COMPOSER_VERSION=1.9.1 \
-    COMPOSER_SHA256_CHECKSUM=7834fe8069d0a0c776275623365e70d7f681d5c4995d0f0e826a6e3823369afc \
+ENV COMPOSER_VERSION=1.10.10 \
+    COMPOSER_SHA256_CHECKSUM=8f16aa77b1236ed40855d8d141c0a939d108a939c8e73f9f32eadd3f05f181b9 \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME=/tmp \
     LD_PRELOAD="/usr/lib/preloadable_libiconv.so php"
@@ -87,7 +87,7 @@ RUN set -x \
 COPY provision /provision
 
 LABEL org.opencontainers.image.title="Nginx-PHP7" \
-    org.opencontainers.image.version="7.2.15" \
+    org.opencontainers.image.version="7.3.21" \
     org.opencontainers.image.description="PHP-FPM (FastCGI Process Manager) is an alternative PHP FastCGI implementation." \
     org.opencontainers.image.url="https://php-fpm.org" \
     org.opencontainers.image.licenses="MIT" \
