@@ -256,7 +256,7 @@ defaults:
     delimiter: ','
     strip: true
     default: []
-  NEXTCLOUD_MYSQL_UTF8MB4: false
+  NEXTCLOUD_MYSQL_UTF8MB4: true
   NEXTCLOUD_HASHINGCOST: 10
   NEXTCLOUD_SHARE_FOLDER: "/"
   NEXTCLOUD_THEME: ""
