@@ -17,11 +17,12 @@ defaults:
   ######################################
   ETHERPAD_SITE_TITLE: "Etherpad"
   ETHERPAD_DEFAULT_PAD_TEXT: ""
-  ETHERPAD_SKIN_NAME: "no-skin"
+  ETHERPAD_SKIN_NAME: "colibris"
   ETHERPAD_SHOW_SETTINGS_IN_ADMIN_PAGE: True
 
   # databse settings
   ETHERPAD_DATABASE_HOST: "mysql"
+  ETHERPAD_DATABASE_PORT: 3306
   ETHERPAD_DATABASE_NAME: "etherpad"
   ETHERPAD_DATABASE_USER: "etherpad"
   ETHERPAD_DATABASE_PASSWORD: ""
