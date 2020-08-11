@@ -149,7 +149,7 @@ users={{ MUMBLE_USERS }}
 ; Where users sets a blanket limit on the number of clients per virtual server,
 ; usersperchannel sets a limit on the number per channel. The default is 0, for
 ; no limit.
-usersperchannel={{ MUMBLE_USERSPERCHANNEL }}
+usersperchannel={{ MUMBLE_USERS_PER_CHANNEL }}
 
 ; Per-user rate limiting
 ;
@@ -160,8 +160,8 @@ usersperchannel={{ MUMBLE_USERSPERCHANNEL }}
 ; a longer period. If a user hits the rate limit, his packages are then ignored
 ; for some time. Both of these settings have a minimum of 1 as setting either to
 ; 0 could render the server unusable.
-messageburst={{ MUMBLE_USERS_PER_CHANNEL }}
-messagelimit={{ MUMBLE_MESSAGE_BURST }}
+messageburst={{ MUMBLE_MESSAGE_BURST }}
+messagelimit={{ MUMBLE_MESSAGE_LIMIT }}
 
 ; Respond to UDP ping packets.
 ;
