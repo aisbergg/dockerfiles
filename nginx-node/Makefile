@@ -1,4 +1,4 @@
-NODE_VERSIONS=12 10 8
+NODE_VERSIONS=14 12
 
 build_targets=$(addprefix build-, $(NODE_VERSIONS))
 $(build_targets): update
