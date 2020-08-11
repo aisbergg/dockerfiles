@@ -25,7 +25,7 @@ EXPOSE 64738 64738/udp
 USER 999
 
 LABEL org.opencontainers.image.title="Mumble Server" \
-    org.opencontainers.image.version="1.3.0-r2" \
+    org.opencontainers.image.version="1.3.1" \
     org.opencontainers.image.description="Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming." \
     org.opencontainers.image.url="https://wiki.mumble.info/wiki/Main_Page" \
     org.opencontainers.image.licenses="MIT" \

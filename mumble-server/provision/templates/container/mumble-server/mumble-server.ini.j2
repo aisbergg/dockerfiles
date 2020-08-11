@@ -88,14 +88,15 @@ icesecretwrite=
 icesecretwrite={{ MUMBLE_ICE_SECRET_WRITE }}
 {%- endif %}
 
-; How many login attempts do we tolerate from one IP
-; inside a given timeframe before we ban the connection?
-; Note that this is global (shared between all virtual servers), and that
-; it counts both successfull and unsuccessfull connection attempts.
-; Set either Attempts or Timeframe to 0 to disable.
-autobanAttempts={{ MUMBLE_AUTOBAN_ATTEMPTS }}
-autobanTimeframe={{ MUMBLE_AUTOBAN_TIMEFRAME }}
-autobanTime={{ MUMBLE_AUTOBAN_TIME }}
+; If you want to expose Murmur's experimental gRPC API, you
+; need to specify an address to bind on.
+; Note: not all builds of Murmur support gRPC. If gRPC is not
+; available, Murmur will warn you in its log output.
+;grpc="127.0.0.1:50051"
+; Specifying both a certificate and key file below will cause gRPC to use
+; secured, TLS connections.
+;grpccert=""
+;grpckey=""
 
 ; Specifies the file Murmur should log to. By default, Murmur
 ; logs to the file 'murmur.log'. If you leave this field blank
@@ -132,8 +133,35 @@ serverpassword={{ MUMBLE_SERVER_PASSWORD }}
 ; to send speech at.
 bandwidth={{ MUMBLE_BANDWIDTH }}
 
+; Murmur and Mumble are usually pretty good about cleaning up hung clients, but
+; occasionally one will get stuck on the server. The timeout setting will cause
+; a periodic check of all clients who haven't communicated with the server in
+; this many seconds - causing zombie clients to be disconnected.
+;
+; Note that this has no effect on idle clients or people who are AFK. It will
+; only affect people who are already disconnected, and just haven't told the
+; server.
+;timeout={{ MUMBLE_TIMEOUT }}
+
 ; Maximum number of concurrent clients allowed.
 users={{ MUMBLE_USERS }}
+
+; Where users sets a blanket limit on the number of clients per virtual server,
+; usersperchannel sets a limit on the number per channel. The default is 0, for
+; no limit.
+usersperchannel={{ MUMBLE_USERSPERCHANNEL }}
+
+; Per-user rate limiting
+;
+; These two settings allow to configure the per-user rate limiter for some
+; command messages sent from the client to the server. The messageburst setting
+; specifies an amount of messages which are allowed in short bursts. The
+; messagelimit setting specifies the number of messages per second allowed over
+; a longer period. If a user hits the rate limit, his packages are then ignored
+; for some time. Both of these settings have a minimum of 1 as setting either to
+; 0 could render the server unusable.
+messageburst={{ MUMBLE_USERS_PER_CHANNEL }}
+messagelimit={{ MUMBLE_MESSAGE_BURST }}
 
 ; Respond to UDP ping packets.
 ;
@@ -150,6 +178,10 @@ opusthreshold={{ MUMBLE_OPUS_THRESHOLD }}
 ; InnoDB will fail when operating on deeply nested channels.
 channelnestinglimit={{ MUMBLE_CHANNEL_NESTING_LIMIT }}
 
+; Maximum number of channels per server. 0 for unlimited. Note that an
+; excessive number of channels will impact server performance
+channelcountlimit={{ MUMBLE_CHANNEL_COUNT_LIMIT }}
+
 ; Regular expression used to validate channel names.
 ; (Note that you have to escape backslashes with \ )
 channelname={{ MUMBLE_CHANNEL_NAME }}
@@ -157,6 +189,25 @@ channelname={{ MUMBLE_CHANNEL_NAME }}
 ; Regular expression used to validate user names.
 ; (Note that you have to escape backslashes with \ )
 username={{ MUMBLE_USERNAME }}
+
+; If a user has no stored channel (they've never been connected to the server
+; before, or rememberchannel is set to false) and the client hasn't been given
+; a URL that includes a channel path, the default behavior is that they will
+; end up in the root channel.
+;
+; You can set this setting to a channel ID, and the user will automatically be
+; moved into that channel instead. Note that this is the numeric ID of the
+; channel, which can be a little tricky to get (you'll either need to use an
+; RPC mechanism, watch the console of a debug client, or root around through
+; the Murmur Database to get it).
+;
+{{ ';' if MUMBLE_DEFAULT_CHANNEL == 0 else '' }}defaultchannel={{ MUMBLE_DEFAULT_CHANNEL }}
+
+; When a user connects to a server they've already been on, by default the
+; server will remember the last channel they were in and move them to it
+; automatically. Toggling this setting to false will disable that feature.
+;
+rememberchannel={{ MUMBLE_REMEMBER_CHANNEL | lower }}
 
 ; Maximum length of text messages in characters. 0 for no limit.
 textmessagelength={{ MUMBLE_TEXT_MESSAGE_LENGTH }}
@@ -171,7 +222,7 @@ allowhtml={{ MUMBLE_ALLOWHTML }}
 ; allows it to be accessed over D-Bus/ICE.
 ; How many days should such entries be kept?
 ; Set to 0 to keep forever, or -1 to disable logging to the DB.
-; logdays=31
+;logdays=31
 
 ; To enable public server registration, the serverpassword must be blank, and
 ; this must all be filled out.
@@ -179,12 +230,14 @@ allowhtml={{ MUMBLE_ALLOWHTML }}
 ; updates will need the same password. Don't lose your password.
 ; The URL is your own website, and only set the registerHostname for static IP
 ; addresses.
-; Only uncomment the 'registerName' parameter if you wish to give your "Root" channel a custom name.
+; Location is typically the country of typical users of the server, in
+; two-letter TLD style (ISO 3166-1 alpha-2 country code)
 ;
 {{ ';' if MUMBLE_REGISTER_NAME == "" else '' }}registerName={{ MUMBLE_REGISTER_NAME }}
 {{ ';' if MUMBLE_REGISTER_PASSWORD == "" else '' }}registerPassword={{ MUMBLE_REGISTER_PASSWORD }}
 {{ ';' if MUMBLE_REGISTER_URL == "" else '' }}registerUrl={{ MUMBLE_REGISTER_URL }}
 {{ ';' if MUMBLE_REGISTER_HOSTNAME == "" else '' }}registerHostname={{ MUMBLE_REGISTER_HOSTNAME }}
+{{ ';' if MUMBLE_REGISTER_LOCATION == "" else '' }}registerLocation={{ MUMBLE_REGISTER_LOCATION }}
 
 ; If this option is enabled, the server will announce its presence via the
 ; bonjour service discovery protocol. To change the name announced by bonjour
@@ -198,11 +251,30 @@ bonjour={{ MUMBLE_BONJOUR }}
 {{ ';' if MUMBLE_TLS_CERT == "" else '' }}sslCert={{ MUMBLE_TLS_CERT }}
 {{ ';' if MUMBLE_TLS_KEY == "" else '' }}sslKey={{ MUMBLE_TLS_KEY }}
 
+; If the keyfile specified above is encrypted with a passphrase, you can enter
+; it in this setting. It must be plaintext, so you may wish to adjust the
+; permissions on your murmur.ini file accordingly.
+{{ ';' if MUMBLE_SSL_PASSPHRASE == "" else '' }}sslPassPhrase={{ MUMBLE_SSL_PASSPHRASE }}
+
+; If your certificate is signed by an authority that uses a sub-signed or
+; "intermediate" certificate, you probably need to bundle it with your
+; certificate in order to get Murmur to accept it. You can either concatenate
+; the two certificates into one file, or you can put it in a file by itself and
+; put the path to that PEM-file in sslCA.
+{{ ';' if MUMBLE_SSL_CA == "" else '' }}sslCA={{ MUMBLE_SSL_CA }}
+
 ; The sslDHParams option allows you to specify a PEM-encoded file with
 ; Diffie-Hellman parameters, which will be used as the default Diffie-
 ; Hellman parameters for all virtual servers.
-; If a file is not specified, each Murmur virtual server will auto-generate
-; its own unique set of 2048-bit Diffie-Hellman parameters on first launch.
+;
+; Instead of pointing sslDHParams to a file, you can also use the option
+; to specify a named set of Diffie-Hellman parameters for Murmur to use.
+; Murmur comes bundled with the Diffie-Hellman parameters from RFC 7919.
+; These parameters are available by using the following names:
+;
+; @ffdhe2048, @ffdhe3072, @ffdhe4096, @ffdhe6144, @ffdhe8192
+;
+; By default, Murmur uses @ffdhe2048.
 {{ ';' if MUMBLE_TLS_DHPARAMS == "" else '' }}sslDHParams={{ MUMBLE_TLS_DHPARAMS }}
 
 ; The sslCiphers option chooses the cipher suites to make available for use
@@ -227,6 +299,15 @@ sslCiphers={{ MUMBLE_TLS_CIPHERS }}
 ; This option is ignored if Murmur isn't started with root privileges.
 ;uname=
 
+; By default, in log files and in the user status window for privileged users,
+; Mumble will show IP addresses - in some situations you may find this unwanted
+; behavior. If obfuscate is set to true, Murmur will randomize the IP addresses
+; of connecting users.
+;
+; The obfuscate function only affects the log file and DOES NOT effect the user
+; information section in the client window.
+obfuscate={{ MUMBLE_OBFUSCATE }}
+
 ; If this options is enabled, only clients which have a certificate are allowed
 ; to connect.
 certrequired={{ MUMBLE_CERT_REQUIRED }}
@@ -234,6 +315,39 @@ certrequired={{ MUMBLE_CERT_REQUIRED }}
 ; If enabled, clients are sent information about the servers version and operating
 ; system.
 sendversion={{ MUMBLE_SEND_VERSION }}
+
+; You can set a recommended minimum version for your server, and clients will
+; be notified in their log when they connect if their client does not meet the
+; minimum requirements. suggestVersion expects the version in the format X.X.X.
+;
+; Note that the suggest* options appeared after 1.2.3 and will have no effect
+; on client versions 1.2.3 and earlier.
+;
+{{ ';' if MUMBLE_SUGGEST_VERSION == "" else '' }}suggestVersion={{ MUMBLE_SUGGEST_VERSION }}
+
+; Setting this to "true" will alert any user who does not have positional audio
+; enabled that the server administrators recommend enabling it. Setting it to
+; "false" will have the opposite effect - if you do not care whether the user
+; enables positional audio or not, set it to blank. The message will appear in
+; the log window upon connection, but only if the user's settings do not match
+; what the server requests.
+;
+; Note that the suggest* options appeared after 1.2.3 and will have no effect
+; on client versions 1.2.3 and earlier.
+;
+suggestPositional={{ MUMBLE_SUGGEST_POSITIONAL | lower }}
+
+; Setting this to "true" will alert any user who does not have Push-To-Talk
+; enabled that the server administrators recommend enabling it. Setting it to
+; "false" will have the opposite effect - if you do not care whether the user
+; enables PTT or not, set it to blank. The message will appear in the log
+; window upon connection, but only if the user's settings do not match what the
+; server requests.
+;
+; Note that the suggest* options appeared after 1.2.3 and will have no effect
+; on client versions 1.2.3 and earlier.
+;
+suggestPushToTalk={{ MUMBLE_SUGGEST_PUSH_TO_TALK | lower }}
 
 ; This sets password hash storage to legacy mode (1.2.4 and before)
 ; (Note that setting this to true is insecure and should not be used unless absolutely necessary)
@@ -243,6 +357,25 @@ sendversion={{ MUMBLE_SEND_VERSION }}
 ; overrides the automatic benchmark and forces a specific number of iterations.
 ; (Note that you should only change this value if you know what you are doing)
 kdfIterations={{ MUMBLE_KDF_ITERATIONS }}
+
+; In order to prevent misconfigured, impolite or malicious clients from
+; affecting the low-latency of other users, Murmur has a rudimentary global-ban
+; system. It's configured using the autobanAttempts, autobanTimeframe and
+; autobanTime settings.
+;
+; If a client attempts autobanAttempts connections in autobanTimeframe seconds,
+; they will be banned for autobanTime seconds. This is a global ban, from all
+; virtual servers on the Murmur process. It will not show up in any of the
+; ban-lists on the server, and they can't be removed without restarting the
+; Murmur process - just let them expire. A single, properly functioning client
+; should not trip these bans.
+;
+; To disable, set autobanAttempts or autobanTimeframe to 0. Commenting these
+; settings out will cause Murmur to use the defaults:
+;
+autobanAttempts={{ MUMBLE_AUTOBAN_ATTEMPTS }}
+autobanTimeframe={{ MUMBLE_AUTOBAN_TIME_FRAME }}
+autobanTime={{ MUMBLE_AUTOBAN_TIME }}
 
 ; You can configure any of the configuration options for Ice here. We recommend
 ; leave the defaults as they are.
