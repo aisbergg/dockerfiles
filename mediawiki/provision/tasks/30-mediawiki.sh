@@ -71,9 +71,6 @@ elif [[ $(bool "$MEDIAWIKI_AUTO_UPDATE" true) == "true" || -f /container/www/.up
         chgrp root -R ./ || true
         shopt -u dotglob
 
-        # fix syntax of Alpines 'timeout' program, so that ImageMagick can be used
-        sed -i -e 's?/usr/bin/timeout \$MW_WALL_CLOCK_LIMIT?/usr/bin/timeout -t \$MW_WALL_CLOCK_LIMIT?g' /includes/shell/limit.sh
-
         php maintenance/update.php
         composer update --no-dev
 
