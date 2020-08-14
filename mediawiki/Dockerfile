@@ -14,6 +14,7 @@ RUN set -x \
     && apk update \
     && apk add --no-progress \
         diffutils \
+        git \
         php7-apcu \
         php7-curl \
         php7-fileinfo \
