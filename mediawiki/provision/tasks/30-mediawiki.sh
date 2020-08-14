@@ -24,7 +24,6 @@ if [[ ! -f /container/www/LocalSettings.php || -f /container/www/.installation-i
     touch .installation-in-progess
 
     tar xzf /usr/local/src/mediawiki.tar.gz --strip-components=1
-    tar xzf /usr/local/src/mediawiki-extension-math.tar.gz -C ./extensions
     shopt -s dotglob
     chmod g+rwX,o-rwx -R ./* &&\
     chgrp root -R ./*
@@ -50,7 +49,6 @@ elif [[ $(bool "$MEDIAWIKI_AUTO_UPDATE" true) == "true" || -f /container/www/.up
 
         tempdir="$(mktemp -d)"
         tar xzf /usr/local/src/mediawiki.tar.gz -C "$tempdir" --strip-components=1
-        tar xzf /usr/local/src/mediawiki-extension-math.tar.gz -C "$tempdir/extensions"
 
         rsync -rlD --delete \
             --exclude /extensions/ \
