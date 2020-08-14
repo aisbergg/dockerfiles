@@ -1,9 +1,9 @@
 FROM aisberg/nginx-php7
 
-ENV MEDIAWIKI_MAJOR=1.31 \
-    MEDIAWIKI_MINOR=1 \
-    MEDIAWIKI_MATH_EXTENSION_FILE_NAME=Math-REL1_31-a1263db.tar.gz \
-    MEDIAWIKI_MATH_EXTENSION_SHA256_CHECKSUM=9903c7ecfeb22457d29a273c7e2989ce1e61a6fb2683c6fdf70c6b55f6dab1c2
+ENV MEDIAWIKI_MAJOR=1.34 \
+    MEDIAWIKI_MINOR=2 \
+    MEDIAWIKI_MATH_EXTENSION_FILE_NAME=Math-REL1_34-b1a022f.tar.gz \
+    MEDIAWIKI_MATH_EXTENSION_SHA256_CHECKSUM=b178f5873cb45d430fb006da4d063cd6f0152f992a599afe5cc774d961fdffab
 
 RUN set -x \
     \
@@ -18,10 +18,8 @@ RUN set -x \
         6237D8D3ECC1AE918729296FF6DAD285018FAC02 \
         80D113B767E3D51936725679361F943B15C08DD4 \
         C83A8E4D3C8FEB7C8A3A1998131910E01605D9AA \
-        D7D6767D135A514BEB86E9BA75682B08E8A3FEC4 \
-        F7F780D82EBFB8A56556E7EE82403E59F9F8CD79 \
+        F64EBF5F20996AB514F198A873F146FECF9D333C \
     ; do \
-        gpg --keyserver ipv4.pool.sks-keyservers.net --keyserver-options timeout=10 --recv-keys "$key" || \
         gpg --keyserver pgp.mit.edu --keyserver-options timeout=10 --recv-keys "$key" || \
         gpg --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$key" ; \
     done \
