@@ -2,29 +2,13 @@ FROM aisberg/nginx-php7
 
 ENV MEDIAWIKI_MAJOR=1.34 \
     MEDIAWIKI_MINOR=2 \
-    MEDIAWIKI_MATH_EXTENSION_FILE_NAME=Math-REL1_34-b1a022f.tar.gz \
-    MEDIAWIKI_MATH_EXTENSION_SHA256_CHECKSUM=b178f5873cb45d430fb006da4d063cd6f0152f992a599afe5cc774d961fdffab
+    MEDIAWIKI_SHA256_CHECKSUM=0edc557f6093bdb91f7ea32e0ade117e02dc13593518584d07088845823224d6
 
 RUN set -x \
     \
     # download MediaWiki source
     && curl -fSL "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR}/mediawiki-${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR}.tar.gz" -o /usr/local/src/mediawiki.tar.gz \
-    && curl -fSL "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR}/mediawiki-${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR}.tar.gz.sig" -o /usr/local/src/mediawiki.tar.gz.sig \
-    # https://www.mediawiki.org/keys/keys.txt
-    && for key in \
-        1D98867E82982C8FE0ABC25F9B69B3109D3BB7B0 \
-        41B2ABE817ADD3E52BDA946F72BC1C5D23107F8A \
-        441276E9CCD15F44F6D97D18C119E1A64D70938E \
-        6237D8D3ECC1AE918729296FF6DAD285018FAC02 \
-        80D113B767E3D51936725679361F943B15C08DD4 \
-        C83A8E4D3C8FEB7C8A3A1998131910E01605D9AA \
-        F64EBF5F20996AB514F198A873F146FECF9D333C \
-    ; do \
-        gpg --keyserver pgp.mit.edu --keyserver-options timeout=10 --recv-keys "$key" || \
-        gpg --keyserver keyserver.pgp.com --keyserver-options timeout=10 --recv-keys "$key" ; \
-    done \
-    && gpg --verify /usr/local/src/mediawiki.tar.gz.sig /usr/local/src/mediawiki.tar.gz \
-    && rm /usr/local/src/mediawiki.tar.gz.sig \
+    && echo "$MEDIAWIKI_SHA256_CHECKSUM  /usr/local/src/mediawiki.tar.gz" | sha256sum -c \
     \
     # install general requirements for MediaWiki
     && apk update \
@@ -71,27 +55,6 @@ RUN set -x \
     && apk add --no-progress \
         ghostscript \
         poppler-utils \
-    \
-    # install requirements for the Math extension
-    && curl -fSL "https://extdist.wmflabs.org/dist/extensions/${MEDIAWIKI_MATH_EXTENSION_FILE_NAME}" -o /usr/local/src/mediawiki-extension-math.tar.gz \
-    && echo "$MEDIAWIKI_MATH_EXTENSION_SHA256_CHECKSUM  /usr/local/src/mediawiki-extension-math.tar.gz" | sha256sum -c \
-    && apk add --no-progress \
-        texlive \
-    && apk add --no-progress --virtual .build-deps \
-        binutils \
-        gcc \
-        make \
-        musl-dev \
-        ocaml \
-    && tempdir="$(mktemp -d)" \
-    && tar xzf /usr/local/src/mediawiki-extension-math.tar.gz -C "$tempdir" \
-    && cd "$tempdir/Math" \
-    && make \
-    && rm math/*.o texvccheck/*.o \
-    && chmod g+rwX,o-rwx -R "$tempdir" \
-    && tar pczf /usr/local/src/mediawiki-extension-math.tar.gz -C "$tempdir" "Math/" \
-    && cd / && rm -rf "$tempdir" \
-    && apk del .build-deps \
     \
     # cleanup
     && rm -rf /var/cache/apk/* \
