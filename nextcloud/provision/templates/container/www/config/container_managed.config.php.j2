@@ -1,6 +1,7 @@
 <?php
 
-$CONFIG = array(
+{% macro to_array(val) -%}[{{ "'" ~ (val|join("', '")) ~ "'" if val|length > 0 else '' }}]{% endmacro %}
+$CONFIG = [
 
 /**
  * Your list of trusted domains that users can log into. Specifying trusted
@@ -13,12 +14,10 @@ $CONFIG = array(
  *   This disallows all other ports on this host
  * - use * as a wildcard, e.g. ubos-raspberry-pi*.local will allow
  *   ubos-raspberry-pi.local and ubos-raspberry-pi-2.local
+ * - the IP address with or without permitted port, e.g. [2001:db8::1]:8080
+ *   Using TLS certificates where commonName=<IP address> is deprecated
  */
-'trusted_domains' =>
-array (
-    {% for domainname in DOMAINNAMES %}'{{ domainname }}',
-    {% endfor %}
-  ),
+'trusted_domains' => {{ to_array(DOMAINNAMES) }},
 
 /**
  * User Experience
@@ -123,6 +122,15 @@ array (
 'session_keepalive' => {{ NEXTCLOUD_SESSION_KEEPALIVE }},
 
 /**
+ * Enable or disable the automatic logout after session_lifetime, even if session
+ * keepalive is enabled. This will make sure that an inactive browser will be logged out
+ * even if requests to the server might extend the session lifetime.
+ *
+ * Defaults to ``false``
+ */
+'auto_logout' => {{ NEXTCLOUD_AUTO_LOGOUT }},
+
+/**
  * Enforce token authentication for clients, which blocks requests using the user
  * password for enhanced security. Users need to generate tokens in personal settings
  * which can be used as passwords on their clients.
@@ -139,6 +147,11 @@ array (
  * Defaults to ``true``
  */
 'auth.bruteforce.protection.enabled' => {{ NEXTCLOUD_AUTH_BRUTEFORCE_PROTECTION_ENABLED }},
+
+/**
+ * By default WebAuthn is available but it can be explicitly disabled by admins
+ */
+'auth.webauthn.enabled' => {{ NEXTCLOUD_AUTH_WEBAUTHN_ENABLED }},
 
 /**
  * The directory where the skeleton files are located. These files will be
@@ -216,6 +229,12 @@ array (
 /**
  * The URL of your proxy server, for example ``proxy.example.com:8081``.
  *
+ * Note: Guzzle (the http library used by Nextcloud) is reading the environment
+ * variables HTTP_PROXY (only for cli request), HTTPS_PROXY, and NO_PROXY by default.
+ *
+ * If you configure proxy with Nextcloud any default configuration by Guzzle
+ * is overwritten. Make sure to set ``proxyexclude`` accordingly if necessary.
+ *
  * Defaults to ``''`` (empty string)
  */
 'proxy' => '{{ NEXTCLOUD_PROXY }}',
@@ -231,6 +250,23 @@ array (
 'proxyuserpwd' => '{{ NEXTCLOUD_PROXYUSERPWD }}',
 {%- endif %}
 
+/**
+ * List of host names that should not be proxied to.
+ * For example: ``['.mit.edu', 'foo.com']``.
+ *
+ * Hint: Use something like ``explode(',', getenv('NO_PROXY'))`` to sync this
+ * value with the global NO_PROXY option.
+ *
+ * Defaults to empty array.
+ */
+'proxyexclude' => {{ to_array(NEXTCLOUD_PROXYEXCLUDE) }},
+
+/**
+ * Allow remote servers with local addresses e.g. in federated shares, webcal services and more
+ *
+ * Defaults to false
+ */
+'allow_local_remote_servers' => {{ NEXTCLOUD_ALLOW_LOCAL_REMOTE_SERVERS }},
 
 /**
  * Deleted Items (trash bin)
@@ -265,7 +301,7 @@ array (
  *     automatically, delete other files anytime if space needed
  * * ``D1, D2``
  *     keep files and folders in the trash bin for at least D1 days and
- *     delete when exceeds D2 days
+ *     delete when exceeds D2 days (note: files will not be deleted automatically if space is needed)
  * * ``disabled``
  *     trash bin auto clean disabled, files and folders will be kept forever
  *
@@ -376,11 +412,7 @@ array (
  *  - www.eff.org
  *  - www.edri.org
  */
-'connectivity_check_domains' => array(
-{% for domain in NEXTCLOUD_CONNECTIVITY_CHECK_DOMAINS %}
-    '{{ domain }}'{% if not loop.last %},{% endif %}
-{% endfor %}
-),
+'connectivity_check_domains' => {{ to_array(NEXTCLOUD_CONNECTIVITY_CHECK_DOMAINS) }},
 
 /**
  * Allows Nextcloud to verify a working WebDAV connection. This is done by
@@ -396,6 +428,17 @@ array (
  * Defaults to ``true``
  */
 'check_for_working_wellknown_setup' => {{ NEXTCLOUD_CHECK_FOR_WORKING_WELLKNOWN_SETUP }},
+
+/**
+ * This is a crucial security check on Apache servers that should always be set
+ * to ``true``. This verifies that the ``.htaccess`` file is writable and works.
+ * If it is not, then any options controlled by ``.htaccess``, such as large
+ * file uploads, will not work. It also runs checks on the ``data/`` directory,
+ * which verifies that it can't be accessed directly through the Web server.
+ *
+ * Defaults to ``true``
+ */
+'check_for_working_htaccess' => {{ NEXTCLOUD_CHECK_FOR_WORKING_HTACCESS }},
 
 /**
  * In rare setups (e.g. on Openshift or docker on windows) the permissions check
@@ -570,23 +613,22 @@ array (
  * to that folder, starting from the Nextcloud webroot. The key ``writable``
  * indicates if a Web server can write files to that folder.
  */
-'apps_paths' => array(
-  array(
+'apps_paths' => [
+  [
 		'path'=> '/container/www/apps',
 		'url' => '/apps',
 		'writable' => false,
-	),
-  array(
+	],
+  [
 		'path'=> '/container/www/custom_apps',
 		'url' => '/custom_apps',
 		'writable' => true,
-	),
-),
+	],
+],
 
 /**
  * @see appcodechecker
  */
-
 
 /**
  * Previews
@@ -658,7 +700,6 @@ array (
  *  - OC\Preview\MSOffice2003
  *  - OC\Preview\MSOffice2007
  *  - OC\Preview\MSOfficeDoc
- *  - OC\Preview\OpenDocument
  *  - OC\Preview\PDF
  *  - OC\Preview\Photoshop
  *  - OC\Preview\Postscript
@@ -667,14 +708,6 @@ array (
  *  - OC\Preview\TIFF
  *  - OC\Preview\Font
  *
- * The following providers are not available in Microsoft Windows:
- *
- *  - OC\Preview\Movie
- *  - OC\Preview\MSOfficeDoc
- *  - OC\Preview\MSOffice2003
- *  - OC\Preview\MSOffice2007
- *  - OC\Preview\OpenDocument
- *  - OC\Preview\StarOffice
  *
  * Defaults to the following providers:
  *
@@ -687,11 +720,10 @@ array (
  *  - OC\Preview\PNG
  *  - OC\Preview\TXT
  *  - OC\Preview\XBitmap
+ *  - OC\Preview\OpenDocument
+ *  - OC\Preview\Krita
  */
-'enabledPreviewProviders' => array(
-  {% for preview_provider in NEXTCLOUD_ENABLEDPREVIEWPROVIDERS %}'{{ preview_provider }}',
-  {% endfor %}
-),
+'enabledPreviewProviders' => {{ to_array(NEXTCLOUD_ENABLEDPREVIEWPROVIDERS) }},
 
 /**
  * LDAP
@@ -844,6 +876,8 @@ array (
  * is synchronized it could happen, that the read for an existing lock is
  * scheduled to a slave that is not fully synchronized with the connected master
  * which then causes a FileLocked exception.
+ *
+ * See https://redis.io/topics/cluster-spec for details about the Redis cluster
  *
  * Authentication works with phpredis version 4.2.1+. See
  * https://github.com/phpredis/phpredis/commit/c5994f2a42b8a348af92d3acb4edff1328ad8ce1
@@ -1027,6 +1061,17 @@ array (
  */
 'sharing.minSearchStringLength' => {{ NEXTCLOUD_SHARING_MINSEARCHSTRINGLENGTH }},
 
+/**
+ * Set to true to enable that internal shares need to be accepted by the users by default.
+ * Users can change this for their account in their personal sharing settings
+ */
+'sharing.enable_share_accept' => {{ NEXTCLOUD_SHARING_ENABLE_SHARE_ACCEPT }},
+
+/**
+ * Set to true to enforce that internal shares need to be accepted
+ */
+'sharing.force_share_accept' => {{ NEXTCLOUD_SHARING_FORCE_SHARE_ACCEPT }},
+
 
 /**
  * All other configuration options
@@ -1036,10 +1081,7 @@ array (
  * Additional driver options for the database connection, eg. to enable SSL
  * encryption in MySQL or specify a custom wait timeout on a cheap hoster.
  */
-'dbdriveroptions' => array(
-  {% for dbdriveropt in NEXTCLOUD_DBDRIVEROPTIONS %}{{ dbdriveropt }},
-  {% endfor %}
-),
+'dbdriveroptions' => {{ to_array(NEXTCLOUD_DBDRIVEROPTIONS) }} ,
 
 /**
  * sqlite3 journal mode can be specified using this configuration parameter -
@@ -1084,7 +1126,7 @@ array (
  * Database types that are supported for installation.
  *
  * Available:
- * 	- sqlite3 (SQLite3)
+ * 	- sqlite (SQLite3)
  * 	- mysql (MySQL)
  * 	- pgsql (PostgreSQL)
  * 	- oci (Oracle)
@@ -1094,12 +1136,12 @@ array (
  *  - mysql (MySQL)
  *  - pgsql (PostgreSQL)
  */
-'supportedDatabases' => array(
-	'sqlite3',
+'supportedDatabases' => [
+	'sqlite',
 	'mysql',
 	'pgsql',
 	'oci',
-),
+],
 
 /**
  * Override where Nextcloud stores temporary files. Useful in situations where
@@ -1110,6 +1152,47 @@ array (
  * The Web server user must have write access to this directory.
  */
 'tempdirectory' => '/tmp/nextcloudtemp',
+
+/**
+ * Hashing
+ */
+
+/**
+ * By default Nextcloud will use the Argon2 password hashing if available.
+ * However if for whatever reason you want to stick with the PASSWORD_DEFAULT
+ * of your php version. Then set the setting to true.
+ */
+'hashing_default_password' => {{ NEXTCLOUD_HASHING_DEFAULT_PASSWORD }},
+
+/**
+ *
+ * Nextcloud uses the Argon2 algorithm (with PHP >= 7.2) to create hashes by its
+ * own and exposes its configuration options as following. More information can
+ * be found at: https://www.php.net/manual/en/function.password-hash.php
+ */
+
+/**
+ * The allowed maximum memory in KiB to be used by the algorithm for computing a
+ * hash. The smallest possible value is 8. Values that undershoot the minimum
+ * will be ignored in favor of the default.
+ */
+'hashingMemoryCost' => {{ NEXTCLOUD_HASHINGMEMORYCOST }},
+
+/**
+ * The allowed maximum time in seconds that can be used by the algorithm for
+ * computing a hash. The value must be an integer, and the minimum value is 1.
+ * Values that undershoot the minimum will be ignored in favor of the default.
+ */
+'hashingTimeCost' => {{ NEXTCLOUD_HASHINGTIMECOST }},
+
+/**
+ * The allowed number of CPU threads that can be used by the algorithm for
+ * computing a hash. The value must be an integer, and the minimum value is 1.
+ * Rationally it does not help to provide a number higher than the available
+ * threads on the machine. Values that undershoot the minimum will be ignored
+ * in favor of the default.
+ */
+'hashingThreads' => {{ NEXTCLOUD_HASHINGTHREADS }},
 
 /**
  * The hashing cost used by hashes generated by Nextcloud
@@ -1245,10 +1328,7 @@ array (
  *
  * Defaults to an empty array.
  */
-'trusted_proxies' => array(
-  {% for trusted_proxy in NEXTCLOUD_TRUSTED_PROXIES %}'{{ trusted_proxy }}',
-  {% endfor %}
-),
+'trusted_proxies' => {{ to_array(NEXTCLOUD_TRUSTED_PROXIES) }},
 
 /**
  * Headers that should be trusted as client IP address in combination with
@@ -1260,10 +1340,7 @@ array (
  *
  * Defaults to ``'HTTP_X_FORWARDED_FOR'``
  */
-'forwarded_for_headers' => array(
-  {% for header in NEXTCLOUD_FORWARDED_FOR_HEADERS %}'{{ header }}',
-  {% endfor %}
-),
+'forwarded_for_headers' => {{ to_array(NEXTCLOUD_FORWARDED_FOR_HEADERS) }},
 
 /**
  * max file size for animating gifs on public-sharing-site.
@@ -1375,10 +1452,10 @@ array (
  *
  * WARNING: only use this if you know what you are doing
  */
-'csrf.optout' => array(
+'csrf.optout' => [
 	'/^WebDAVFS/', // OS X Finder
 	'/^Microsoft-WebDAV-MiniRedir/', // Windows webdav drive
-),
+],
 
 /**
  * By default there is on public pages a link shown that allows users to
@@ -1397,4 +1474,4 @@ array (
  */
 
 'login_form_autocomplete' => {{ NEXTCLOUD_LOGIN_FORM_AUTOCOMPLETE }},
-);
+];

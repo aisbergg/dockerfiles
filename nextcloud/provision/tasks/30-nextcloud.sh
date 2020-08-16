@@ -67,7 +67,6 @@ elif [[ $(bool "$NEXTCLOUD_AUTO_UPDATE" "true") == "true" || -f /container/www/.
             --exclude /skeleton/ \
             --exclude /themes/ \
             --exclude /.update-in-progess \
-            --exclude /.user.ini \
             --exclude /favicon.ico \
             "$tempdir/" ./
 
