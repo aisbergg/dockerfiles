@@ -38,7 +38,12 @@ if [[ ! -f /container/www/LocalSettings.php || -f /container/www/.installation-i
 # check if the installed version can be upgraded
 elif [[ $(bool "$MEDIAWIKI_AUTO_UPDATE" true) == "true" || -f /container/www/.update-in-progess ]]; then
     # information about upgrading MediaWiki can be found here: https://www.mediawiki.org/wiki/Manual:Upgrading
-    INSTALLED_VERSION="$(grep 'wgVersion' /container/www/includes/DefaultSettings.php | grep -Eo '[0-9\.]+')"
+    INSTALLED_VERSION="$(grep 'MW_VERSION' /container/www/includes/Defines.php | grep -Eo '[0-9\.]+')"
+    if [[ -z "$INSTALLED_VERSION" ]]; then
+        # old style version info
+        INSTALLED_VERSION="$(grep 'wgVersion' /container/www/includes/DefaultSettings.php | grep -Eo '[0-9\.]+')"
+    fi
+
     # check if newer version is available to upgrade the current installation
     if version_greater "${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR}" "$INSTALLED_VERSION" || [[ -f /container/www/.update-in-progess ]]; then
         print_info "Updating MediaWiki ($INSTALLED_VERSION --> ${MEDIAWIKI_MAJOR}.${MEDIAWIKI_MINOR})"
