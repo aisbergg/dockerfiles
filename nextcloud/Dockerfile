@@ -24,6 +24,7 @@ RUN set -x \
         php7-exif \
         php7-fileinfo \
         php7-gd \
+        php7-gmp \
         php7-imagick \
         php7-intl \
         php7-ldap \
