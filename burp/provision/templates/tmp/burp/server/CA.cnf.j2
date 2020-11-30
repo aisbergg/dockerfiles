@@ -5,7 +5,6 @@
 # 'container_managed=false'                                                    #
 ################################################################################
 
-RANDFILE                = /dev/urandom
 CA_DIR                  = /container/tls/CA
 
 [ ca ]
@@ -32,6 +31,9 @@ preserve                = no
 x509_extensions         = usr_cert
 copy_extensions         = copy
 policy                  = policy_anything
+
+[ crl_ext ]
+authorityKeyIdentifier  = keyid:always
 
 [ usr_cert ]
 basicConstraints        = CA:FALSE
