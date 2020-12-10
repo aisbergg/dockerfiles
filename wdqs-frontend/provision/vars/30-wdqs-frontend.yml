@@ -1,0 +1,49 @@
+---
+
+# Load Dynamic Nginx Modules
+NGINX_LOAD_NGX_HTTP_HEADERS_MORE_FILTER_MODULE: True
+
+defaults:
+  # ----------------------------------------------------------------------------
+  # Nginx
+  # ----------------------------------------------------------------------------
+
+  NGINX_REDIRECT_TO_FIRST_DOMAIN: False
+  NGINX_REQ_LIMIT_ZONE_SIZE: 5m
+  NGINX_REQ_LIMIT_PER_IP_RATE: 15r/s
+  NGINX_REQ_LIMIT_PER_IP_BURST: 30
+
+
+
+  # ----------------------------------------------------------------------------
+  # Wikidata Query Service Frontend
+  # ----------------------------------------------------------------------------
+
+  WDQS_FRONTEND_API_SPARQL_URI: ""
+  WDQS_FRONTEND_API_SPARQL_PROXY_URI: "http://wdqs.svc:80"
+  WDQS_FRONTEND_API_WIKIBASE_URI: ""
+  WDQS_FRONTEND_API_WIKIBASE_PROXY_URI: "http://wikibase.svc:80"
+
+  WDQS_FRONTEND_API_EXAMPLES_SERVER: "https://www.wikidata.org/"
+  WDQS_FRONTEND_API_EXAMPLES_APIPATH: "w/api.php"
+  WDQS_FRONTEND_API_EXAMPLES_PAGETITLE: "Wikidata:SPARQL_query_service/queries/examples"
+  WDQS_FRONTEND_API_EXAMPLES_PAGEPATHELEMENT: "wiki/"
+
+  WDQS_FRONTEND_API_URLSHORTENER:
+    type: choice
+    default: tinyurl
+    choices:
+      - tinyurl
+      - wmf
+      - wikibeta
+
+  WDQS_FRONTEND_BRAND_TITLE: "Wikidata Query Service"
+  WDQS_FRONTEND_BRAND_LOGO: "logo.svg"
+  WDQS_FRONTEND_BRAND_FAVICON: "favicon.ico"
+  WDQS_FRONTEND_BRAND_COPYRIGHTURL: "https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/Copyright"
+
+  # host the site at a subdir
+  WDQS_FRONTEND_LOCATION_ROOT: "/"
+
+  # allow only read-only SPARQL requests
+  WDQS_FRONTEND_READ_ONLY: true

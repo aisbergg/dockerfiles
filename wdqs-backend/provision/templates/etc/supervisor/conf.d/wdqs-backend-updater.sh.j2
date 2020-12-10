@@ -1,0 +1,28 @@
+#/bin/bash
+
+DIR=/opt/wdqs-backend
+cd "$DIR"
+
+# WDQS Blazegraph host
+HOST="http://localhost:{{ WDQS_BACKEND_PORT }}"
+
+UPDATER_OPTS="-DwikibaseMaxDaysBack={{ WDQS_BACKEND_WIKIBASE_MAX_DAYS_BACK }} {{ WDQS_BACKEND_UPDATER_OPTS }}"
+EXTRA_JVM_OPTS="{{ WDQS_BACKEND_UPDATER_EXTRA_JVM_OPTS }}"
+HEAP_SIZE="{{ WDQS_BACKEND_UPDATER_JVM_HEAP_SIZE }}"
+
+LOG_CONFIG="/opt/wdqs-backend/logback.xml"
+LOG_DIR="/container/log"
+# disable GC logs
+GC_LOGS=" "
+
+# execute script
+. runUpdate.sh \
+    -n {{ WDQS_BACKEND_BLAZEGRAPH_MAIN_NS }} -- \
+    --wikibaseHost {{ WDQS_BACKEND_WIKIBASE_HOST }} \
+    --wikibaseUrl {{ WDQS_BACKEND_WIKIBASE_SCHEME }}://{{ WDQS_BACKEND_WIKIBASE_HOST }} \
+    --conceptUri {{ WDQS_BACKEND_WIKIBASE_SCHEME }}://{{ WDQS_BACKEND_WIKIBASE_HOST }} \
+    --entityNamespaces {{ WDQS_BACKEND_UPDATER_WDQS_ENTITY_NAMESPACES }} \
+    --batchSize {{ WDQS_BACKEND_UPDATER_BATCH_SIZE }} \
+    --pollDelay {{ WDQS_BACKEND_UPDATER_POLL_DELAY }} \
+    --threadCount {{ WDQS_BACKEND_UPDATER_THREAD_COUNT }}{% if WDQS_BACKEND_UPDATER_INIT %} \
+    --init -s WDQS_BACKEND_UPDATER_START_TIME{% endif %}

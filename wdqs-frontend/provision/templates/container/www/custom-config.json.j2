@@ -1,0 +1,34 @@
+{% set WDQS_FRONTEND_LOCATION_ROOT = WDQS_FRONTEND_LOCATION_ROOT.rstrip('/') -%}
+{% set WDQS_FRONTEND_API_SPARQL_URI =
+    WDQS_FRONTEND_API_SPARQL_URI if WDQS_FRONTEND_API_SPARQL_URI != '' else
+    WDQS_FRONTEND_LOCATION_ROOT ~ "/proxy/wdqs/bigdata/namespace/wdq/sparql" -%}
+{% set WDQS_FRONTEND_API_WIKIBASE_URI =
+    WDQS_FRONTEND_API_WIKIBASE_URI if WDQS_FRONTEND_API_WIKIBASE_URI != '' else
+    WDQS_FRONTEND_LOCATION_ROOT ~ "/proxy/wikibase/w/api.php" -%}
+{
+  "api": {
+    "sparql": {
+      "uri": "{{ WDQS_FRONTEND_API_SPARQL_URI }}"
+    },
+    "wikibase": {
+      "uri": "{{ WDQS_FRONTEND_API_WIKIBASE_URI }}"
+    },
+    "examples": {
+      "server": "{{ WDQS_FRONTEND_API_EXAMPLES_SERVER }}",
+      "apiPath": "{{ WDQS_FRONTEND_API_EXAMPLES_APIPATH }}",
+      "pageTitle": "{{ WDQS_FRONTEND_API_EXAMPLES_PAGETITLE }}",
+      "pagePathElement": "{{ WDQS_FRONTEND_API_EXAMPLES_PAGEPATHELEMENT }}"
+    },
+    "urlShortener": "{{ WDQS_FRONTEND_API_URLSHORTENER }}"
+  },
+  "brand": {
+    "title": "{{ WDQS_FRONTEND_BRAND_TITLE }}",
+    "logo": "{{ WDQS_FRONTEND_BRAND_LOGO }}",
+    "favicon": "{{ WDQS_FRONTEND_BRAND_FAVICON }}",
+    "copyrightUrl": "{{ WDQS_FRONTEND_BRAND_COPYRIGHTURL }}"
+  },
+  "location": {
+    "root": "{{ WDQS_FRONTEND_LOCATION_ROOT }}",
+    "index": "{{ WDQS_FRONTEND_LOCATION_ROOT }}/index.html"
+  }
+}
