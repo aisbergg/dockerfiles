@@ -20,7 +20,7 @@ defaults:
   # ----------------------------------------------------------------------------
 
   WDQS_FRONTEND_API_SPARQL_URI: ""
-  WDQS_FRONTEND_API_SPARQL_PROXY_URI: "http://wdqs.svc:80"
+  WDQS_FRONTEND_API_SPARQL_PROXY_URI: "http://wdqs.svc:9999"
   WDQS_FRONTEND_API_WIKIBASE_URI: ""
   WDQS_FRONTEND_API_WIKIBASE_PROXY_URI: "http://wikibase.svc:80"
 
