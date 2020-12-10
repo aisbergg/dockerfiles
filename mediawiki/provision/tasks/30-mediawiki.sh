@@ -55,7 +55,11 @@ elif [[ $(bool "$MEDIAWIKI_AUTO_UPDATE" true) == "true" || -f /container/www/.up
         tempdir="$(mktemp -d)"
         tar xzf /usr/local/src/mediawiki.tar.gz -C "$tempdir" --strip-components=1
 
-        rsync -rlD --delete \
+        if [[ $(bool "$MEDIAWIKI_UPDATE_CLEAN" false) == "true" ]]; then
+            delete_flag=--delete
+        fi
+
+        rsync -rlD $delete_flag \
             --exclude /extensions/ \
             --exclude /images/ \
             --exclude /skins/ \
@@ -70,12 +74,12 @@ elif [[ $(bool "$MEDIAWIKI_AUTO_UPDATE" true) == "true" || -f /container/www/.up
         done
 
         shopt -s dotglob
-        chmod g+rwX,o-rwx -R ./ || true
+        chmod g=rwX,o= -R ./ || true
         chgrp root -R ./ || true
         shopt -u dotglob
 
+        composer update --lock --no-dev
         php maintenance/update.php
-        composer update --no-dev
 
         rm -rf "$tempdir" .update-in-progess
         popd >/dev/null

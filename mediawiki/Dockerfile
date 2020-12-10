@@ -1,8 +1,8 @@
 FROM aisberg/nginx-php7
 
-ENV MEDIAWIKI_MAJOR=1.34 \
-    MEDIAWIKI_MINOR=2 \
-    MEDIAWIKI_SHA256_CHECKSUM=0edc557f6093bdb91f7ea32e0ade117e02dc13593518584d07088845823224d6
+ENV MEDIAWIKI_MAJOR=1.35 \
+    MEDIAWIKI_MINOR=0 \
+    MEDIAWIKI_SHA256_CHECKSUM=3a7fbc1dec03533b57c688b075f721bba70eb14d92a4a1eab8d7d5a5943f2ed4
 
 RUN set -x \
     \
@@ -11,8 +11,8 @@ RUN set -x \
     && echo "$MEDIAWIKI_SHA256_CHECKSUM  /usr/local/src/mediawiki.tar.gz" | sha256sum -c \
     \
     # install general requirements for MediaWiki
-    && apk update \
-    && apk add --no-progress \
+    # see https://www.mediawiki.org/wiki/Manual:Installation_requirements
+    && apk add --update --no-progress \
         diffutils \
         git \
         php7-apcu \

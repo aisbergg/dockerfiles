@@ -44,6 +44,9 @@ server {
     }
     {%- endif %}
 
+    # expose the files under /w as well
+    rewrite ^/w/(.*) /$1 last;
+
     # enable anti-cross-site scripting filter built into Internet Explorer,
     # Chrome and Safari
     #   see: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
