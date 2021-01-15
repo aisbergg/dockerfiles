@@ -1,18 +1,15 @@
 FROM aisberg/nginx
 
-ENV COMPOSER_VERSION=1.10.19 \
-    COMPOSER_SHA256_CHECKSUM=9904da3105cb092371c964df66f3e56e6311c0e6a3830f5540613ddfc0ed587d \
-    COMPOSER_ALLOW_SUPERUSER=1 \
+ENV COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME=/tmp \
     LD_PRELOAD="/usr/lib/preloadable_libiconv.so php"
 
-# inspired by https://github.com/graze/docker-php-alpine
 RUN set -x \
     \
     # install required packages
-    && apk update \
-    && apk add --no-progress \
-        gnu-libiconv\
+    && apk add --update --no-cache --no-progress \
+        composer \
+        gnu-libiconv \
         pcre \
         php7 \
         php7-apcu \
@@ -35,6 +32,7 @@ RUN set -x \
         php7-pdo_mysql \
         php7-pdo_pgsql \
         php7-pdo_sqlite \
+        php7-pecl-yaml \
         php7-pgsql \
         php7-phar \
         php7-posix \
@@ -51,33 +49,8 @@ RUN set -x \
         yaml \
         zlib \
     \
-    # build PHP YAML extension
-    && apk add --no-progress --virtual .pecl-deps \
-        autoconf \
-        file \
-        gcc \
-        libc-dev \
-        make \
-        pcre-dev \
-        php7-dev \
-        php7-pear \
-        pkgconf \
-        re2c \
-        yaml-dev \
-    && sed -i 's/^exec $PHP -C -n/exec $PHP -C/g' $(which pecl) \
-    && pecl channel-update pecl.php.net \
-    && pecl install yaml \
-    && echo "extension=yaml.so" > /etc/php7/conf.d/01_yaml.ini \
-    && rm -rf /usr/share/php7 \
-    && apk del .pecl-deps \
-    \
-    # install PHP Composer
-    && curl -fSL "https://github.com/composer/composer/releases/download/${COMPOSER_VERSION}/composer.phar" -o /usr/bin/composer \
-    && echo "$COMPOSER_SHA256_CHECKSUM  /usr/bin/composer" | sha256sum -c \
-    && chmod +x /usr/bin/composer \
-    \
     # cleanup
-    && rm /etc/php7/php-fpm.d/* /var/cache/apk/* \
+    && rm /etc/php7/php-fpm.d/* \
     \
     # prepare working directories
     && workdirs \
@@ -87,9 +60,8 @@ RUN set -x \
 COPY provision /provision
 
 LABEL org.opencontainers.image.title="Nginx-PHP7" \
-    org.opencontainers.image.version="7.3.21" \
     org.opencontainers.image.description="PHP-FPM (FastCGI Process Manager) is an alternative PHP FastCGI implementation." \
     org.opencontainers.image.url="https://php-fpm.org" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/nginx-php7"
+    org.opencontainers.image.source="https://github.com/aisbergg/dockerfiles/nginx-php7"
