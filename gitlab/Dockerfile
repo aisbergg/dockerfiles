@@ -1,3 +1,3 @@
-FROM sameersbn/gitlab:13.7.3
+FROM sameersbn/gitlab:13.8.4
 
 COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
