@@ -1,8 +1,8 @@
 FROM aisberg/nginx-php7
 
-ENV LIMESURVEY_VERSION=3.17.1 \
-    LIMESURVEY_BUILDNUMBER=190408 \
-    LIMESURVEY_SHA256_CHECKSUM=a2c63a5a28f7f724f5bd7017959caf76e845c7fce9d8b1177075d030641fdbac
+ENV LIMESURVEY_VERSION=4.4.13 \
+    LIMESURVEY_BUILDNUMBER=210315 \
+    LIMESURVEY_SHA256_CHECKSUM=f6a6af245aa4a318c7fca66a1db76add3580cd0cb56e0c4a5b1516600f214152
 
 RUN set -x \
     \
@@ -45,4 +45,4 @@ LABEL org.opencontainers.image.title="Lime Survey" \
     org.opencontainers.image.url="https://www.limesurvey.org" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/limesurvey"
+    org.opencontainers.image.source="https://github.com/aisbergg/dockerfiles/limesurvey"

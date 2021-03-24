@@ -49,6 +49,7 @@ elif [[ $(bool "$LIMESURVEY_AUTO_UPDATE" "true") == "true" || -f /container/www/
 
         rsync -rlD --delete \
             --exclude /application/config/config.php \
+            --exclude /application/config/security.php \
             --exclude /upload/ \
             --exclude /themes/ \
             --exclude /plugins/ \
