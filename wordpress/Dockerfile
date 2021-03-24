@@ -1,6 +1,6 @@
 FROM aisberg/nginx-php7
 
-ENV WP_CLI_VERSION=2.2.0 \
+ENV WP_CLI_VERSION=2.4.0 \
     WP_CLI_PGP_KEY_ID=63AF7AA15067C05616FDDD88A3A2E8F226F0BC06
 
 RUN set -x \
@@ -50,4 +50,4 @@ LABEL org.opencontainers.image.title="Wordpress" \
     org.opencontainers.image.url="https://wordpress.org/" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/wordpress"
+    org.opencontainers.image.source="https://github.com/aisbergg/dockerfiles/wordpress"
