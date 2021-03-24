@@ -1,6 +1,6 @@
 FROM aisberg/nginx-php7
 
-ENV PHPMYADMIN_VERSION=5.0.4 \
+ENV PHPMYADMIN_VERSION=5.1.0 \
     PHPMYADMIN_PGP_KEY_ID=3D06A59ECE730EB71B511C17CE752F178259BD92
 
 RUN set -x \
@@ -49,4 +49,4 @@ LABEL org.opencontainers.image.title="phpMyAdmin" \
     org.opencontainers.image.url="https://www.phpmyadmin.net/" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/phpmyadmin"
+    org.opencontainers.image.source="https://github.com/aisbergg/dockerfiles/phpmyadmin"
