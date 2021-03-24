@@ -1,8 +1,8 @@
 FROM aisberg/nginx-php7
 
 ENV MEDIAWIKI_MAJOR=1.35 \
-    MEDIAWIKI_MINOR=0 \
-    MEDIAWIKI_SHA256_CHECKSUM=3a7fbc1dec03533b57c688b075f721bba70eb14d92a4a1eab8d7d5a5943f2ed4
+    MEDIAWIKI_MINOR=1 \
+    MEDIAWIKI_SHA256_CHECKSUM=8e65a61d4a16ea6f3e60a2828483f8d50047b89f94f1313fcc2da113fdabe315
 
 RUN set -x \
     \
@@ -79,4 +79,4 @@ LABEL org.opencontainers.image.title="MediaWiki" \
     org.opencontainers.image.url="https://www.mediawiki.org/wiki/MediaWiki" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/Aisbergg/dockerfiles/mediawiki"
+    org.opencontainers.image.source="https://github.com/aisbergg/dockerfiles/mediawiki"

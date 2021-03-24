@@ -65,9 +65,14 @@ elif [[ $(bool "$MEDIAWIKI_AUTO_UPDATE" true) == "true" || -f /container/www/.up
             --exclude /skins/ \
             --exclude /.update-in-progess \
             --exclude /composer.local.json \
+            --exclude /composer.lock \
             --exclude /favicon.ico \
             --exclude /LocalSettings.php \
             "$tempdir/" ./
+        rsync -rlD $delete_flag \
+            "$tempdir/extensions/"* ./extensions/
+        rsync -rlD $delete_flag \
+            "$tempdir/skins/"* ./skins/
 
         for dir in extensions skins; do
             rsync -rlD --include "/$dir/" --exclude '/*' "$tempdir/" ./
