@@ -1,10 +1,31 @@
-FROM golang:alpine as build
-WORKDIR /usr/local/src
-RUN apk add --update --no-cache --no-progress git \
-    && go get -v -u github.com/ochinchina/supervisord \
-    && CGO_ENABLED=0 GOOS=linux go build -a -ldflags "-extldflags -static" -o /usr/bin/supervisord github.com/ochinchina/supervisord
+# ------------------------------------------------------------------------------
+# Build Stage
+# ------------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------
+FROM golang:alpine as build
+
+WORKDIR /usr/local/src
+
+RUN set -x \
+    # install build dependencies
+    && apk add --update --no-cache --no-progress git \
+    \
+    # download and build supervisord
+    && go get -v -u github.com/ochinchina/supervisord \
+    && CGO_ENABLED=0 GOOS=linux go build -a -ldflags "-extldflags -static" -o /usr/local/bin/supervisord github.com/ochinchina/supervisord \
+    \
+    # download and build supercronic
+    && go get -v -u github.com/aptible/supercronic \
+    && CGO_ENABLED=0 GOOS=linux go build -a -ldflags "-extldflags -static" -o /usr/local/bin/supercronic github.com/aptible/supercronic \
+    \
+    # clean up
+    && rm -rf /var/cache/apk/* /go/src
+
+
+
+# ------------------------------------------------------------------------------
+# Final Stage
+# ------------------------------------------------------------------------------
 
 FROM ubuntu:20.04
 
@@ -74,7 +95,7 @@ RUN set -x \
     && find /usr/lib/python* -name __pycache__ -exec rm -r {} + \
     && rm -rf /var/lib/apt/lists/* /var/cache/* /tmp/tini.asc
 
-COPY --from=build /usr/bin/supervisord /usr/bin/supervisord
+COPY --from=build /usr/local/bin/* /usr/local/bin/
 COPY provision /provision
 COPY static /
 RUN chmod 0755 /entrypoint /usr/bin/workdirs /usr/bin/schedule_program \

@@ -28,7 +28,7 @@ INIT=$(lower_case "${INIT:-tini}")
 case "$INIT" in
     supervisor)
         print_info "Starting Supervisor"
-        exec /sbin/tini -- /usr/bin/supervisord ${INIT_ARGS[@]} -c /etc/supervisor/supervisord.conf
+        exec /sbin/tini -- /usr/local/bin/supervisord ${INIT_ARGS[@]} -c /etc/supervisor/supervisord.conf
         ;;
     tini)
         print_info "Starting Tini"
