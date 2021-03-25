@@ -4,21 +4,25 @@
 
 FROM golang:alpine as build
 
-WORKDIR /usr/local/src
+ENV SUPERVISORD_VERSION=0.6.9 \
+    SUPERCRONIC_VERSION=0.1.12
 
 RUN set -x \
     # install build dependencies
-    && apk add --update --no-cache --no-progress git \
+    && apk add --update --no-cache --no-progress git gcc \
     \
     # download and build supervisord
-    && go get -v -u github.com/ochinchina/supervisord \
+    && git clone -c advice.detachedHead=false --branch v$SUPERVISORD_VERSION --single-branch --depth 1 https://github.com/ochinchina/supervisord.git /go/src/github.com/ochinchina/supervisord \
+    && cd /go/src/github.com/ochinchina/supervisord \
     && CGO_ENABLED=0 GOOS=linux go build -a -ldflags "-extldflags -static" -o /usr/local/bin/supervisord github.com/ochinchina/supervisord \
     \
     # download and build supercronic
-    && go get -v -u github.com/aptible/supercronic \
+    && git clone -c advice.detachedHead=false --branch v$SUPERCRONIC_VERSION --single-branch --depth 1 https://github.com/aptible/supercronic.git /go/src/github.com/aptible/supercronic \
+    && cd /go/src/github.com/aptible/supercronic \
     && CGO_ENABLED=0 GOOS=linux go build -a -ldflags "-extldflags -static" -o /usr/local/bin/supercronic github.com/aptible/supercronic \
     \
     # clean up
+    && cd / \
     && rm -rf /var/cache/apk/* /go/src
 
 
