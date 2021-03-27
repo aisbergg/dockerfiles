@@ -1,0 +1,115 @@
+#!/bin/bash
+set -eo pipefail
+
+install_extension_from_git() {
+    # Installs or updates a MediaWiki extension from a Git repository.
+    #
+    # Args:
+    #     $1 (name): Extension name.
+    #     $2 (version): Release version (Git branch or tag). (default: $RELEASE_TAG)
+    #     $3 (url): Git repo URL. (default: https://github.com/wikimedia/mediawiki-extensions-${name}.git)
+    # Usage:
+    #    install_extension_from_git UserMerge
+    local name="$1"
+    local version="${2:-$RELEASE_TAG}"
+    local url="${3:-https://github.com/wikimedia/mediawiki-extensions-${name}.git}"
+    local dest="$EXTENSION_DIR/$name"
+
+    if [[ -d "$dest" ]]; then
+        if [[ -d "$dest/.git" ]]; then
+            # check if the origin URL has changed
+            local current_url="$(cd "$dest" && git config --get remote.origin.url)"
+            if [[ "$current_url" != "$url" ]]; then
+                # URL changed -> clean up and get a new copy
+                rm -rf "$dest"
+            fi
+        else
+            # dir exists and is not a Git repository
+            echo "Remove old extension ${name}"
+            rm -rf "$dest"
+        fi
+    fi
+
+    # check if extension is already installed and can be updated
+    if [[ -d "$dest" ]]; then
+        pushd "$dest" >/dev/null
+        local current_hash="$(git rev-parse --verify HEAD)"
+        local new_hash="$(git ls-remote -q --refs "$url" "$version" | cut -f 1)"
+        if [[ "$current_hash" != "$new_hash" ]]; then
+            echo "Update extension ${name}"
+            git fetch --recurse-submodules -j8 --depth 1 -q origin "$version"
+            git checkout -q "$new_hash"
+        else
+            echo "Skipping extension ${name} (is up to date)"
+        fi
+        popd >/dev/null
+        return
+    fi
+
+    # get a fresh copy of the extension
+    echo "Install extension ${name}"
+    git clone --recurse-submodules -j8 -b "$version" --depth 1 --quiet "$url" "$dest"
+    return
+}
+
+get_mw_release_tag() {
+    local installed_version="$(grep 'MW_VERSION' /container/www/includes/Defines.php | grep -Eo '[0-9\.]+')"
+    if [[ -z "$installed_version" ]]; then
+        # old style version info
+        installed_version="$(grep 'wgVersion' /container/www/includes/DefaultSettings.php | grep -Eo '[0-9\.]+')"
+    fi
+    echo -n "$installed_version" | sed -E "s/(\d+)\.(\d+).*/REL\1_\2/"
+}
+
+# global vars
+EXTENSION_DIR=/container/www/extensions
+RELEASE_TAG=$(get_mw_release_tag)
+
+
+
+# ------------------------------------------------------------------------------
+# Main
+# ------------------------------------------------------------------------------
+
+usage="Usage: $0 install_extension EXTENSION [EXTENSION...]
+
+Installs or updates MediaWiki extensions from Git.
+
+OPTIONS:
+    -h, --help              Show this help message and exit
+
+Formats for EXTENSION:
+    NAME                    Official MW extension github.com/wikimedia/mediawiki-extensions-NAME
+    NAME;VERSION            Official MW extension with custom version tag
+    NAME;VERSION;URL        MW extension from custom Git repo
+"
+
+args=$(getopt -o "h" -l "help" -- "$@")
+eval set -- "$args"
+while [[ $# > 0 ]]; do
+    case "$1" in
+        -h|--help) echo "$usage"; exit 0;;
+        --) shift ; break ;;
+        *) echo "Unknown option '$1'"; exit 2;;
+    esac
+done
+if [[ $# == 0 ]]; then echo "No extension specified"; exit 1; fi
+
+if [[ ! -d "$EXTENSION_DIR" ]]; then
+    echo "Missing extension dir, is MediaWiki installed correctly?"
+    exit 1
+fi
+
+while [[ $# > 0 ]]; do
+    # split input by semicolon
+    mapfile -td \; input < <(printf "%s\0" "$1")
+    name="${input[0]}"
+    version="${input[1]}"
+    url="${input[2]}"
+
+    # install extension from git
+    install_extension_from_git "$name" "$version" "$url"
+
+    # process next extension
+    shift
+done

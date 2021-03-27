@@ -75,7 +75,7 @@ server {
     {%- endif %}
     location ~ ^/(?:cache|docs|images/deleted|includes|maintenance|languages|serialized|tests)/ { {{ 'error_page 418 = @mediawiki; return 418;' if MEDIAWIKI_SHORT_URL_PATH == '' else 'deny all;' }} }
     location ~ ^/(?:UPGRADE|INSTALL|FAQ|RELEASE-NOTES-.*|README|COPYING|HISTORY|CREDITS) { {{ 'error_page 418 = @mediawiki; return 418;' if MEDIAWIKI_SHORT_URL_PATH == '' else 'deny all;' }} }
-    location ~* ^/[^/]*\.(?:js|json|json-sample|md|sample|xml) { {{ 'error_page 418 = @mediawiki; return 418;' if MEDIAWIKI_SHORT_URL_PATH == '' else 'deny all;' }} }
+    location ~* ^/[^/]*\.(?:js|json|json-sample|md|sample|xml|lock) { {{ 'error_page 418 = @mediawiki; return 418;' if MEDIAWIKI_SHORT_URL_PATH == '' else 'deny all;' }} }
     location ~ ^/(?:includes)/ { internal; }
 
     # Force potentially-malicious files uploaded by the users to be served with
