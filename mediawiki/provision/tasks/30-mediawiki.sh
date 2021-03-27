@@ -38,7 +38,7 @@ if [[ ! -f /container/www/LocalSettings.php || -f /container/www/.installation-i
 # check if the installed version can be upgraded
 elif [[ $(bool "$MEDIAWIKI_AUTO_UPDATE" true) == "true" || -f /container/www/.update-in-progess ]]; then
     # information about upgrading MediaWiki can be found here: https://www.mediawiki.org/wiki/Manual:Upgrading
-    INSTALLED_VERSION="$(grep 'MW_VERSION' /container/www/includes/Defines.php | grep -Eo '[0-9\.]+')"
+    INSTALLED_VERSION="$(grep 'MW_VERSION' /container/www/includes/Defines.php | grep -Eo '[0-9\.]+' || true)"
     if [[ -z "$INSTALLED_VERSION" ]]; then
         # old style version info
         INSTALLED_VERSION="$(grep 'wgVersion' /container/www/includes/DefaultSettings.php | grep -Eo '[0-9\.]+')"
@@ -56,6 +56,7 @@ elif [[ $(bool "$MEDIAWIKI_AUTO_UPDATE" true) == "true" || -f /container/www/.up
         tar xzf /usr/local/src/mediawiki.tar.gz -C "$tempdir" --strip-components=1
 
         if [[ $(bool "$MEDIAWIKI_UPDATE_CLEAN" false) == "true" ]]; then
+            print_info "Perform a clean update"
             delete_flag=--delete
         fi
 
@@ -65,7 +66,6 @@ elif [[ $(bool "$MEDIAWIKI_AUTO_UPDATE" true) == "true" || -f /container/www/.up
             --exclude /skins/ \
             --exclude /.update-in-progess \
             --exclude /composer.local.json \
-            --exclude /composer.lock \
             --exclude /favicon.ico \
             --exclude /LocalSettings.php \
             "$tempdir/" ./
@@ -91,6 +91,12 @@ elif [[ $(bool "$MEDIAWIKI_AUTO_UPDATE" true) == "true" || -f /container/www/.up
     fi
 
     unset INSTALLED_VERSION
+
+    # install or update extensions form Git
+    if [[ -n "$MEDIAWIKI_EXTENSIONS" ]]; then
+        extensions=($MEDIAWIKI_EXTENSIONS)
+        bash /provision/cmds/install_extension ${extensions[@]}
+    fi
 fi
 
 # will activate a rule in nginx/conf.d/mediawiki.conf
