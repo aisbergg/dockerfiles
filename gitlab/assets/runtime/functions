@@ -708,6 +708,7 @@ gitlab_configure_oauth() {
     OAUTH_BLOCK_AUTO_CREATED_USERS \
     OAUTH_AUTO_LINK_LDAP_USER \
     OAUTH_AUTO_LINK_SAML_USER \
+    OAUTH_AUTO_LINK_USER \
     OAUTH_EXTERNAL_PROVIDERS
 
   case ${OAUTH_AUTO_SIGN_IN_WITH_PROVIDER} in
@@ -1532,6 +1533,19 @@ update_ssh_listen_port() {
   sed -i "s|#Port 22|Port ${GITLAB_SSH_LISTEN_PORT}|g" /etc/ssh/sshd_config
 }
 
+generate_healthcheck_script() {
+  # configure healthcheck script
+  ## https://docs.gitlab.com/ee/user/admin_area/monitoring/health_check.html
+cat > /usr/local/sbin/healthcheck <<EOF
+#!/bin/bash
+url=http://localhost${GITLAB_RELATIVE_URL_ROOT}/-/liveness
+options=( '--insecure' '--location' '--silent' )
+curl "\${options[@]}" \$url
+[[ "\$(curl \${options[@]} -o /dev/null -I -w '%{http_code}' \$url)" == "200" ]]
+EOF
+  chmod +x /usr/local/sbin/healthcheck
+}
+
 initialize_system() {
   map_uidgid
   initialize_logdir
@@ -1674,6 +1688,7 @@ configure_gitlab() {
   gitlab_configure_registry
   gitlab_configure_pages
   gitlab_configure_sentry
+  generate_healthcheck_script
 
   # remove stale gitlab.socket
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
