@@ -448,7 +448,8 @@ gitlab_configure_ldap() {
     LDAP_USER_ATTRIBUTE_NAME \
     LDAP_USER_ATTRIBUTE_FIRSTNAME \
     LDAP_USER_ATTRIBUTE_LASTNAME \
-    LDAP_LABEL
+    LDAP_LABEL \
+    LDAP_PREVENT_LDAP_SIGN_IN
 }
 
 gitlab_configure_oauth_cas3() {
@@ -760,6 +761,12 @@ gitlab_configure_secrets() {
     exec_as_git openssl rand -base64 -out "${workhorse_secret}" 32
     chmod 600 "${workhorse_secret}"
   fi
+
+  local pages_secret="${GITLAB_INSTALL_DIR}/.gitlab_pages_secret"
+  if [[ ! -f "${pages_secret}" ]]; then
+    exec_as_git openssl rand -base64 -out "${pages_secret}" 32
+    chmod 600 "${pages_secret}"
+  fi
 }
 
 gitlab_configure_sidekiq() {
@@ -999,6 +1006,7 @@ gitlab_configure_artifacts() {
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_HOST \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE \
+      GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_AWS_SIGNATURE_VERSION \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL \
       GITLAB_ARTIFACTS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION
@@ -1010,6 +1018,51 @@ gitlab_configure_artifacts() {
   update_template ${GITLAB_CONFIG} \
     GITLAB_ARTIFACTS_ENABLED \
     GITLAB_ARTIFACTS_DIR
+}
+
+
+gitlab_configure_packages() {
+  if [[ ${GITLAB_PACKAGES_OBJECT_STORE_ENABLED} == true ]]; then
+    echo "Configuring gitlab::packages:object_store"
+
+    if [[ "${GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_PROVIDER}" == "Google" ]]; then
+        echo " -> Google PACKAGES provider selected removing aws config"
+        exec_as_git sed -i "/#start-packages-aws/,/#end-packages-aws/d" ${GITLAB_CONFIG}
+        exec_as_git sed -i "/#start-packages-gcs/d" ${GITLAB_CONFIG}
+        exec_as_git sed -i "/#end-packages-gcs/d" ${GITLAB_CONFIG}
+    fi
+    if [[ "${GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_PROVIDER}" == "AWS" ]]; then
+      echo " -> AWS PACKAGES provider selected removing Google config"
+      exec_as_git sed -i "/#start-packages-gcs/,/#end-packages-gcs/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#start-packages-aws/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/#end-packages-aws/d" ${GITLAB_CONFIG}
+    fi
+
+    update_template ${GITLAB_CONFIG} \
+      GITLAB_PACKAGES_OBJECT_STORE_ENABLED \
+      GITLAB_PACKAGES_OBJECT_STORE_REMOTE_DIRECTORY \
+      GITLAB_PACKAGES_OBJECT_STORE_DIRECT_UPLOAD \
+      GITLAB_PACKAGES_OBJECT_STORE_BACKGROUND_UPLOAD \
+      GITLAB_PACKAGES_OBJECT_STORE_PROXY_DOWNLOAD \
+      GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_PROVIDER \
+      GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_ACCESS_KEY_ID \
+      GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_SECRET_ACCESS_KEY \
+      GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_REGION \
+      GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_HOST \
+      GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_ENDPOINT \
+      GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE \
+      GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_AWS_SIGNATURE_VERSION \
+      GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT \
+      GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL \
+      GITLAB_PACKAGES_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION
+  else
+    exec_as_git sed -i -e "/path: {{GITLAB_PACKAGES_DIR}}/{n;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;N;d;}" ${GITLAB_CONFIG}
+  fi
+
+  echo "Configuring gitlab::packages..."
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_PACKAGES_ENABLED \
+    GITLAB_PACKAGES_DIR
 }
 
 gitlab_configure_lfs() {
@@ -1042,6 +1095,7 @@ gitlab_configure_lfs() {
       GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_HOST \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE \
+      GITLAB_LFS_OBJECT_STORE_CONNECTION_AWS_SIGNATURE_VERSION \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL \
       GITLAB_LFS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION
@@ -1085,6 +1139,7 @@ gitlab_configure_uploads() {
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_HOST \
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_ENDPOINT \
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_PATH_STYLE \
+      GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_AWS_SIGNATURE_VERSION \
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_PROJECT \
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_CLIENT_EMAIL \
       GITLAB_UPLOADS_OBJECT_STORE_CONNECTION_GOOGLE_JSON_KEY_LOCATION
@@ -1172,6 +1227,29 @@ gitlab_configure_sentry(){
     SENTRY_DSN \
     SENTRY_CLIENTSIDE_DSN \
     SENTRY_ENVIRONMENT
+}
+
+gitlab_configure_content_security_policy(){
+  echo "Configuring gitlab::content_security_policy..."
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_CONTENT_SECURITY_POLICY_ENABLED \
+    GITLAB_CONTENT_SECURITY_POLICY_REPORT_ONLY \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_BASE_URI \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_CHILD_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_CONNECT_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_DEFAULT_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_FONT_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_FORM_ACTION \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_FRAME_ANCESTORS \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_FRAME_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_IMG_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_MANIFEST_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_MEDIA_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_OBJECT_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_SCRIPT_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_STYLE_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_WORKER_SRC \
+    GITLAB_CONTENT_SECURITY_POLICY_DIRECTIVES_REPORT_URI
 }
 
 nginx_configure_gitlab_ssl() {
@@ -1546,6 +1624,21 @@ EOF
   chmod +x /usr/local/sbin/healthcheck
 }
 
+configure_container_timezone() {
+  # Perform sanity check of provided timezone value
+  if [ -e /usr/share/zoneinfo/${TIMEZONE} ]; then
+    # Configured timezone is available
+
+    # Set localtime
+    ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
+
+    # Set timezone
+    echo ${TIMEZONE} > /etc/timezone
+
+    echo "Container TimeZone -> ${TIMEZONE}"
+  fi
+}
+
 initialize_system() {
   map_uidgid
   initialize_logdir
@@ -1553,6 +1646,7 @@ initialize_system() {
   update_ca_certificates
   generate_ssh_host_keys
   update_ssh_listen_port
+  configure_container_timezone
   install_configuration_templates
   rm -rf /var/run/supervisor.sock
 }
@@ -1672,6 +1766,7 @@ configure_gitlab() {
   gitlab_configure_rack_attack
   gitlab_configure_ci
   gitlab_configure_artifacts
+  gitlab_configure_packages
   gitlab_configure_lfs
   gitlab_configure_uploads
   gitlab_configure_mattermost
@@ -1689,6 +1784,7 @@ configure_gitlab() {
   gitlab_configure_pages
   gitlab_configure_sentry
   generate_healthcheck_script
+  gitlab_configure_content_security_policy
 
   # remove stale gitlab.socket
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
@@ -1705,6 +1801,13 @@ configure_gitlab_shell() {
     REDIS_HOST \
     REDIS_PORT \
     REDIS_DB_NUMBER
+
+  # update custom_hooks_dir if set $GITLAB_SHELL_CUSTOM_HOOKS_DIR
+  if [[ -n ${GITLAB_SHELL_CUSTOM_HOOKS_DIR} ]]; then
+    exec_as_git sed -i \
+      "s|custom_hooks_dir:.*|custom_hooks_dir: $GITLAB_SHELL_CUSTOM_HOOKS_DIR|g" \
+      ${GITLAB_SHELL_CONFIG}
+  fi
 }
 
 
@@ -1747,7 +1850,8 @@ if [[ ${GITLAB_PAGES_ACCESS_CONTROL} == true ]]; then
       GITLAB_PAGES_ACCESS_CLIENT_SECRET \
       GITLAB_PAGES_ACCESS_REDIRECT_URI \
       GITLAB_PAGES_ACCESS_SECRET \
-      GITLAB_PAGES_ACCESS_CONTROL_SERVER
+      GITLAB_PAGES_ACCESS_CONTROL_SERVER \
+      GITLAB_INSTALL_DIR
 
   if [[ -n ${GITLAB_PAGES_ARTIFACTS_SERVER_URL} ]]; then
     update_template ${GITLAB_PAGES_CONFIG} GITLAB_PAGES_ARTIFACTS_SERVER_URL
