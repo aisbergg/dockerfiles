@@ -4,7 +4,7 @@
 
 FROM golang:alpine as build
 
-ENV SUPERVISORD_VERSION=0.6.9 \
+ENV SUPERVISORD_VERSION=0.7.3 \
     SUPERCRONIC_VERSION=0.1.12
 
 RUN set -x \
@@ -93,7 +93,7 @@ RUN set -x \
     && gpg --verify /tmp/tini.asc /sbin/tini \
     && chmod 755 /sbin/tini \
     && pip3 install schedule \
-    && pip3 install Templer \
+    && pip3 install templer \
     \
     # cleanup
     && find /usr/lib/python* -name __pycache__ -exec rm -r {} + \
