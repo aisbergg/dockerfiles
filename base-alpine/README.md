@@ -19,12 +19,12 @@ https://thenewstack.io/six-lessons-bitnamis-transition-container-based-world/
 **Alpine Linux Base Image:**
 Image size: ~100MB
 Image hierarchy: [`alpine:3.7`](https://hub.docker.com/_/alpine/) ← `aisberg/base-alpine`
-Source repository: https://github.com/Aisbergg/dockerfiles/base
+Source repository: https://github.com/aisbergg/dockerfiles/base
 
 **Ubuntu Base Image:**
 Image size: ~200MB
 Image hierarchy: [`ubuntu:17.10`](https://hub.docker.com/_/ubuntu/) ← `aisberg/base-ubuntu`
-Source repository: https://github.com/Aisbergg/dockerfiles/base
+Source repository: https://github.com/aisbergg/dockerfiles/base
 
 **Table of contents**
 <!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
