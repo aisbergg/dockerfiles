@@ -52,7 +52,7 @@ Source repository: https://github.com/aisbergg/dockerfiles/base
 ### Download from Docker Hub
 Use the Docker Pull command for the Alpine Linux version:
 ```bash
-docker pull aisberg/base-alpine:3.8
+docker pull aisberg/base-alpine:3.14
 
 # or pull the latest tag:
 docker pull aisberg/base-alpine:latest

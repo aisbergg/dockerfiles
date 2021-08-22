@@ -4,7 +4,7 @@
 
 FROM golang:alpine as build
 
-ENV SUPERVISORD_VERSION=0.6.9 \
+ENV SUPERVISORD_VERSION=0.7.3 \
     SUPERCRONIC_VERSION=0.1.12
 
 RUN set -x \
@@ -31,7 +31,7 @@ RUN set -x \
 # Final Stage
 # ------------------------------------------------------------------------------
 
-FROM alpine:3.12
+FROM alpine:3.14
 
 ARG LANG=en_US.UTF-8
 ARG ALPINE_MIRROR=http://dl-cdn.alpinelinux.org/alpine/
@@ -64,7 +64,7 @@ RUN set -x \
     && pip3 install --upgrade pip \
     && pip3 install wheel \
     && pip3 install schedule \
-    && pip3 install Templer \
+    && pip3 install templer \
     \
     # cleanup
     && rm -rf /var/cache/apk/*
@@ -87,7 +87,7 @@ ENTRYPOINT ["/entrypoint"]
 CMD ["run"]
 
 LABEL org.opencontainers.image.title="Base Image - Alpine Linux" \
-    org.opencontainers.image.version="3.12" \
+    org.opencontainers.image.version="3.14" \
     org.opencontainers.image.description="A base image build upon Alpine Linux" \
     org.opencontainers.image.url="https://www.alpinelinux.org" \
     org.opencontainers.image.licenses="MIT" \
