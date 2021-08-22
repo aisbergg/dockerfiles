@@ -1,8 +1,9 @@
 FROM aisberg/nginx-php7
 
-ENV MEDIAWIKI_MAJOR=1.35 \
+# latest version can be found here https://www.mediawiki.org/wiki/Special:MyLanguage/Download
+ENV MEDIAWIKI_MAJOR=1.36 \
     MEDIAWIKI_MINOR=1 \
-    MEDIAWIKI_SHA256_CHECKSUM=8e65a61d4a16ea6f3e60a2828483f8d50047b89f94f1313fcc2da113fdabe315
+    MEDIAWIKI_SHA256_CHECKSUM=e6698b19af16274e5ec2bfd36b890996cfa9f3617d2ec81761f12854fa50ad7a
 
 RUN set -x \
     \
