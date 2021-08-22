@@ -1,2 +1,2 @@
-release=1.18.0
-tag=nginx-1.18.0
+release=latest
+tag=nginx-latest
