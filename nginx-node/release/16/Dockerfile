@@ -1,6 +1,6 @@
 FROM aisberg/nginx
 
-ENV NODE_VERSION=12.22.5 \
+ENV NODE_VERSION=16.7.0 \
     YARN_VERSION=1.22.5
 
 # code taken from official node repo: https://hub.docker.com/_/node/
@@ -15,7 +15,7 @@ RUN addgroup -g 1000 node \
       && case "${alpineArch##*-}" in \
         x86_64) \
           ARCH='x64' \
-          CHECKSUM="1c8ce0d58828faff84486dc116ec817595841c8578ed01266eb69e5383c73201" \
+          CHECKSUM="616e4cdf07aa64d2c4a4653b753a4ec9b2ee4febca8b195ebf82e8f22de67641" \
           ;; \
         *) ;; \
       esac \
@@ -95,7 +95,7 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
 #-------------------------------------------------------------------------------
 
 LABEL org.opencontainers.image.title="Node.js" \
-    org.opencontainers.image.version="12.22.5" \
+    org.opencontainers.image.version="16.7.0" \
     org.opencontainers.image.description="Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine." \
     org.opencontainers.image.url="https://nodejs.org/" \
     org.opencontainers.image.licenses="MIT" \

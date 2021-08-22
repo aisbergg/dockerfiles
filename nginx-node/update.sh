@@ -2,10 +2,11 @@
 set -e
 
 NODE_VERSIONS=(
-    14.7.0  fc556b2b3f751e08d745e97bf6197d977de2a885a6080d0a731158c00ffbb02f
-    12.18.3 14dafe026366e7a9cc8d4737b1fcdcb6c534667e22bbeea63a29a1791ac6ac1f
+    16.7.0  616e4cdf07aa64d2c4a4653b753a4ec9b2ee4febca8b195ebf82e8f22de67641
+    14.17.5 8889a3ea0d0d8247132cf257ccd4828ddcd7e373f67c875878035b131e9fa1ac
+    12.22.5 1c8ce0d58828faff84486dc116ec817595841c8578ed01266eb69e5383c73201
 )
-YARN_VERSION=1.22.4
+YARN_VERSION=1.22.5
 
 #-------------------------------------------------------------------------------
 
