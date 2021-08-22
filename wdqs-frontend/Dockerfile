@@ -5,7 +5,7 @@
 FROM node:14-alpine3.14 as build
 
 # version 0.2.0 fails to build...
-ARG WDQS_FRONTEND_VERSION=873e5601168706cf92a3463193705d7d72218bc8
+ARG WDQS_FRONTEND_VERSION=master
 
 RUN set -x \
     # install general requirements
