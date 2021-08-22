@@ -23,7 +23,7 @@ EXPOSE 6379/tcp
 USER 999
 
 LABEL org.opencontainers.image.title="Redis" \
-    org.opencontainers.image.version="5.0.11" \
+    org.opencontainers.image.version="5.0.13" \
     org.opencontainers.image.description="Redis is an open source, in-memory data structure store, used as a database, cache and message broker" \
     org.opencontainers.image.url="https://redis.io" \
     org.opencontainers.image.licenses="MIT" \
