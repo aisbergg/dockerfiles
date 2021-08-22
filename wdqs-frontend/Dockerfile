@@ -2,9 +2,10 @@
 ## Build Stage
 ##
 
-FROM node:12-alpine3.12 as build
+FROM node:14-alpine3.14 as build
 
-ARG WDQS_FRONTEND_VERSION=master
+# version 0.2.0 fails to build...
+ARG WDQS_FRONTEND_VERSION=873e5601168706cf92a3463193705d7d72218bc8
 
 RUN set -x \
     # install general requirements
