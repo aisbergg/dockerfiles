@@ -61,7 +61,6 @@ RUN set -x \
         tini \
     && ln -sf /usr/bin/python3 /usr/bin/python \
     && ln -sf /usr/bin/pip3 /usr/bin/pip \
-    && pip3 install --upgrade pip \
     && pip3 install wheel \
     && pip3 install schedule \
     && pip3 install templer \
