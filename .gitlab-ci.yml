@@ -14,7 +14,7 @@ stages:
     entrypoint: [""]
   variables:
     CONTEXT_DIR: $CI_PROJECT_DIR/$IMAGE_NAME
-    IMAGE_PREFIX: $CI_PROJECT_DIR
+    IMAGE_PREFIX: $CI_REGISTRY_IMAGE
     DOCKERFILE: Dockerfile
   script:
     - tags="$(awk -F= '/^tags\s*=\s*/{print $2}' "$CONTEXT_DIR/.release" | head -n 1)"
