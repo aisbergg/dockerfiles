@@ -80,8 +80,13 @@ while [[ $# > 0 ]]; do
         *) echo "Unknown option '$1'"; exit 1;;
     esac
 done
-if [[ $# > 0 ]]; then DIR="$1"; shift; else echo "Missing DIR argument"; exit 1; fi
-if [[ ! -d "$PWD/$DIR" ]]; then echo "Directory doesn't exist: '$PWD/$DIR'"; exit 1; fi
-if [[ ! -f "$PWD/$DIR/.release" ]]; then echo "Release file doesn't exist: '$PWD/$DIR/.release'"; exit 1; fi
+if [[ $# > 0 ]]; then DIR="$@"; shift; else echo "Missing DIR argument"; exit 1; fi
+for d in $DIR; do
+    if [[ ! -d "$PWD/$d" ]]; then echo "Directory doesn't exist: '$PWD/$d'"; exit 1; fi
+    if [[ ! -f "$PWD/$d/.release" ]]; then echo "Release file doesn't exist: '$PWD/$d/.release'"; exit 1; fi
+done
 
-build_image "$DIR"
+
+for d in $DIR; do
+    build_image "$d"
+done

@@ -56,7 +56,7 @@ function bcli_show_header() {
 
 function bcli_entrypoint() {
     local root_dir;
-    root_dir=$(dirname "$(bcli_resolve_path "$0")")/.bash-cli
+    root_dir=$(pwd)/.bash-cli
 
     local cli_entrypoint;
     cli_entrypoint=$(basename "$0")
@@ -139,7 +139,7 @@ function bcli_entrypoint() {
 
 function bcli_help() {
     local root_dir;
-    root_dir=$(dirname "$(bcli_resolve_path "$0")")
+    root_dir=$(pwd)
 
     local cli_entrypoint;
     cli_entrypoint=$(basename "$1")
