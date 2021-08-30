@@ -1,2 +1,2 @@
-release=16.7.0
-tag=nginx-node-16.7.0
+name=nginx-node
+tags=16.7.0

@@ -116,10 +116,10 @@ RUN chmod 0755 /entrypoint /usr/bin/workdirs /usr/bin/schedule_program \
 ENTRYPOINT ["/entrypoint"]
 CMD ["run"]
 
-LABEL org.opencontainers.image.title="Base Image - Ubuntu" \
+LABEL org.opencontainers.image.title="Ubuntu Base Image" \
     org.opencontainers.image.version="20.04" \
-    org.opencontainers.image.description="A base image build upon Ubuntu" \
+    org.opencontainers.image.description="Ubuntu Base Image" \
     org.opencontainers.image.url="https://www.ubuntu.com" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/aisbergg/dockerfiles/base"
+    org.opencontainers.image.source="https://github.com/aisbergg/dockerfiles/base-ubuntu"

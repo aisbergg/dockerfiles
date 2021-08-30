@@ -1,2 +1,2 @@
-release=14.17.5
-tag=nginx-node-14.17.5
+name=nginx-node
+tags=14.17.5

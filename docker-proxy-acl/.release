@@ -1,2 +1,2 @@
-release=1.0.0
-tag=docker-proxy-acl-1.0.0
+name=docker-proxy-acl
+tags=1.0.0

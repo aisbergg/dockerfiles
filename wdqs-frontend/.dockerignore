@@ -1,6 +1,5 @@
-.release
 **/.gitkeep
-LICENSE
-Makefile
-assets
-README.md
+/.release
+/Dockerfile.tpl
+/README.md
+/update.sh

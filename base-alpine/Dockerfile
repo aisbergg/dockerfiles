@@ -86,10 +86,10 @@ RUN chmod 0755 /entrypoint /usr/bin/workdirs /usr/bin/schedule_program \
 ENTRYPOINT ["/entrypoint"]
 CMD ["run"]
 
-LABEL org.opencontainers.image.title="Base Image - Alpine Linux" \
+LABEL org.opencontainers.image.title="Alpine Linux Base Image" \
     org.opencontainers.image.version="3.14" \
-    org.opencontainers.image.description="A base image build upon Alpine Linux" \
+    org.opencontainers.image.description="Alpine Linux Base Image" \
     org.opencontainers.image.url="https://www.alpinelinux.org" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.authors="Andre Lehmann <aisberg@posteo.de>" \
-    org.opencontainers.image.source="https://github.com/aisbergg/dockerfiles/base"
+    org.opencontainers.image.source="https://github.com/aisbergg/dockerfiles/base-alpine"

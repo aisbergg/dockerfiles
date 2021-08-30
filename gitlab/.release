@@ -1,2 +1,2 @@
-release=14.1.1-1-patched
-tag=gitlab-14.1.1-1-patched
+name=gitlab
+tags=14.1.1-1-patched

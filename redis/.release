@@ -1,2 +1,2 @@
-release=5.0.13
-tag=redis-5.0.13
+name=redis
+tags=5.0.13

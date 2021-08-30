@@ -1,2 +1,2 @@
-release=latest
-tag=nginx-latest
+name=nginx
+tags=

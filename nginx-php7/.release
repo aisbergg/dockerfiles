@@ -1,2 +1,2 @@
-release=latest
-tag=nginx-php7-latest
+name=nginx
+tags=php7-latest

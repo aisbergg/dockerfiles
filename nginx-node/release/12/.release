@@ -1,2 +1,2 @@
-release=12.22.5
-tag=nginx-node-12.22.5
+name=nginx-node
+tags=12.22.5
