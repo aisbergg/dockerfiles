@@ -15,6 +15,12 @@ version_greater_equal() {
     printf "%s\n%s\n" "$2" "$1" | sort --check=quiet --version-sort
 }
 
+is_latest_tag() {
+    local name=$(get_name)
+    local latest_tag=$(git tag | grep -E "^$name-[[:digit:]]+" | sed 's/^gitea-//' | sort -V | tail -n 1)
+    version_greater_equal "$1"
+}
+
 get_name() {
     awk -F= '/^name\s*=\s*/{print $2}' .release | head -n 1
 }
