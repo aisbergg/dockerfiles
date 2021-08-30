@@ -7,7 +7,7 @@ stages:
   - build-nginx
   - build-nginx-php
 
-.build: &build
+.build:
   stage: build
   image:
     name: gcr.io/kaniko-project/executor:debug
@@ -36,20 +36,20 @@ stages:
       when: manual
 
 build:base-alpine:
-  <<: *build
+  extends: .build
   stage: build-base
   variables:
     IMAGE_NAME: base-alpine
 
 build:nginx:
-  <<: *build
+  extends: .build
   stage: build-nginx
   needs: ["build:base-alpine"]
   variables:
     IMAGE_NAME: nginx
 
 build:nginx-php7:
-  <<: *build
+  extends: .build
   stage: build-nginx-php
   needs: ["build:nginx"]
   variables:
