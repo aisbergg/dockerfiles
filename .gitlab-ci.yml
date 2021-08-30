@@ -18,7 +18,7 @@ stages:
     DOCKERFILE: Dockerfile
   script:
     - tags="$(awk -F= '/^tags\s*=\s*/{print $2}' "$CONTEXT_DIR/.release" | head -n 1)"
-    - destination_flags="$(for t in $tags; do echo -n "--destination $CI_REGISTRY_IMAGE:$IMAGE_NAME:$t "; done)"
+    - destination_flags="$(for t in $tags; do echo -n "--destination $CI_REGISTRY_IMAGE/$IMAGE_NAME:$t "; done)"
     - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64)\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor
