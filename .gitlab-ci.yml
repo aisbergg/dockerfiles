@@ -39,7 +39,6 @@ build:base-alpine:
   <<: *build
   stage: build-base
   variables:
-    CONTEXT_DIR: $CI_PROJECT_DIR/base-alpine/release
     IMAGE_NAME: base-alpine
 
 build:nginx:
