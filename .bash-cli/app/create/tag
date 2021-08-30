@@ -11,7 +11,7 @@ eval set -- "$args"
 while [[ $# > 0 ]]; do
     case "$1" in
         -h|--help) "$INC_DIR/help" cli create tag; exit 0;;
-        -f|--force) Force="$2"; shift 2;;
+        -f|--force) FORCE=true; shift;;
         --) shift; break;;
         *) echo "Unknown option '$1'"; exit 1;;
     esac
@@ -26,7 +26,7 @@ NAME="$(get_name)"
 TAG="$(get_tag)"
 GIT_TAG="$NAME+$TAG"
 
-if [[ -n "$(git tag | grep "^$GIT_TAG\$")" ]]; then
+if [[ -n "$(git tag | grep "^$GIT_TAG\$")" && $FORCE == false ]]; then
     echo "Tag '$GIT_TAG' already exists"
     exit 5
 fi
@@ -37,5 +37,5 @@ if has_changes && [[ $FORCE == false ]]; then
 fi
 
 echo "Creating Git Tag '$GIT_TAG'"
-git tag -m "$GIT_TAG" "$GIT_TAG"
+git tag -f -m "$GIT_TAG" "$GIT_TAG"
 )
