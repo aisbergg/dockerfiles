@@ -1,5 +1,6 @@
 # aisberg/roundcube aisberg/roundcube:1.2.2
-FROM aisberg/nginx-php7
+ARG IMAGE_PREFIX
+FROM ${IMAGE_PREFIX}${IMAGE_PREFIX:+/}aisberg/nginx-php7
 MAINTAINER Andre Lehmann <aisberg@posteo.de>
 
 ENV ROUNDCUBE_VERSION=1.2.2 \

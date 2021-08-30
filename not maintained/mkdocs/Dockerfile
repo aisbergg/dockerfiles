@@ -1,5 +1,6 @@
 # aisberg/mkdocs
-FROM aisberg/nginx
+ARG IMAGE_PREFIX
+FROM ${IMAGE_PREFIX}${IMAGE_PREFIX:+/}aisberg/nginx
 
 LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
     Version=2.1 \

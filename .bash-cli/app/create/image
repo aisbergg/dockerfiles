@@ -18,19 +18,13 @@ build_image() {
         fi
 
         if [[ $DEPENDENCIES == true ]]; then
-            # get dependency
-            local dependency="$(grep -Po "(?<=^FROM aisberg/)(.*)" ./Dockerfile | sed "s/:.*//" | tail -n1 || echo "")"
+            local dependency="$(grep -E "^FROM.*aisberg/.*" Dockerfile | sed -r "s|.*/(.*):.*|\1|" | tail -n1 || echo "")"
+            echo $dependency
             if [[ -n "$dependency" ]]; then
                 (
                     cd ..
                     build_image "$dependency"
                 )
-                local REPL_NAME="$USERNAME"
-                if [[ -n "$PREFIX" ]]; then
-                    REPL_NAME="$PREFIX/$REPL_NAME"
-                fi
-                sed -r "s|^FROM aisberg/(.*)|FROM $REPL_NAME/\1|g" "$DOCKERFILE" > "./~Dockerfile"
-                DOCKERFILE=~Dockerfile
             fi
         fi
 
@@ -42,16 +36,14 @@ build_image() {
         for t in $TAGS; do
             TAG_LIST="$TAG_LIST -t $NAME:$t"
         done
+        local BUILD_ARG=$([ -n "$PREFIX" ] && echo "--build-arg=IMAGE_PREFIX=$PREFIX" || echo "")
 
         docker build \
             $TAG_LIST \
             -f "$DOCKERFILE" \
+            $BUILD_ARG \
             $OPTIONS \
             .
-        if [[ "$DOCKERFILE" == "~"* ]]; then
-            echo "Removing temporary Dockerfile '$DOCKERFILE'"
-            rm "$DOCKERFILE"
-        fi
     )
 }
 

@@ -1,4 +1,5 @@
-FROM aisberg/base-alpine:3.8
+ARG IMAGE_PREFIX
+FROM ${IMAGE_PREFIX}${IMAGE_PREFIX:+/}aisberg/base-alpine:3.8
 
 ENV INIT=supervisor
 

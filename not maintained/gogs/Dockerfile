@@ -15,7 +15,8 @@ RUN apk --no-cache --no-progress add build-base linux-pam-dev &&\
 
 #-------------------------------------------------------------------------------
 
-FROM aisberg/nginx
+ARG IMAGE_PREFIX
+FROM ${IMAGE_PREFIX}${IMAGE_PREFIX:+/}aisberg/nginx
 
 COPY --from=build /gogs /opt/gogs
 

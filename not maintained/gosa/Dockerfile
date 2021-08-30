@@ -1,5 +1,6 @@
 # aisberg/gosa aisberg/gosa
-FROM aisberg/nginx-php5
+ARG IMAGE_PREFIX
+FROM ${IMAGE_PREFIX}${IMAGE_PREFIX:+/}aisberg/nginx-php5
 MAINTAINER Andre Lehmann <aisberg@posteo.de>
 
 RUN apt-get update &&\

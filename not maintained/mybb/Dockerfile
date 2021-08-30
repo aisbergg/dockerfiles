@@ -1,5 +1,6 @@
 # aisberg/mybb aisberg/mybb:1814
-FROM aisberg/nginx-php7
+ARG IMAGE_PREFIX
+FROM ${IMAGE_PREFIX}${IMAGE_PREFIX:+/}aisberg/nginx-php7
 
 LABEL Author="Andre Lehmann <aisberg@posteo.de>" \
     Version=2.2 \

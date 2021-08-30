@@ -35,7 +35,8 @@ RUN set -x \
 
 #-------------------------------------------------------------------------------
 
-FROM aisberg/base-ubuntu:20.04
+ARG IMAGE_PREFIX
+FROM ${IMAGE_PREFIX}${IMAGE_PREFIX:+/}aisberg/base-ubuntu:20.04
 
 COPY --from=build /burp /
 

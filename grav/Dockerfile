@@ -1,4 +1,5 @@
-FROM aisberg/nginx-php7
+ARG IMAGE_PREFIX
+FROM ${IMAGE_PREFIX}${IMAGE_PREFIX:+/}aisberg/nginx-php7
 
 RUN set -x \
     \

@@ -9,7 +9,8 @@ RUN apk --no-cache --no-progress add build-base git \
 
 #-------------------------------------------------------------------------------
 
-FROM aisberg/nginx
+ARG IMAGE_PREFIX
+FROM ${IMAGE_PREFIX}${IMAGE_PREFIX:+/}aisberg/nginx
 
 RUN set -x \
     \

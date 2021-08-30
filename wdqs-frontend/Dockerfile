@@ -25,7 +25,8 @@ RUN set -x \
 ## Final Stage
 ##
 
-FROM aisberg/nginx
+ARG IMAGE_PREFIX
+FROM ${IMAGE_PREFIX}${IMAGE_PREFIX:+/}aisberg/nginx
 
 COPY --from=build /tmp/wdqs-frontend /container/www
 COPY provision /provision

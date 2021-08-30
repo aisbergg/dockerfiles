@@ -2,7 +2,8 @@
 ## Build Stage
 ##
 
-FROM aisberg/base-alpine:3.14 as build
+ARG IMAGE_PREFIX
+FROM ${IMAGE_PREFIX}${IMAGE_PREFIX:+/}aisberg/base-alpine:3.14 as build
 
 ENV WDQS_BACKEND_VERSION=0.3.82 \
     JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk/ \
@@ -35,7 +36,8 @@ RUN set -x \
 ## Final Stage
 ##
 
-FROM aisberg/base-alpine:3.14
+ARG IMAGE_PREFIX
+FROM ${IMAGE_PREFIX}${IMAGE_PREFIX:+/}aisberg/base-alpine:3.14
 
 ENV INIT=supervisor
 

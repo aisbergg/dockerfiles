@@ -1,4 +1,5 @@
-FROM aisberg/nginx
+ARG IMAGE_PREFIX
+FROM ${IMAGE_PREFIX}${IMAGE_PREFIX:+/}aisberg/nginx
 
 LABEL org.opencontainers.image.title="Nginx HTML" \
     org.opencontainers.image.description="Webserver for delivering static HTML" \
