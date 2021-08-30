@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+INC_DIR="$PWD/.bash-cli"
+. "$INC_DIR/bash-cli.inc.sh"
+. "$INC_DIR/func.sh"
+
+FORCE=false
+
+args=$(getopt -n "cli create tag" -o "h,f" -l "help,force" -- "$@")
+eval set -- "$args"
+while [[ $# > 0 ]]; do
+    case "$1" in
+        -h|--help) "$INC_DIR/help" cli create tag; exit 0;;
+        -f|--force) Force="$2"; shift 2;;
+        --) shift; break;;
+        *) echo "Unknown option '$1'"; exit 1;;
+    esac
+done
+if [[ $# > 0 ]]; then DIR="$1"; shift; else echo "Missing DIR argument"; exit 1; fi
+if [[ ! -d "$PWD/$DIR" ]]; then echo "Directory doesn't exist: '$PWD/$DIR'"; exit 1; fi
+if [[ ! -f "$PWD/$DIR/.release" ]]; then echo "Release file doesn't exist: '$PWD/$DIR/.release'"; exit 1; fi
+
+(
+cd "$PWD/$DIR"
+NAME="$(get_name)"
+TAG="$(get_tag)"
+GIT_TAG="$NAME+$TAG"
+
+if [[ -n "$(git tag | grep "^$GIT_TAG\$")" ]]; then
+    echo "Tag '$GIT_TAG' already exists"
+    exit 5
+fi
+if has_changes && [[ $FORCE == false ]]; then
+    if ! confirm "Working directory not clean. Tag anyway?"; then
+        exit 0
+    fi
+fi
+
+echo "Creating Git Tag '$GIT_TAG'"
+git tag -m "$GIT_TAG" "$GIT_TAG"
+)

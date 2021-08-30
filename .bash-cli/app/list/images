@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+INC_DIR="$PWD/.bash-cli"
+. "$INC_DIR/bash-cli.inc.sh"
+. "$INC_DIR/func.sh"
+
+PREFIX=""
+USERNAME="aisberg"
+
+args=$(getopt -n "cli list images" -o "h,p:,u:" -l "help,prefix:,username:" -- "$@")
+eval set -- "$args"
+while [[ $# > 0 ]]; do
+    case "$1" in
+        -h|--help) "$INC_DIR/help" cli list images; exit 0;;
+        -p|--prefix) PREFIX="$2"; shift 2;;
+        -u|--username) USERNAME="$2"; shift 2;;
+        --) shift; break;;
+        *) echo "Unknown option '$1'"; exit 1;;
+    esac
+done
+if [[ $# > 0 ]]; then DIR="$1"; else echo "Missing DIR argument"; exit 1; fi
+if [[ ! -d "$PWD/$DIR" ]]; then echo "Directory doesn't exist: '$PWD/$DIR'"; exit 1; fi
+if [[ ! -f "$PWD/$DIR/.release" ]]; then echo "Release file doesn't exist: '$PWD/$DIR/.release'"; exit 1; fi
+
+(
+cd "$PWD/$DIR"
+NAME="$USERNAME/$(get_name)"
+if [[ -n "$PREFIX" ]]; then
+    NAME="$PREFIX/$NAME"
+fi
+
+docker images --filter dangling=false --format '{{ .Repository }}:{{ .Tag }}' | grep -E "^$NAME:"
+)

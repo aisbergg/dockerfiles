@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+
+build_image() {
+    local name="$1"
+    (
+        cd "$PWD/$name"
+        local DOCKERFILE=Dockerfile
+        local TAGS="$(get_tags)"
+        local NAME="$USERNAME/$(get_name)"
+        if [[ -n "$PREFIX" ]]; then
+            NAME="$PREFIX/$NAME"
+        fi
+
+        if has_changes && [[ $FORCE == false ]]; then
+            if ! confirm "Working directory '$name' not clean. Build anyway?"; then
+                exit 0
+            fi
+        fi
+
+        if [[ $DEPENDENCIES == true ]]; then
+            # get dependency
+            local dependency="$(grep -Po "(?<=^FROM aisberg/)(.*)" ./Dockerfile | sed "s/:.*//" | tail -n1 || echo "")"
+            if [[ -n "$dependency" ]]; then
+                (
+                    cd ..
+                    build_image "$dependency"
+                )
+                local REPL_NAME="$USERNAME"
+                if [[ -n "$PREFIX" ]]; then
+                    REPL_NAME="$PREFIX/$REPL_NAME"
+                fi
+                sed -r "s|^FROM aisberg/(.*)|FROM $REPL_NAME/\1|g" "$DOCKERFILE" > "./~Dockerfile"
+                DOCKERFILE=~Dockerfile
+            fi
+        fi
+
+        echo "################################################################################"
+        echo "# Building Image '$NAME'"
+        echo "################################################################################"
+
+        local TAG_LIST=""
+        for t in $TAGS; do
+            TAG_LIST="$TAG_LIST -t $NAME:$t"
+        done
+
+        docker build \
+            $TAG_LIST \
+            -f "$DOCKERFILE" \
+            $OPTIONS \
+            .
+        if [[ "$DOCKERFILE" == "~"* ]]; then
+            echo "Removing temporary Dockerfile '$DOCKERFILE'"
+            rm "$DOCKERFILE"
+        fi
+    )
+}
+
+
+INC_DIR="$PWD/.bash-cli"
+. "$INC_DIR/bash-cli.inc.sh"
+. "$INC_DIR/func.sh"
+
+PREFIX=""
+USERNAME="aisberg"
+DEPENDENCIES=false
+FORCE=false
+OPTIONS=""
+
+args=$(getopt -n "cli create image" -o "h,p:,u:,d,f,o:" -l "help,prefix:,username:,dependencies,force,options:" -- "$@")
+eval set -- "$args"
+while [[ $# > 0 ]]; do
+    case "$1" in
+        -h|--help) "$INC_DIR/help" cli create image; exit 0;;
+        -p|--prefix) PREFIX="$2"; shift 2;;
+        -u|--username) USERNAME="$2"; shift 2;;
+        -d|--dependencies) DEPENDENCIES=true; shift;;
+        -f|--force) FORCE=true; shift;;
+        -o|--options) OPTIONS="$2"; shift 2;;
+        --) shift; break;;
+        *) echo "Unknown option '$1'"; exit 1;;
+    esac
+done
+if [[ $# > 0 ]]; then DIR="$1"; shift; else echo "Missing DIR argument"; exit 1; fi
+if [[ ! -d "$PWD/$DIR" ]]; then echo "Directory doesn't exist: '$PWD/$DIR'"; exit 1; fi
+if [[ ! -f "$PWD/$DIR/.release" ]]; then echo "Release file doesn't exist: '$PWD/$DIR/.release'"; exit 1; fi
+
+build_image "$DIR"

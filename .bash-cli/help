@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+# import bash-cli
+. "$(dirname "$0")/bash-cli.inc.sh"
+
+bcli_help "$@"

@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+(
+cd "$(dirname "$0")"
+
+# import bash-cli
+. ".bash-cli/bash-cli.inc.sh"
+
+if [[ $# > 0 ]]; then
+    case "$1" in
+        -h|--help) eval set -- "help"; exit 0;;
+    esac
+fi
+
+bcli_entrypoint "$@"
+
+    # tag
+    # show tag
+    # list
+    # build release
+    #   build dependencies - all - levels
+    # show tag
+    # list tags
+    #
+    # describe tag
+
+    # tag
+
+    # create a tag
+    # show a tag, its date and such
+    # list all tags
+
+    # create tag [CUSTOM_TAG]
+    # -f, --force
+
+    # create image DIR
+    # -f, --force
+    # -d, --dependencies
+    # -p, --prefix (default: docker.io)
+    # -u, --username (default: aisberg)
+    # -o, --options
+    # -r, --rebuild
+
+
+    # list tags DIR
+
+    # list images DIR
+
+)
+

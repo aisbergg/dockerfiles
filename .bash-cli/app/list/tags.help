@@ -1,0 +1,7 @@
+
+List Git tags for the given image directory.
+
+  -h, --help            Display help message and quit
+  -p, --prefix          Add a prefix to the image name
+  -u, --username        Use a different username for the image name (default: aisberg)
+  -f, --full            Display the full Git tag instead of only the version

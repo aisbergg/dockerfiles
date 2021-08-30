@@ -1,0 +1,6 @@
+
+List images available on the system matching the image directory.
+
+  -h, --help            Display help message and quit
+  -p, --prefix          Add a prefix to the image name
+  -u, --username        Use a different username for the image name (default: aisberg)

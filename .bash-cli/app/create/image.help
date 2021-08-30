@@ -1,0 +1,9 @@
+
+Build an image.
+
+  -h, --help            Display help message and quit
+  -f, --force           Build the image even though the working directory is not clean
+  -d, --dependencies    Build the dependencies (FROM) as well
+  -p, --prefix          Add a prefix to the image name
+  -u, --username        Use a different username for the image name (default: aisberg)
+  -o, --options         Add more Docker Build options

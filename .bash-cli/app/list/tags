@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+INC_DIR="$PWD/.bash-cli"
+. "$INC_DIR/bash-cli.inc.sh"
+. "$INC_DIR/func.sh"
+
+PREFIX=""
+USERNAME="aisberg"
+FULL=false
+
+args=$(getopt -n "cli list tags" -o "h,p:,u:,f" -l "help,prefix:,username:,full" -- "$@")
+eval set -- "$args"
+while [[ $# > 0 ]]; do
+    case "$1" in
+        -h|--help) "$INC_DIR/help" cli list tags; exit 0;;
+        -p|--prefix) PREFIX="$2"; shift 2;;
+        -u|--username) USERNAME="$2"; shift 2;;
+        -f|--full) FULL=true; shift;;
+        --) shift; break;;
+        *) echo "Unknown option '$1'"; exit 1;;
+    esac
+done
+if [[ $# > 0 ]]; then DIR="$1"; else echo "Missing DIR argument"; exit 1; fi
+if [[ ! -d "$PWD/$DIR" ]]; then echo "Directory doesn't exist: '$PWD/$DIR'"; exit 1; fi
+if [[ ! -f "$PWD/$DIR/.release" ]]; then echo "Release file doesn't exist: '$PWD/$DIR/.release'"; exit 1; fi
+
+(
+cd "$PWD/$DIR"
+NAME="$(get_name)"
+
+if [[ $FULL == true ]]; then
+    git tag -l | grep -Po "^$NAME\+.*"
+else
+    git tag -l | grep -Po "(?<=^$NAME\+).*"
+fi
+)
