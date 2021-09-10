@@ -45,7 +45,7 @@ build:base-alpine:
 build:nginx:
   extends: .build
   stage: build-nginx
-  needs: ["build:base-alpine"]
+  # needs: ["build:base-alpine"]
   variables:
     IMAGE_NAME: nginx
 
