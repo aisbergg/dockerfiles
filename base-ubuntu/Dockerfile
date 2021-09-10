@@ -2,7 +2,8 @@
 # Build Stage
 # ------------------------------------------------------------------------------
 
-FROM golang:alpine as build
+ARG IMAGE_PREFIX
+FROM ${IMAGE_PREFIX}${IMAGE_PREFIX:+/}golang:alpine as build
 
 ENV SUPERVISORD_VERSION=0.7.3 \
     SUPERCRONIC_VERSION=0.1.12
@@ -31,7 +32,8 @@ RUN set -x \
 # Final Stage
 # ------------------------------------------------------------------------------
 
-FROM ubuntu:20.04
+ARG IMAGE_PREFIX
+FROM ${IMAGE_PREFIX}${IMAGE_PREFIX:+/}ubuntu:20.04
 
 ARG LANG=en_US.UTF-8
 ARG APT_CACHER_NG
