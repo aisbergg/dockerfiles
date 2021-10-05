@@ -3,6 +3,10 @@
 build_image() {
     local name="$1"
     (
+        if [[ ! -d "$PWD/$name" ]]; then
+            echo "No such image source dir: $name"
+            return 1
+        fi
         cd "$PWD/$name"
         local DOCKERFILE=Dockerfile
         local TAGS="$(get_tags)"
@@ -18,8 +22,8 @@ build_image() {
         fi
 
         if [[ $DEPENDENCIES == true ]]; then
-            local dependency="$(grep -E "^FROM.*aisberg/.*" Dockerfile | sed -r "s|.*/(.*):.*|\1|" | tail -n1 || echo "")"
-            echo $dependency
+            local dependency="$(grep -E "^FROM.*aisberg/.*" Dockerfile | sed -r "s|.+/([a-zA-Z0-9_\-]+)(:[a-zA-Z0-9_\-\.]*){,1}|\1|" | tail -n1 || echo "")"
+            echo "Identified dependency: $dependency"
             if [[ -n "$dependency" ]]; then
                 (
                     cd ..

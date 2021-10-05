@@ -9,7 +9,7 @@ cd "$(dirname $(readlink -f "$0"))"
 
 if [[ $# > 0 ]]; then
     case "$1" in
-        -h|--help) eval set -- "help"; exit 0;;
+        -h|--help) eval set -- "help";;
     esac
 fi
 

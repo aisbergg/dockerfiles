@@ -139,7 +139,7 @@ function bcli_entrypoint() {
 
 function bcli_help() {
     local root_dir;
-    root_dir=$(pwd)
+    root_dir="$(dirname $(readlink -f "$0"))"
 
     local cli_entrypoint;
     cli_entrypoint=$(basename "$1")
@@ -214,7 +214,6 @@ function bcli_help() {
 
 function bcli_bash_completions() {
     local root_dir;
-    root_dir=
     root_dir=$(dirname "$(bcli_resolve_path "$(which "${COMP_WORDS[0]}")")")
 
     local curr_arg;
