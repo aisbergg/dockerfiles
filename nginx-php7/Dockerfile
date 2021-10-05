@@ -13,7 +13,6 @@ RUN set -x \
         gnu-libiconv \
         pcre \
         php7 \
-        php7-apcu \
         php7-bcmath \
         php7-cgi \
         php7-ctype \
@@ -24,8 +23,6 @@ RUN set -x \
         php7-intl \
         php7-json \
         php7-mbstring \
-        php7-mcrypt \
-        php7-memcached \
         php7-mysqli \
         php7-mysqlnd \
         php7-opcache \
@@ -33,6 +30,9 @@ RUN set -x \
         php7-pdo_mysql \
         php7-pdo_pgsql \
         php7-pdo_sqlite \
+        php7-pecl-apcu \
+        php7-pecl-mcrypt \
+        php7-pecl-memcached \
         php7-pecl-yaml \
         php7-pgsql \
         php7-phar \
